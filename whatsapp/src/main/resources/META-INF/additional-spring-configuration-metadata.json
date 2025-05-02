@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "application.file.uploads.media-output-path",
+      "type": "java.lang.String",
+      "description": "The path where the media files will be moved to."
+  }
+] }
