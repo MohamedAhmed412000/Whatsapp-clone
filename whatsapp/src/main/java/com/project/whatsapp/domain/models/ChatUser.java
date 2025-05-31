@@ -30,8 +30,6 @@ public class ChatUser extends BaseModel {
     @Convert(converter = UserRolePriorityConverter.class)
     @Column(name = "USER_ROLE")
     private ChatUserRoleEnum role;
-    @Column(name = "LAST_REACHED_MESSAGE_TIME")
-    private LocalDateTime lastReachedMessageAt;
     @Column(name = "LAST_SEEN_MESSAGE_AT")
     private LocalDateTime lastSeenMessageAt;
 }

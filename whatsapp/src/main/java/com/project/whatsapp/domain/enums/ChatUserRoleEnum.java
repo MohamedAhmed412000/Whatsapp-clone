@@ -12,4 +12,13 @@ public enum ChatUserRoleEnum {
     ;
 
     private final int priority;
+
+    public static ChatUserRoleEnum getByPriority(int priority) {
+        for (ChatUserRoleEnum chatUserRoleEnum : values()) {
+            if (chatUserRoleEnum.getPriority() == priority) {
+                return chatUserRoleEnum;
+            }
+        }
+        return null;
+    }
 }

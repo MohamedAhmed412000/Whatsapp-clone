@@ -11,6 +11,7 @@ import com.project.whatsapp.repositories.ChatUserRepository;
 import com.project.whatsapp.repositories.UserRepository;
 import com.project.whatsapp.services.ChatService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public String createChat(String senderId, List<String> receiversIds, boolean isGroupChat, String chatName) {
+    public String createChat(String senderId, @NotEmpty List<String> receiversIds, boolean isGroupChat, String chatName) {
         if (!isGroupChat) {
             return createOneToOneChat(senderId, receiversIds.get(0));
         }

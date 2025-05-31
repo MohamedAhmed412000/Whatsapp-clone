@@ -1,11 +1,19 @@
 package com.project.whatsapp.domain.converters;
 
 import com.project.whatsapp.domain.enums.ChatUserRoleEnum;
-import org.springframework.core.convert.converter.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
-public class UserRolePriorityConverter implements Converter<ChatUserRoleEnum, Integer> {
+@Converter
+public class UserRolePriorityConverter implements AttributeConverter<ChatUserRoleEnum, Integer> {
+
     @Override
-    public Integer convert(ChatUserRoleEnum role) {
-        return role.getPriority();
+    public Integer convertToDatabaseColumn(ChatUserRoleEnum attribute) {
+        return attribute.getPriority();
+    }
+
+    @Override
+    public ChatUserRoleEnum convertToEntityAttribute(Integer dbData) {
+        return ChatUserRoleEnum.getByPriority(dbData);
     }
 }
