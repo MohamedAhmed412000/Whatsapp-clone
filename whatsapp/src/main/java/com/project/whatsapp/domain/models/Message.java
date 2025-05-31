@@ -2,15 +2,13 @@ package com.project.whatsapp.domain.models;
 
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "MESSAGE")
 public class Message extends BaseModel {
@@ -29,4 +27,6 @@ public class Message extends BaseModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "TYPE")
     private MessageTypeEnum messageType;
+    @Column(name = "MEDIA_REFERENCE")
+    private String mediaFileReference;
 }

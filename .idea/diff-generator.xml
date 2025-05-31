@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DiffGenerationConfig">
-    <option name="snapshotDb" value="false" />
+    <option name="snapshotDbValue" value="822145ae-ae0b-4edd-9e0f-69df938ce696" />
     <option name="snapshotDirValue" value="$PROJECT_DIR$/whatsapp/src/main/java/com/project/whatsapp/domain/models" />
     <option name="snapshotModelValue" value="whatsapp-reactive:entityManagerFactory" />
+    <option name="sourceModelValue" value="media-management:entityManagerFactory" />
+    <option name="targetDbValue" value="822145ae-ae0b-4edd-9e0f-69df938ce696" />
   </component>
 </project>

@@ -1,12 +1,7 @@
 spring:
   application:
     name: media-management
-
-  servlet:
-    multipart:
-      max-file-size: 50MB
-
-application:
-  file:
-    uploads:
-      media-output-path: ./uploads
+  config:
+    import: optional:configserver:http://localhost:8071
+  profiles:
+    active: default

@@ -1,4 +1,7 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
   datasource:
     url: jdbc:postgresql://localhost:5432/whatsapp_clone
     username: postgres
@@ -16,4 +19,9 @@ spring:
     enabled: false
 
 server:
-  port: 8091
+  port: 8092
+
+application:
+  file:
+    uploads:
+      media-output-path: ./uploads
