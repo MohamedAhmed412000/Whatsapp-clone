@@ -1,4 +1,4 @@
-package com.project.whatsapp.constants;
+package com.project.gateway.constants;
 
 public class Headers {
 

@@ -1,4 +1,4 @@
-package com.project.whatsapp.config;
+package com.project.gateway.config;
 
 import lombok.NonNull;
 import org.springframework.core.convert.converter.Converter;
@@ -9,7 +9,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

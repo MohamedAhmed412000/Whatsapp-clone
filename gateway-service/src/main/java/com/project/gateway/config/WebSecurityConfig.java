@@ -1,47 +1,46 @@
-package com.project.whatsapp.config;
+package com.project.gateway.config;
 
-import com.project.whatsapp.constants.Headers;
+import com.project.gateway.constants.Headers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import java.util.Objects;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 public class WebSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-            .cors(withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request -> request
-                .requestMatchers(getSwaggerPaths()).permitAll()
-                .requestMatchers("/ws/**").permitAll()
-                .requestMatchers("/configuration/ui", "/configuration/security").permitAll()
-                .anyRequest().authenticated()
+            .cors(ServerHttpSecurity.CorsSpec::disable)
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .authorizeExchange(exchange -> exchange
+                .pathMatchers(getSwaggerPaths()).permitAll()
+                .pathMatchers("/ws/**").permitAll()
+                .pathMatchers("/configuration/ui", "/configuration/security").permitAll()
+                .anyExchange().authenticated()
             )
             .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                 oAuth2ResourceServerSpec.jwt(jwt -> jwt.jwtAuthenticationConverter(
-                    new KeycloakJwtAuthenticationConverter()
+                    source -> Mono.just(Objects.requireNonNull(
+                        new KeycloakJwtAuthenticationConverter().convert(source)))
                 )));
 
         return http.build();
     }
-
 
     @Bean
     public CorsFilter corsFilter() {
