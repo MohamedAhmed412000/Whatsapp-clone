@@ -27,6 +27,4 @@ public class Message extends BaseModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "TYPE")
     private MessageTypeEnum messageType;
-    @Column(name = "MEDIA_REFERENCE")
-    private String mediaFileReference;
 }

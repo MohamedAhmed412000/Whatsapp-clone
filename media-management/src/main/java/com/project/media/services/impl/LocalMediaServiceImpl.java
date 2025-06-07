@@ -42,6 +42,14 @@ public class LocalMediaServiceImpl implements MediaService {
     }
 
     @Override
+    public MediaListResponse getMediaContent(String entityId) {
+        List<MediaContentResponse> responseList = mediaRepository.findMediaByEntityId(entityId).stream().map(
+            media -> MediaMapper.mapToResponse(media, mediaBasePath)
+        ).toList();
+        return new MediaListResponse(responseList);
+    }
+
+    @Override
     public Map<String, MediaListResponse> getMediaList(MediaContentResource mediaList) {
         return mediaList.getEntityIds().stream()
             .collect(Collectors.toMap(

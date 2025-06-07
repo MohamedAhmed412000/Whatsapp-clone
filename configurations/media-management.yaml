@@ -25,3 +25,12 @@ application:
   file:
     uploads:
       media-output-path: ./uploads
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: "http://localhost:8090/eureka/"

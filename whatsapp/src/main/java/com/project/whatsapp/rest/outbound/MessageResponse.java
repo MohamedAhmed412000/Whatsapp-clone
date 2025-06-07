@@ -1,5 +1,6 @@
 package com.project.whatsapp.rest.outbound;
 
+import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +20,5 @@ public class MessageResponse {
     private MessageStateEnum state;
     private String senderId;
     private LocalDateTime createdAt;
-    private byte[] media;
+    private List<MediaContentResponse> mediaList;
 }

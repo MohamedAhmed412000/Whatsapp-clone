@@ -25,6 +25,11 @@ public class MediaController {
         return ResponseEntity.ok(fileReference);
     }
 
+    @GetMapping("/{entityId}")
+    public ResponseEntity<MediaListResponse> getMedia(@PathVariable String entityId) {
+        return ResponseEntity.ok(mediaService.getMediaContent(entityId));
+    }
+
     @PostMapping("/list")
     public ResponseEntity<Map<String, MediaListResponse>> getMediaList(
         @RequestBody MediaContentResource resource
