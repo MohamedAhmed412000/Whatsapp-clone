@@ -1,9 +1,9 @@
-package com.project.whatsapp.services.impl;
+package com.project.gateway.services.impl;
 
-import com.project.whatsapp.domain.models.User;
-import com.project.whatsapp.mappers.UserMapper;
-import com.project.whatsapp.repositories.UserRepository;
-import com.project.whatsapp.services.UserSynchronizer;
+import com.project.gateway.domain.models.User;
+import com.project.gateway.mappers.UserMapper;
+import com.project.gateway.repositories.UserRepository;
+import com.project.gateway.services.UserSynchronizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;

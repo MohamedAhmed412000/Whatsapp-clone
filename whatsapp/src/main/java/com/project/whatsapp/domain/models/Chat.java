@@ -25,9 +25,9 @@ public class Chat extends BaseModel {
     private String name;
     @Column(name = "IS_GROUP")
     private boolean isGroupChat = false;
-    @Column(name = "DESCRIPTION", nullable = true)
+    @Column(name = "DESCRIPTION")
     private String description;
-    @Column(name = "CHAT_IMAGE_URL", nullable = true)
+    @Column(name = "CHAT_IMAGE_URL")
     private String chatImageUrl;
     @OrderBy("createdAt DESC")
     @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER)
@@ -57,8 +57,8 @@ public class Chat extends BaseModel {
         if (this.isGroupChat) return null;
         else {
             if (users.get(0).getId().equals(senderId))
-                return (Boolean) users.get(1).getUser().isOnlineUser();
-            return (Boolean) users.get(0).getUser().isOnlineUser();
+                return users.get(1).getUser().isOnlineUser();
+            return users.get(0).getUser().isOnlineUser();
         }
     }
 
@@ -77,6 +77,14 @@ public class Chat extends BaseModel {
             return messages.get(0).getCreatedAt();
         }
         return null;
+    }
+
+    @Transient
+    public List<UUID> getOtherChatUserIds(UUID senderId) {
+        return this.users.stream()
+            .filter(chatUser -> !chatUser.getUser().getId().equals(senderId))
+            .map(chatUser -> chatUser.getUser().getId())
+            .toList();
     }
 
     public Chat() {

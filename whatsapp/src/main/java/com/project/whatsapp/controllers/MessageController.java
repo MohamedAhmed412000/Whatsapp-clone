@@ -1,5 +1,6 @@
 package com.project.whatsapp.controllers;
 
+import com.project.whatsapp.constants.Headers;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import com.project.whatsapp.rest.inbound.MessageResource;
 import com.project.whatsapp.rest.outbound.MessageResponse;
@@ -7,7 +8,6 @@ import com.project.whatsapp.services.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,17 +28,20 @@ public class MessageController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void setMessagesToSeen(@RequestParam("chatId") String chatId, Authentication authentication) {
-        messageService.setLastViewTime(chatId, authentication);
+    public void setMessagesToSeen(
+        @RequestParam("chatId") String chatId,
+        @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
+    ) {
+        messageService.setLastViewTime(chatId, userIdHeader);
     }
 
     @GetMapping("/chat/{chatId}")
     public ResponseEntity<List<MessageResponse>> getChatMessages(
         @PathVariable("chatId") String chatId,
         @RequestParam("page") Integer page,
-        Authentication authentication
+        @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
     ) {
-        return ResponseEntity.ok(messageService.findChatMessages(chatId, page, authentication));
+        return ResponseEntity.ok(messageService.findChatMessages(chatId, page, userIdHeader));
     }
 
 }

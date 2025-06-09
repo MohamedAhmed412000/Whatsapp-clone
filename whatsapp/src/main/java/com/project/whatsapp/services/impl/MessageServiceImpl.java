@@ -7,10 +7,8 @@ import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
 import com.project.whatsapp.constants.Application;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
-import com.project.whatsapp.domain.models.Chat;
-import com.project.whatsapp.domain.models.ChatUser;
-import com.project.whatsapp.domain.models.Message;
-import com.project.whatsapp.domain.models.User;
+import com.project.whatsapp.domain.enums.NotificationTypeEnum;
+import com.project.whatsapp.domain.models.*;
 import com.project.whatsapp.mappers.MessageMapper;
 import com.project.whatsapp.repositories.ChatRepository;
 import com.project.whatsapp.repositories.ChatUserRepository;
@@ -19,16 +17,17 @@ import com.project.whatsapp.repositories.UserRepository;
 import com.project.whatsapp.rest.inbound.MessageResource;
 import com.project.whatsapp.rest.outbound.MessageResponse;
 import com.project.whatsapp.services.MessageService;
+import com.project.whatsapp.services.NotificationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +42,7 @@ public class MessageServiceImpl implements MessageService {
     private final ChatUserRepository chatUserRepository;
     private final MediaFeignClient mediaFeignClient;
     private final MessageMapper messageMapper;
+    private final NotificationService notificationService;
 
     @Value("${chats.page.max-messages-size:20}")
     private Integer chatMaxMessagesSize;
@@ -72,12 +72,35 @@ public class MessageServiceImpl implements MessageService {
                 .build()));
         }
 
-        // todo notification
+        Notification notification = Notification.builder()
+            .chatId(chat.getId())
+            .chatName(chat.getChatName(sender.getId()))
+            .senderId(sender.getId())
+            .messageType(message.getMessageType())
+            .build();
+        if (request.getMessageType().equals(MessageTypeEnum.TEXT)) {
+            notification.setNotificationType(NotificationTypeEnum.MESSAGE);
+            notification.setContent(message.getContent());
+        } else {
+            notification.setNotificationType(NotificationTypeEnum.MEDIA);
+            notification.setMediaList(request.getMediaResources().stream().map(
+                mediaResource -> {
+                try {
+                    return messageMapper.toMediaResponse(mediaResource.getFile());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toList());
+        }
+        notificationService.sendNotification(
+            chat.getOtherChatUserIds(sender.getId()),
+            notification
+        );
     }
 
     @Override
-    public List<MessageResponse> findChatMessages(String chatId, int page, Authentication authentication) {
-        setLastViewTime(chatId, authentication);
+    public List<MessageResponse> findChatMessages(String chatId, int page, String userId) {
+        setLastViewTime(chatId, userId);
         LocalDateTime lastSeenMessageAt = chatUserRepository.findLastMessageViewedFromAllMembers(
             UUID.fromString(chatId));
 
@@ -99,12 +122,22 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void setLastViewTime(String chatId, Authentication authentication) {
+    public void setLastViewTime(String chatId, String userId) {
         ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(
-            UUID.fromString(chatId), UUID.fromString(authentication.getName())
+            UUID.fromString(chatId), UUID.fromString(userId)
         ).orElseThrow(() -> new IllegalStateException("User is not member in this chat"));
         chatUser.setLastSeenMessageAt(LocalDateTime.now());
         chatUserRepository.save(chatUser);
+
+        Notification notification = Notification.builder()
+            .chatId(UUID.fromString(chatId))
+            .senderId(UUID.fromString(userId))
+            .notificationType(NotificationTypeEnum.SEEN)
+            .build();
+        notificationService.sendNotification(
+            chatUser.getChat().getOtherChatUserIds(chatUser.getUser().getId()),
+            notification
+        );
     }
 
     private String generateMediaMessageId(@NonNull Long messageId) {

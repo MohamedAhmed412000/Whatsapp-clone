@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: "http://localhost:8090/eureka/"
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:9090/realms/whatsapp-clone"
+          jwk-set-uri: "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/certs"
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/whatsapp_clone
+    username: postgres
+    password: postgres

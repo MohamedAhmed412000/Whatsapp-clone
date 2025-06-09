@@ -1,4 +1,4 @@
-package com.project.whatsapp.services;
+package com.project.gateway.services;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 

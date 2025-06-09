@@ -4,7 +4,6 @@ import com.project.whatsapp.domain.converters.UserRolePriorityConverter;
 import com.project.whatsapp.domain.enums.ChatUserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

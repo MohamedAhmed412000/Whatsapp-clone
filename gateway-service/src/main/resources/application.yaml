@@ -1,7 +1,8 @@
 spring:
   application:
-    name: discovery-service
+    name: gateway
   config:
     import: optional:configserver:http://localhost:8071
   profiles:
     active: default
+

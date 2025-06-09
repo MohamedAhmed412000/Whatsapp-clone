@@ -1,5 +1,6 @@
 package com.project.whatsapp.controllers;
 
+import com.project.whatsapp.constants.Headers;
 import com.project.whatsapp.rest.inbound.GroupChatResource;
 import com.project.whatsapp.rest.outbound.ChatResponse;
 import com.project.whatsapp.rest.outbound.StringResponse;
@@ -7,7 +8,6 @@ import com.project.whatsapp.services.ChatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,8 +38,10 @@ public class ChatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> getChatsByUser(Authentication authentication) {
-        return ResponseEntity.ok(chatService.getChatsByReceiverId(authentication));
+    public ResponseEntity<List<ChatResponse>> getChatsByUser(
+        @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
+    ) {
+        return ResponseEntity.ok(chatService.getChatsByReceiverId(userIdHeader));
     }
 
 }

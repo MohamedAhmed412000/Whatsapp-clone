@@ -13,7 +13,6 @@ import com.project.whatsapp.services.ChatService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +32,10 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ChatResponse> getChatsByReceiverId(Authentication authentication) {
-        UUID userId =  UUID.fromString(authentication.getName());
-        return chatRepository.findChatsBySenderId(userId).stream()
-            .map(chat -> chatMapper.toChatResponse(chat, userId))
+    public List<ChatResponse> getChatsByReceiverId(String userId) {
+        UUID receiverId =  UUID.fromString(userId);
+        return chatRepository.findChatsBySenderId(receiverId).stream()
+            .map(chat -> chatMapper.toChatResponse(chat, receiverId))
             .toList();
     }
 
