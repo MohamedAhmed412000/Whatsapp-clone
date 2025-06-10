@@ -3,9 +3,11 @@ package com.project.gateway.filters;
 import com.project.gateway.constants.Headers;
 import com.project.gateway.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -13,31 +15,57 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Order(1)
 @Component
 @RequiredArgsConstructor
 public class RequestAuthHeadersFilter implements GlobalFilter {
-    private static final List<String> PUBLIC_PATHS = Arrays.asList("/core", "/core/", "/");
+    private static final List<String> PUBLIC_PATHS = Arrays.asList("/core", "//v3/api-docs");
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        System.out.println(path);
-        if (PUBLIC_PATHS.stream().anyMatch(path::equals)) {
+        log.debug("Processing request path: {}", path);
+        
+        if (PUBLIC_PATHS.contains(path)) {
             return chain.filter(exchange);
         }
-
-        ServerWebExchange mutatedExchange = extractUserData(exchange);
-        return chain.filter(mutatedExchange);
+        
+        return extractUserData(exchange)
+            .flatMap(chain::filter)
+            .onErrorResume(IllegalArgumentException.class, e -> 
+                // Handle authentication errors
+                Mono.fromRunnable(() -> {
+                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                })
+            )
+            .onErrorResume(IllegalStateException.class, e -> 
+                // Handle missing claims errors
+                Mono.fromRunnable(() -> {
+                    exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+                })
+            );
     }
 
-    private ServerWebExchange extractUserData(ServerWebExchange exchange) {
-        String token = jwtTokenUtil.extractToken(exchange);
-        String userId = jwtTokenUtil.extractSubject(token);
-        String userEmail = jwtTokenUtil.extractClaims(token).get("email").toString();
-        return addUserHeadersToRequest(exchange, userId, userEmail);
+    private Mono<ServerWebExchange> extractUserData(ServerWebExchange exchange) {
+        try {
+            String token = jwtTokenUtil.extractToken(exchange);
+            return Mono.zip(
+                jwtTokenUtil.extractSubject(token),
+                jwtTokenUtil.extractClaims(token)
+            ).map(tuple -> {
+                String userId = tuple.getT1();
+                String userEmail = Optional.ofNullable(tuple.getT2().get("email"))
+                    .map(Object::toString)
+                    .orElseThrow(() -> new IllegalStateException("Email claim is missing"));
+                return addUserHeadersToRequest(exchange, userId, userEmail);
+            });
+        } catch (IllegalArgumentException e) {
+            return Mono.error(e);
+        }
     }
 
     private ServerWebExchange addUserHeadersToRequest (

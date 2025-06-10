@@ -5,6 +5,7 @@ import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import com.project.whatsapp.rest.inbound.MessageResource;
 import com.project.whatsapp.rest.outbound.MessageResponse;
 import com.project.whatsapp.services.MessageService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class MessageController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void setMessagesToSeen(
         @RequestParam("chatId") String chatId,
+        @Parameter(hidden = true)
         @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
     ) {
         messageService.setLastViewTime(chatId, userIdHeader);
@@ -39,6 +41,7 @@ public class MessageController {
     public ResponseEntity<List<MessageResponse>> getChatMessages(
         @PathVariable("chatId") String chatId,
         @RequestParam("page") Integer page,
+        @Parameter(hidden = true)
         @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
     ) {
         return ResponseEntity.ok(messageService.findChatMessages(chatId, page, userIdHeader));

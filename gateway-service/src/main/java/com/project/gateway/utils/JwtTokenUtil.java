@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -25,15 +26,15 @@ public class JwtTokenUtil {
         return bearerToken.substring(7);
     }
     
-    public String extractSubject(String token) {
-        Jwt jwtToken = jwtDecoder.decode(token).block();
-        assert jwtToken != null;
-        return jwtToken.getSubject();
-    }
+    public Mono<String> extractSubject(String token) {
+    return jwtDecoder.decode(token)
+        .map(Jwt::getSubject)
+        .switchIfEmpty(Mono.error(new IllegalStateException("JWT token has no subject claim")));
+}
 
-    public Map<String, Object> extractClaims(String token) {
-        Jwt jwtToken = jwtDecoder.decode(token).block();
-        assert jwtToken != null;
-        return jwtToken.getClaims();
+    public Mono<Map<String, Object>> extractClaims(String token) {
+        return jwtDecoder.decode(token)
+            .map(Jwt::getClaims)
+            .switchIfEmpty(Mono.error(new IllegalStateException("JWT token has no claims")));
     }
 }

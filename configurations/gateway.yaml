@@ -21,3 +21,9 @@ spring:
     url: r2dbc:postgresql://localhost:5432/whatsapp_clone
     username: postgres
     password: postgres
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: core
+        url: /core/v3/api-docs

@@ -1,24 +1,17 @@
-package com.project.whatsapp.controllers;
+package com.project.gateway.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.reactive.result.view.RedirectView;
 
 @Hidden
 @Controller
-@OpenAPIDefinition(
-    servers = {
-        @Server(url = "http://localhost:8080/core", description = "Core API via Gateway")
-    }
-)
 @SecurityScheme(
     name = "keycloak",
     type = SecuritySchemeType.OAUTH2,

@@ -5,6 +5,7 @@ import com.project.whatsapp.rest.inbound.GroupChatResource;
 import com.project.whatsapp.rest.outbound.ChatResponse;
 import com.project.whatsapp.rest.outbound.StringResponse;
 import com.project.whatsapp.services.ChatService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class ChatController {
 
     @GetMapping
     public ResponseEntity<List<ChatResponse>> getChatsByUser(
+        @Parameter(hidden = true)
         @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
     ) {
         return ResponseEntity.ok(chatService.getChatsByReceiverId(userIdHeader));

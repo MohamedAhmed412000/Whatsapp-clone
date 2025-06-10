@@ -16,24 +16,24 @@ import static com.project.whatsapp.constants.Application.LAST_ACTIVE_INTERVAL_IN
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "USER")
+@Table(name = "\"user\"")
 public class User extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(name = "FIRST_NAME", nullable = true)
+    @Column(name = "FIRST_NAME")
     private String firstName;
-    @Column(name = "LAST_NAME", nullable = true)
+    @Column(name = "LAST_NAME")
     private String lastName;
     @Column(name = "COUNTRY_CODE", nullable = false)
     private String countryCode;
     @Column(name = "PHONE_NUMBER", unique = true, nullable = false)
     private String phoneNumber;
-    @Column(name = "EMAIL", nullable = true, unique = true)
+    @Column(name = "EMAIL", unique = true)
     private String email;
     @Column(name = "LAST_SEEN")
     private LocalDateTime lastSeen;
-    @Column(name = "PROFILE_PICTURE_URL", nullable = true)
+    @Column(name = "PROFILE_PICTURE_URL")
     private String profilePictureUrl;
 
     @Transient

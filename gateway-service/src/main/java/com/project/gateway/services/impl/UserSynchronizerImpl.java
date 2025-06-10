@@ -1,6 +1,5 @@
 package com.project.gateway.services.impl;
 
-import com.project.gateway.domain.models.User;
 import com.project.gateway.mappers.UserMapper;
 import com.project.gateway.repositories.UserRepository;
 import com.project.gateway.services.UserSynchronizer;
@@ -8,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.Optional;
@@ -21,19 +21,19 @@ public class UserSynchronizerImpl implements UserSynchronizer {
     private final UserRepository userRepository;
 
     @Override
-    public void synchronizeWithIdp(Jwt token) {
+    public Mono<Void> synchronizeWithIdp(Jwt token) {
         log.info("Synchronizing user with idp");
-        getUserEmail(token).ifPresent(email -> {
-            log.info("Synchronizing user with email: {}", email);
-            User user = userMapper.fromTokenClaims(token.getClaims());
-            userRepository.save(user);
-        });
+        return Mono.justOrEmpty(getUserEmail(token))
+            .doOnNext(email -> log.info("Synchronizing user with email: {}", email))
+            .map(email -> userMapper.fromTokenClaims(token.getClaims()))
+            .flatMap(userRepository::upsertUser)
+            .then();
     }
 
     private Optional<String> getUserEmail(Jwt token) {
         Map<String, Object> claims = token.getClaims();
-        if (claims.containsKey("email")) {
-            return Optional.of(claims.get("email").toString());
+        if (claims.containsKey("preferred_username")) {
+            return Optional.of(claims.get("preferred_username").toString());
         }
         return Optional.empty();
     }
