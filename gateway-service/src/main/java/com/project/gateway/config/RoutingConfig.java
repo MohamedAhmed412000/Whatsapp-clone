@@ -12,9 +12,17 @@ public class RoutingConfig {
     RouteLocator generateRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
             .route(p -> p
-                .path("/api/v1/users/**", "/api/v1/messages/**", "/api/v1/chats/**")
+                .path("/core/api/v1/users/**", "/core/api/v1/messages/**", "/core/api/v1/chats/**",
+                    "/core/**")
                 .filters(f -> f
-                    .rewritePath("/(?<api>.*)", "/${api}")
+                    .rewritePath("/core(?<api>/?.*)", "/${api}")
+                )
+                .uri("lb://CORE")
+            )
+            .route(p -> p
+                .path("/ws/**")
+                .filters(f -> f
+                    .rewritePath("/ws(?<segment>.*)", "/ws${segment}")
                 )
                 .uri("lb://CORE")
             )

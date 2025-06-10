@@ -11,15 +11,24 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Order(1)
 @Component
 @RequiredArgsConstructor
 public class RequestAuthHeadersFilter implements GlobalFilter {
-
+    private static final List<String> PUBLIC_PATHS = Arrays.asList("/core", "/core/", "/");
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String path = exchange.getRequest().getPath().value();
+        System.out.println(path);
+        if (PUBLIC_PATHS.stream().anyMatch(path::equals)) {
+            return chain.filter(exchange);
+        }
+
         ServerWebExchange mutatedExchange = extractUserData(exchange);
         return chain.filter(mutatedExchange);
     }

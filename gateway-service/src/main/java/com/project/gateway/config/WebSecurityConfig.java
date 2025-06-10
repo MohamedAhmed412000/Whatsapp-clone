@@ -31,7 +31,7 @@ public class WebSecurityConfig {
                 .pathMatchers(getSwaggerPaths()).permitAll()
                 .pathMatchers("/ws/**").permitAll()
                 .pathMatchers("/configuration/ui", "/configuration/security").permitAll()
-                .anyExchange().authenticated()
+                .anyExchange().permitAll()
             )
             .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                 oAuth2ResourceServerSpec.jwt(jwt -> jwt.jwtAuthenticationConverter(
