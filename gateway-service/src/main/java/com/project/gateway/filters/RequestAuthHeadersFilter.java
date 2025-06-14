@@ -22,7 +22,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class RequestAuthHeadersFilter implements GlobalFilter {
-    private static final List<String> PUBLIC_PATHS = Arrays.asList("/core", "//v3/api-docs");
+    private static final List<String> PUBLIC_PATHS = Arrays.asList("/core", "/v3/api-docs");
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override

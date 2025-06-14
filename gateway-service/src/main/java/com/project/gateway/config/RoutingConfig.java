@@ -15,7 +15,7 @@ public class RoutingConfig {
                 .path("/core/api/v1/users/**", "/core/api/v1/messages/**", "/core/api/v1/chats/**",
                     "/core/**")
                 .filters(f -> f
-                    .rewritePath("/core(?<api>/?.*)", "/${api}")
+                    .rewritePath("/core/(?<api>/?.*)", "/${api}")
                 )
                 .uri("lb://CORE")
             )

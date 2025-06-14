@@ -5,6 +5,7 @@ import com.project.whatsapp.rest.outbound.UserResponse;
 import com.project.whatsapp.services.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -20,7 +21,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserResponse>> getUsers(
         @Parameter(hidden = true)
         @RequestHeader(name = Headers.USER_ID_HEADER) String userIdHeader

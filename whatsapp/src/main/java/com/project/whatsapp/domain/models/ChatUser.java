@@ -31,4 +31,6 @@ public class ChatUser extends BaseModel {
     private ChatUserRoleEnum role;
     @Column(name = "LAST_SEEN_MESSAGE_AT")
     private LocalDateTime lastSeenMessageAt;
+
+
 }

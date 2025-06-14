@@ -8,6 +8,7 @@ import com.project.whatsapp.services.MessageService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,14 +21,14 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void saveMessage(@RequestBody MessageResource resource) {
         if (resource.getMessageType().equals(MessageTypeEnum.TEXT)) resource.setMediaResources(List.of());
         messageService.saveMessage(resource);
     }
 
-    @PatchMapping
+    @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void setMessagesToSeen(
         @RequestParam("chatId") String chatId,
@@ -37,7 +38,7 @@ public class MessageController {
         messageService.setLastViewTime(chatId, userIdHeader);
     }
 
-    @GetMapping("/chat/{chatId}")
+    @GetMapping(value = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MessageResponse>> getChatMessages(
         @PathVariable("chatId") String chatId,
         @RequestParam("page") Integer page,

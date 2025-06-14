@@ -25,7 +25,6 @@ public class WebSecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-            .cors(ServerHttpSecurity.CorsSpec::disable)
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchange -> exchange
                 .pathMatchers(getSwaggerPaths()).permitAll()

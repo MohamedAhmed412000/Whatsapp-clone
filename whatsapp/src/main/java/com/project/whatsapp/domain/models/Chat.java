@@ -39,7 +39,7 @@ public class Chat extends BaseModel {
     public String getChatName(UUID userId) {
         if (isGroupChat) return name;
         else {
-            if (users.get(0).getId().equals(userId))
+            if (users.get(0).getUser().getId().equals(userId))
                 return users.get(1).getUser().getFullName();
             return users.get(0).getUser().getFullName();
         }
@@ -47,16 +47,22 @@ public class Chat extends BaseModel {
 
     @Transient
     public long getUnreadMessageCount(UUID senderId) {
-        return messages.stream()
-            .filter(message -> message.getSender().getId().equals(senderId))
-            .count();
+        for(ChatUser chatUser : users) {
+            if (chatUser.getUser().getId().equals(senderId)) {
+                return messages.stream()
+                    .filter(message -> !message.getSender().getId().equals(senderId) &&
+                        message.getCreatedAt().isAfter(chatUser.getLastSeenMessageAt()))
+                    .count();
+            }
+        }
+        return 0;
     }
 
     @Transient
     public Boolean isRecipientOnline(UUID senderId) {
         if (this.isGroupChat) return null;
         else {
-            if (users.get(0).getId().equals(senderId))
+            if (users.get(0).getUser().getId().equals(senderId))
                 return users.get(1).getUser().isOnlineUser();
             return users.get(0).getUser().isOnlineUser();
         }

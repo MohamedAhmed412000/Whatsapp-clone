@@ -8,6 +8,7 @@ import com.project.whatsapp.services.ChatService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StringResponse> createChat(
         @RequestParam(name = "sender-id") String senderId,
         @RequestParam(name = "receiver-id") String receiverId
@@ -29,7 +30,8 @@ public class ChatController {
         return ResponseEntity.ok(new StringResponse(chatId));
     }
 
-    @PostMapping("/group")
+    @PostMapping(value = "/group", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StringResponse> createGroupChat(
         @Valid @RequestBody GroupChatResource resource
     ) {
@@ -38,7 +40,7 @@ public class ChatController {
         return ResponseEntity.ok(new StringResponse(chatId));
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ChatResponse>> getChatsByUser(
         @Parameter(hidden = true)
         @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
