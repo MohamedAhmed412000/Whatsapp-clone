@@ -24,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -61,7 +63,7 @@ public class MessageServiceImpl implements MessageService {
             .messageType(request.getMessageType())
             .sender(sender)
             .build();
-        messageRepository.save(message);
+        messageRepository.saveAndFlush(message);
 
         if (!request.getMessageType().equals(MessageTypeEnum.TEXT)) {
             request.getMediaResources().forEach(mediaResource ->
@@ -99,14 +101,14 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageResponse> findChatMessages(String chatId, int page, String userId) {
-        setLastViewTime(chatId, userId);
+    public List<MessageResponse> findChatMessages(String chatId, int page) {
+        setLastViewTime(chatId);
         LocalDateTime lastSeenMessageAt = chatUserRepository.findLastMessageViewedFromAllMembers(
             UUID.fromString(chatId));
 
         // todo notification
         PageRequest pageRequest = PageRequest.of(page, chatMaxMessagesSize);
-        return messageRepository.findMessagesByChatId(chatId, pageRequest).stream().map(message -> {
+        return messageRepository.findMessagesByChatId(UUID.fromString(chatId), pageRequest).stream().map(message -> {
             MediaListResponse mediaListResponse = new MediaListResponse();
             if (!message.getMessageType().equals(MessageTypeEnum.TEXT)) {
                 ResponseEntity<MediaContentResponse> response = mediaFeignClient.getMediaContent(
@@ -122,7 +124,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void setLastViewTime(String chatId, String userId) {
+    public void setLastViewTime(String chatId) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        String userId = securityContext.getAuthentication().getPrincipal().toString();
         ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(
             UUID.fromString(chatId), UUID.fromString(userId)
         ).orElseThrow(() -> new IllegalStateException("User is not member in this chat"));

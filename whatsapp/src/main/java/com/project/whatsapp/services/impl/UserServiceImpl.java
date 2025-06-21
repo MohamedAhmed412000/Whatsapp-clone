@@ -5,6 +5,8 @@ import com.project.whatsapp.repositories.UserRepository;
 import com.project.whatsapp.rest.outbound.UserResponse;
 import com.project.whatsapp.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +20,10 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public List<UserResponse> getUsers(String userIdHeader) {
-        return userRepository.findAllUsersExceptSelf(UUID.fromString(userIdHeader))
+    public List<UserResponse> getUsers() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        String userId = securityContext.getAuthentication().getPrincipal().toString();
+        return userRepository.findAllUsersExceptSelf(UUID.fromString(userId))
             .stream().map(userMapper::toUserResponse).toList();
     }
 }

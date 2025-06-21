@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class RequestAuthHeadersFilter implements GlobalFilter {
-    private static final List<String> PUBLIC_PATHS = Arrays.asList("/core", "/v3/api-docs");
+    private static final List<String> PUBLIC_PATHS = List.of("/core", "/v3/api-docs");
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
@@ -34,19 +34,15 @@ public class RequestAuthHeadersFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
         
-        return extractUserData(exchange)
+        return extractAuthHeader(exchange)
             .flatMap(chain::filter)
             .onErrorResume(IllegalArgumentException.class, e -> 
                 // Handle authentication errors
-                Mono.fromRunnable(() -> {
-                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                })
+                Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
             )
             .onErrorResume(IllegalStateException.class, e -> 
                 // Handle missing claims errors
-                Mono.fromRunnable(() -> {
-                    exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
-                })
+                Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST))
             );
     }
 
@@ -68,6 +64,18 @@ public class RequestAuthHeadersFilter implements GlobalFilter {
         }
     }
 
+    private Mono<ServerWebExchange> extractAuthHeader(ServerWebExchange exchange) {
+        try {
+            String authHeaderValue = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            if (authHeaderValue == null || !authHeaderValue.startsWith("Bearer ")) {
+                return Mono.error(() ->  new IllegalStateException("Authorization header is missing"));
+            }
+            return Mono.just(addAuthHeaderToRequest(exchange, authHeaderValue));
+        }  catch (IllegalArgumentException e) {
+            return Mono.error(e);
+        }
+    }
+
     private ServerWebExchange addUserHeadersToRequest (
         ServerWebExchange exchange, String userId, String userEmail
     ) {
@@ -75,6 +83,16 @@ public class RequestAuthHeadersFilter implements GlobalFilter {
             .mutate()
             .header(Headers.USER_ID, userId)
             .header(Headers.USER_EMAIL, userEmail)
+            .build();
+        return exchange.mutate().request(mutatedRequest).build();
+    }
+
+    private ServerWebExchange addAuthHeaderToRequest(
+        ServerWebExchange exchange, String authHeaderValue
+    ) {
+        ServerHttpRequest mutatedRequest = exchange.getRequest()
+            .mutate()
+            .header(HttpHeaders.AUTHORIZATION, authHeaderValue)
             .build();
         return exchange.mutate().request(mutatedRequest).build();
     }

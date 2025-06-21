@@ -1,11 +1,9 @@
 package com.project.whatsapp.controllers;
 
-import com.project.whatsapp.constants.Headers;
 import com.project.whatsapp.rest.inbound.GroupChatResource;
 import com.project.whatsapp.rest.outbound.ChatResponse;
 import com.project.whatsapp.rest.outbound.StringResponse;
 import com.project.whatsapp.services.ChatService;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -41,11 +39,8 @@ public class ChatController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ChatResponse>> getChatsByUser(
-        @Parameter(hidden = true)
-        @RequestHeader(Headers.USER_ID_HEADER) String userIdHeader
-    ) {
-        return ResponseEntity.ok(chatService.getChatsByReceiverId(userIdHeader));
+    public ResponseEntity<List<ChatResponse>> getChatsByUser() {
+        return ResponseEntity.ok(chatService.getChatsByReceiverId());
     }
 
 }

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MessageService {
     void saveMessage(MessageResource request);
-    void setLastViewTime(String chatId, String userId);
-    List<MessageResponse> findChatMessages(String chatId, int page, String userId);
+    void setLastViewTime(String chatId);
+    List<MessageResponse> findChatMessages(String chatId, int page);
 }
