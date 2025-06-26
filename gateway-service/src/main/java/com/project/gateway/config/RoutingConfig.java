@@ -19,12 +19,13 @@ public class RoutingConfig {
                 )
                 .uri("lb://CORE")
             )
+            .route("core-ws-route", p -> p
+                .path("/ws/info**")
+                .uri("ws://CORE")
+            )
             .route("core-ws", p -> p
-                .path("/ws/**")
-                .filters(f -> f
-                    .rewritePath("/ws(?<segment>.*)", "/ws${segment}")
-                )
-                .uri("lb://CORE")
+                .path("/ws**")
+                .uri("ws://CORE")
             )
             .route("media", p -> p
                 .path("/api/v1/media/**")

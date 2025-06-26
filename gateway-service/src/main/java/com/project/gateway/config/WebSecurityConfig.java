@@ -1,9 +1,7 @@
 package com.project.gateway.config;
 
-import com.project.gateway.constants.Headers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -14,7 +12,6 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,16 +43,20 @@ public class WebSecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        config.setAllowedHeaders(Arrays.asList(
-            HttpHeaders.ORIGIN,
-            HttpHeaders.CONTENT_TYPE,
-            HttpHeaders.ACCEPT,
-            HttpHeaders.AUTHORIZATION,
-            Headers.REQUEST_ID,
-            Headers.USER_ID,
-            Headers.USER_EMAIL
-        ));
+        config.addAllowedOrigin("http://localhost:4200");
+        config.addAllowedHeader("*");
+//        config.setAllowedHeaders(Arrays.asList(
+//            HttpHeaders.ORIGIN,
+//            HttpHeaders.CONTENT_TYPE,
+//            HttpHeaders.ACCEPT,
+//            HttpHeaders.AUTHORIZATION,
+//            Headers.REQUEST_ID,
+//            Headers.USER_ID,
+//            Headers.USER_EMAIL,
+//            Headers.ACCEPT_WEB_SOCKETS,
+//            HttpHeaders.UPGRADE,
+//            HttpHeaders.CONNECTION
+//        ));
         config.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(),
             HttpMethod.PUT.name(), HttpMethod.DELETE.name(), HttpMethod.PATCH.name()));
         source.registerCorsConfiguration("/**", config);

@@ -5,3 +5,13 @@ spring:
     import: optional:configserver:http://localhost:8071
   profiles:
     active: default
+  cloud:
+    gateway:
+      server:
+        webflux:
+          httpclient:
+            websocket:
+              proxy-ping: true
+          global-filter:
+            websocket-routing:
+              enabled: true

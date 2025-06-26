@@ -22,7 +22,6 @@ public class UserSynchronizerImpl implements UserSynchronizer {
 
     @Override
     public Mono<Void> synchronizeWithIdp(Jwt token) {
-        log.info("Synchronizing user with idp");
         return Mono.justOrEmpty(getUserEmail(token))
             .doOnNext(email -> log.info("Synchronizing user with email: {}", email))
             .map(email -> userMapper.fromTokenClaims(token.getClaims()))
