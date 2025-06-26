@@ -1,11 +1,13 @@
 package com.project.whatsapp.filters.dto;
 
+import lombok.ToString;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
 
+@ToString
 public class CustomAuthentication implements Authentication {
     private final String userId;
     private final String fullName;
