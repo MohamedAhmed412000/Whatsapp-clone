@@ -15,6 +15,7 @@ public class UserMapper {
             .email(user.getEmail())
             .lastSeen(user.getLastSeen())
             .isOnline(user.isOnlineUser())
+            .profilePictureUrl(user.getProfilePictureUrl())
             .build();
     }
 }
