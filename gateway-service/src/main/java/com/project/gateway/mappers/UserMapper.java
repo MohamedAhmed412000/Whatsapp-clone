@@ -36,6 +36,10 @@ public class UserMapper {
             user.setPhoneNumber(claims.get("phone_number").toString());
         }
 
+        if (claims.containsKey("image_url")) {
+            user.setProfilePictureUrl(claims.get("image_url").toString());
+        }
+
         user.setLastSeen(LocalDateTime.now());
         return user;
     }

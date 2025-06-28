@@ -30,4 +30,6 @@ public class User {
     private String phoneNumber;
     @Column(value = "LAST_SEEN")
     private LocalDateTime lastSeen;
+    @Column(value = "PROFILE_PICTURE_URL")
+    private String profilePictureUrl;
 }
