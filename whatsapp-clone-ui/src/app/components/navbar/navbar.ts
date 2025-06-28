@@ -1,7 +1,14 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
-import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbDropdown,
+  NgbDropdownItem,
+  NgbDropdownMenu,
+  NgbDropdownToggle,
+  NgbOffcanvas
+} from '@ng-bootstrap/ng-bootstrap';
+import {NewConversation} from './new-conversation/new-conversation';
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +23,9 @@ import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from '
   styleUrl: './navbar.scss'
 })
 export class Navbar {
+
+  offCanvasService = inject(NgbOffcanvas);
+
   constructor(
     protected keycloakService: KeycloakService
   ) {}
@@ -29,6 +39,10 @@ export class Navbar {
   }
 
   openNewConversations() {
-
+    this.offCanvasService.open(NewConversation, {
+      position: "start",
+      container: "#main",
+      panelClass: "offcanvas",
+    })
   }
 }

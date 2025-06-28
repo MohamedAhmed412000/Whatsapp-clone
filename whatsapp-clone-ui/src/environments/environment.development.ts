@@ -5,5 +5,5 @@ export const environment = {
     clientId: "whatsapp-clone-app"
   },
   HOME_PAGE_URL: "http://localhost:4200",
-  API_URL: "http://localhost:8080/api",
+  API_URL: "http://localhost:8080",
 };

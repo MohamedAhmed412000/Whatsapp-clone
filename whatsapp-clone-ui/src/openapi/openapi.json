@@ -309,6 +309,9 @@
             "type": "string",
             "format": "date-time"
           },
+          "profilePictureUrl": {
+            "type": "string"
+          },
           "online": {
             "type": "boolean"
           }
