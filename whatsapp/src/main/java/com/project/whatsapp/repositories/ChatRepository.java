@@ -1,24 +1,17 @@
 package com.project.whatsapp.repositories;
 
 import com.project.whatsapp.domain.models.Chat;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ChatRepository extends JpaRepository<Chat, UUID> {
-    @Query("SELECT c FROM Chat c " +
-        "JOIN ChatUser cu ON cu.chat.id = c.id " +
-        "WHERE cu.user.id = :senderId")
-    List<Chat> findChatsBySenderId(UUID senderId);
+public interface ChatRepository extends MongoRepository<Chat, UUID> {
 
-    @Query("SELECT c FROM Chat c " +
-        "JOIN ChatUser cu ON cu.chat.id = c.id " +
-        "WHERE c.isGroupChat = false AND (cu.user.id = :senderId OR cu.user.id = :receiverId)")
+    @Query(value = "{ 'isGroupChat': false, 'userIds': { '$all': [ ?0, ?1 ] } }")
     Optional<Chat> findChatsBySenderIdAndReceiverId(UUID senderId, UUID receiverId);
 
 }

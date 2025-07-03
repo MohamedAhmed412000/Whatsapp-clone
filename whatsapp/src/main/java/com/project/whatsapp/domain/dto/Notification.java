@@ -1,4 +1,4 @@
-package com.project.whatsapp.domain.models;
+package com.project.whatsapp.domain.dto;
 
 import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;

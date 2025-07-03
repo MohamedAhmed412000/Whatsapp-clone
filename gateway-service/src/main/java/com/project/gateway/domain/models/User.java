@@ -3,9 +3,10 @@ package com.project.gateway.domain.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,23 +14,23 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "\"user\"")
+@Document(collection = "user")
 public class User {
-    @Id
-    @Column(value = "ID")
-    private UUID id;
-    @Column(value = "FIRST_NAME")
+    @MongoId
+    @Field(value = "_id")
+    private UUID id = UUID.randomUUID();
+    @Field(value = "first_name")
     private String firstName;
-    @Column(value = "LAST_NAME")
+    @Field(value = "last_name")
     private String lastName;
-    @Column(value = "EMAIL")
+    @Field(value = "email")
     private String email;
-    @Column(value = "COUNTRY_CODE")
+    @Field(value = "country_code")
     private String countryCode;
-    @Column(value = "PHONE_NUMBER")
+    @Field(value = "phone_number")
     private String phoneNumber;
-    @Column(value = "LAST_SEEN")
+    @Field(value = "last_seen", targetType = FieldType.TIMESTAMP)
     private LocalDateTime lastSeen;
-    @Column(value = "PROFILE_PICTURE_URL")
+    @Field(value = "profile_picture_url")
     private String profilePictureUrl;
 }

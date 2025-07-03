@@ -25,7 +25,7 @@ public class UserSynchronizerImpl implements UserSynchronizer {
         return Mono.justOrEmpty(getUserEmail(token))
             .doOnNext(email -> log.info("Synchronizing user with email: {}", email))
             .map(email -> userMapper.fromTokenClaims(token.getClaims()))
-            .flatMap(userRepository::upsertUser)
+            .flatMap(userRepository::save)
             .then();
     }
 

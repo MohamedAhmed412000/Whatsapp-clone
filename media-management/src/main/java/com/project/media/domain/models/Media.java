@@ -1,27 +1,30 @@
 package com.project.media.domain.models;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @Data
-@Entity
-@Table(name = "MEDIA")
+@Document(collection = "media")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Media extends BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID", updatable = false)
-    private String id;
-    @Column(name = "ENTITY_ID")
+    @MongoId
+    @Field(value = "_id")
+    private UUID id;
+    @Field(value = "entity_id")
     private String entityId;
-    @Column(name = "NAME")
+    @Field(value = "name")
     private String name;
-    @Column(name = "SIZE")
+    @Field(value = "size", targetType = FieldType.INT64)
     private Long size;
-    @Column(name = "REFERENCE")
+    @Field(value = "reference")
     private String reference;
 }
 

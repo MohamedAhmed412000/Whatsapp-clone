@@ -1,6 +1,6 @@
 package com.project.whatsapp.services;
 
-import com.project.whatsapp.domain.models.Notification;
+import com.project.whatsapp.domain.dto.Notification;
 
 import java.util.List;
 import java.util.UUID;

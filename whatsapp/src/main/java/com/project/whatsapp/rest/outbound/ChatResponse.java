@@ -16,6 +16,7 @@ import java.util.UUID;
 public class ChatResponse {
     private UUID id;
     private String name;
+    private String imageUrl;
     private long unreadCount;
     private String lastMessage;
     private LocalDateTime lastMessageTime;

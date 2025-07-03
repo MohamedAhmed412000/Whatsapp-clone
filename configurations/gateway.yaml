@@ -17,10 +17,15 @@ spring:
         jwt:
           issuer-uri: "http://localhost:9090/realms/whatsapp-clone"
           jwk-set-uri: "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/certs"
-  r2dbc:
-    url: r2dbc:postgresql://localhost:5432/whatsapp_clone
-    username: postgres
-    password: postgres
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: whatsapp-clone
+      username: root
+      password: password
+      authentication-database: admin
+      auto-index-creation: true
 
 springdoc:
   swagger-ui:

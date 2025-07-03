@@ -2,17 +2,22 @@ package com.project.whatsapp.repositories;
 
 import com.project.whatsapp.domain.models.Message;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MessageRepository extends JpaRepository<Message, Long> {
+public interface MessageRepository extends MongoRepository<Message, Long> {
 
-    @Query("SELECT m FROM Message m WHERE m.chat.id = :chatId ORDER BY m.createdAt ASC")
+    @Query(value = "{ 'chatId' : ?0 }", sort = "{ 'createdAt' : 1 }")
     List<Message> findMessagesByChatId(UUID chatId, Pageable pageable);
 
+    @Query(value = "{ 'chatId' : ?0, 'createdAt' : { '$gt' : ?1 } }", count = true)
+    long findUnreadMessageCount(UUID chatId, LocalDateTime createdAt);
+
 }
+

@@ -1,10 +1,13 @@
 package com.project.whatsapp.domain.models;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,28 +18,26 @@ import static com.project.whatsapp.constants.Application.LAST_ACTIVE_INTERVAL_IN
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "\"user\"")
+@Document(collection = "user")
 public class User extends BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @Column(name = "FIRST_NAME")
+    @MongoId
+    @Field(value = "_id")
+    private UUID id = UUID.randomUUID();
+    @Field(value = "first_name")
     private String firstName;
-    @Column(name = "LAST_NAME")
+    @Field(value = "last_name")
     private String lastName;
-    @Column(name = "COUNTRY_CODE", nullable = false)
-    private String countryCode;
-    @Column(name = "PHONE_NUMBER", unique = true, nullable = false)
-    private String phoneNumber;
-    @Column(name = "EMAIL", unique = true)
+    @Field(value = "email")
     private String email;
-    @Column(name = "LAST_SEEN")
+    @Field(value = "country_code")
+    private String countryCode;
+    @Field(value = "phone_number")
+    private String phoneNumber;
+    @Field(value = "last_seen", targetType = FieldType.TIMESTAMP)
     private LocalDateTime lastSeen;
-    @Column(name = "PROFILE_PICTURE_URL")
+    @Field(value = "profile_picture_url")
     private String profilePictureUrl;
 
-    @Transient
     public boolean isOnlineUser() {
         // last seen => 10:05
         // now (10:09) => active
@@ -51,5 +52,4 @@ public class User extends BaseModel {
         }
         return countryCode + phoneNumber;
     }
-
 }

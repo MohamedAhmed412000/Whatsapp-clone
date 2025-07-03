@@ -1,22 +1,16 @@
 spring:
-  servlet:
+  webflux:
     multipart:
       max-file-size: 50MB
-  datasource:
-    url: jdbc:postgresql://localhost:5432/whatsapp_clone
-    username: postgres
-    password: postgres
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    enabled: false
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: whatsapp-clone
+      username: root
+      password: password
+      authentication-database: admin
+      auto-index-creation: true
 
 server:
   port: 8092

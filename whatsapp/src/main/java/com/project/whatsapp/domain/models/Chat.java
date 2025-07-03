@@ -1,99 +1,66 @@
 package com.project.whatsapp.domain.models;
 
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "CHAT")
+@Document(collection = "chat")
 public class Chat extends BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @Column(name = "NAME", nullable = false)
+    @MongoId
+    @Field(value = "_id")
+    private UUID id = UUID.randomUUID();
+    @Field(value = "name")
     private String name;
-    @Column(name = "IS_GROUP")
+    @Field(value = "is_group_chat", targetType = FieldType.BOOLEAN)
     private boolean isGroupChat = false;
-    @Column(name = "DESCRIPTION")
+    @Field(value = "description")
     private String description;
-    @Column(name = "CHAT_IMAGE_URL")
+    @Field(value = "chat_image_url")
     private String chatImageUrl;
-    @OrderBy("createdAt DESC")
-    @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER)
-    private List<Message> messages;
-    @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER)
-    private List<ChatUser> users;
+    @Field(value = "last_message")
+    private Message lastMessage;
+    @Field(value = "message_ids", targetType = FieldType.ARRAY)
+    private List<UUID> messageIds;
+    @Field(value = "user_ids", targetType = FieldType.ARRAY)
+    private List<UUID> userIds;
 
-    @Transient
     public String getChatName(UUID userId) {
         if (isGroupChat) return name;
         else {
-            if (users.get(0).getUser().getId().equals(userId))
-                return users.get(1).getUser().getFullName();
-            return users.get(0).getUser().getFullName();
+            return Arrays.stream(name.split("#")).filter(id ->
+                    !id.startsWith(userId.toString())).findFirst()
+                .map(idWithName -> idWithName.split("&")[1]).orElseThrow();
         }
     }
 
-    @Transient
-    public long getUnreadMessageCount(UUID senderId) {
-        for(ChatUser chatUser : users) {
-            if (chatUser.getUser().getId().equals(senderId)) {
-                return messages.stream()
-                    .filter(message -> !message.getSender().getId().equals(senderId) &&
-                        message.getCreatedAt().isAfter(chatUser.getLastSeenMessageAt()))
-                    .count();
-            }
-        }
-        return 0;
-    }
-
-    @Transient
-    public Boolean isRecipientOnline(UUID senderId) {
-        if (this.isGroupChat) return null;
+    public String getChatImageUrl(UUID userId) {
+        if (isGroupChat) return chatImageUrl;
         else {
-            if (users.get(0).getUser().getId().equals(senderId))
-                return users.get(1).getUser().isOnlineUser();
-            return users.get(0).getUser().isOnlineUser();
+            return Arrays.stream(chatImageUrl.split("#")).filter(id ->
+                    !id.startsWith(userId.toString())).findFirst()
+                .map(idWithUrl -> idWithUrl.split("&")[1]).orElseThrow();
         }
     }
 
-    @Transient
     public String getLastMessage() {
-        if (messages != null && !messages.isEmpty()) {
-            if (!messages.get(0).getMessageType().equals(MessageTypeEnum.TEXT)) return "Attachment";
-            else return messages.get(0).getContent();
-        }
-        return null;
+        if (lastMessage.getMessageType().equals(MessageTypeEnum.TEXT)) return lastMessage.getContent();
+        return "Attachment";
     }
 
-    @Transient
     public LocalDateTime getLastMessageTime() {
-        if (messages != null && !messages.isEmpty()) {
-            return messages.get(0).getCreatedAt();
-        }
-        return null;
-    }
-
-    @Transient
-    public List<UUID> getOtherChatUserIds(UUID senderId) {
-        return this.users.stream()
-            .filter(chatUser -> !chatUser.getUser().getId().equals(senderId))
-            .map(chatUser -> chatUser.getUser().getId())
-            .toList();
-    }
-
-    public Chat() {
-        this.id = UUID.randomUUID();
+        return lastMessage.getCreatedAt();
     }
 }

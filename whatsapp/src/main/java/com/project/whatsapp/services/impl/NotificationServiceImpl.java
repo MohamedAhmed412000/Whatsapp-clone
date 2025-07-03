@@ -1,6 +1,6 @@
 package com.project.whatsapp.services.impl;
 
-import com.project.whatsapp.domain.models.Notification;
+import com.project.whatsapp.domain.dto.Notification;
 import com.project.whatsapp.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

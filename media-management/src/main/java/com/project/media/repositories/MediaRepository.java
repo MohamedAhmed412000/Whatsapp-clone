@@ -1,15 +1,15 @@
 package com.project.media.repositories;
 
 import com.project.media.domain.models.Media;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MediaRepository extends JpaRepository<Media, UUID> {
-    @Query("SELECT m FROM Media m WHERE m.entityId = :entityId")
-    List<Media> findMediaByEntityId(String entityId);
+public interface MediaRepository extends ReactiveMongoRepository<Media, UUID> {
+    @Query(value = "{ 'entity_id' : ?0 }")
+    Flux<Media> findMediaByEntityId(String entityId);
 }

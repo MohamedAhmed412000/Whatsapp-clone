@@ -20,7 +20,7 @@ public class MessageMapper {
             .content(message.getContent())
             .type(message.getMessageType())
             .state(state)
-            .senderId(message.getSender().getId().toString())
+            .senderId(message.getSenderId().toString())
             .createdAt(message.getCreatedAt())
             .mediaList(mediaList)
             .build();

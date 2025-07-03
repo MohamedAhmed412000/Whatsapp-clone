@@ -1,30 +1,30 @@
 package com.project.whatsapp.domain.models;
 
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name = "MESSAGE")
+@Document(collection = "message")
 public class Message extends BaseModel {
-    @Id
-    @SequenceGenerator(name = "msg_seq", sequenceName = "msg_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "msg_seq")
+    @MongoId
+    @Field(value = "_id", targetType = FieldType.INT64)
     private Long id;
-    @Column(name = "MESSAGE_CONTENT")
+    @Field(value = "content")
     private String content;
-    @ManyToOne
-    @JoinColumn(name = "CHAT_ID")
-    private Chat chat;
-    @ManyToOne
-    @JoinColumn(name = "SENDER_ID", nullable = false)
-    private User sender;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "TYPE")
+    @Field(value = "chat_id")
+    private UUID chatId;
+    @Field(value = "sender_id")
+    private UUID senderId;
+    @Field(value = "message_type")
     private MessageTypeEnum messageType;
 }

@@ -5,6 +5,7 @@ import com.project.whatsapp.clients.dto.inbound.MediaUploadResource;
 import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
 import com.project.whatsapp.constants.Application;
+import com.project.whatsapp.domain.dto.Notification;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import com.project.whatsapp.domain.enums.NotificationTypeEnum;
@@ -13,12 +14,10 @@ import com.project.whatsapp.mappers.MessageMapper;
 import com.project.whatsapp.repositories.ChatRepository;
 import com.project.whatsapp.repositories.ChatUserRepository;
 import com.project.whatsapp.repositories.MessageRepository;
-import com.project.whatsapp.repositories.UserRepository;
 import com.project.whatsapp.rest.inbound.MessageResource;
 import com.project.whatsapp.rest.outbound.MessageResponse;
 import com.project.whatsapp.services.MessageService;
 import com.project.whatsapp.services.NotificationService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.UUID;
 
 @Service
@@ -40,8 +40,8 @@ public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
     private final ChatUserRepository chatUserRepository;
+    private final ChatUserServiceImpl chatUserServiceImpl;
     private final MediaFeignClient mediaFeignClient;
     private final MessageMapper messageMapper;
     private final NotificationService notificationService;
@@ -51,33 +51,33 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void saveMessage(MessageResource request) {
-        Chat chat = chatRepository.findById(UUID.fromString(request.getChatId()))
-            .orElseThrow(() -> new EntityNotFoundException(String.format("Chat with id=%s not found",
-                request.getChatId())));
-        User sender = userRepository.findByPublicId(UUID.fromString(request.getSenderId()))
-            .orElseThrow(() -> new EntityNotFoundException(String.format("User with id=%s not found",
-                request.getSenderId())));
+        UUID senderId = UUID.fromString(request.getSenderId());
         Message message = Message.builder()
-            .chat(chat)
+            .chatId(UUID.fromString(request.getChatId()))
             .content(request.getContent())
             .messageType(request.getMessageType())
-            .sender(sender)
+            .senderId(senderId)
             .build();
-        messageRepository.saveAndFlush(message);
+        messageRepository.save(message);
 
         if (!request.getMessageType().equals(MessageTypeEnum.TEXT)) {
             request.getMediaResources().forEach(mediaResource ->
                 mediaFeignClient.saveMedia(MediaUploadResource.builder()
                 .file(mediaResource.getFile())
                 .entityId(generateMediaMessageId(message.getId()))
-                .filePath(message.getChat().getId().toString() + File.separator + message.getId().toString())
+                .filePath(request.getChatId() + File.separator + message.getId().toString())
                 .build()));
         }
 
+        Chat chat = chatRepository.findById(UUID.fromString(request.getChatId()))
+            .orElseThrow(() -> new MissingResourceException(String.format("Chat with id=%s not found",
+                request.getChatId()), Chat.class.getName(), request.getChatId()));
+        chat.setLastMessage(message);
+        chatRepository.save(chat);
         Notification notification = Notification.builder()
             .chatId(chat.getId())
-            .chatName(chat.getChatName(sender.getId()))
-            .senderId(sender.getId())
+            .chatName(chat.getChatName(senderId))
+            .senderId(senderId)
             .messageType(message.getMessageType())
             .build();
         if (request.getMessageType().equals(MessageTypeEnum.TEXT)) {
@@ -95,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
             }).toList());
         }
         notificationService.sendNotification(
-            chat.getOtherChatUserIds(sender.getId()),
+            chatUserRepository.getOtherChatUserIds(chat.getId(), senderId),
             notification
         );
     }
@@ -103,10 +103,9 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessageResponse> findChatMessages(String chatId, int page) {
         setLastViewTime(chatId);
-        LocalDateTime lastSeenMessageAt = chatUserRepository.findLastMessageViewedFromAllMembers(
+        LocalDateTime lastSeenMessageAt = chatUserServiceImpl.findLastMessageViewedFromAllMembers(
             UUID.fromString(chatId));
 
-        // todo notification
         PageRequest pageRequest = PageRequest.of(page, chatMaxMessagesSize);
         return messageRepository.findMessagesByChatId(UUID.fromString(chatId), pageRequest).stream().map(message -> {
             MediaListResponse mediaListResponse = new MediaListResponse();
@@ -139,7 +138,7 @@ public class MessageServiceImpl implements MessageService {
             .notificationType(NotificationTypeEnum.SEEN)
             .build();
         notificationService.sendNotification(
-            chatUser.getChat().getOtherChatUserIds(chatUser.getUser().getId()),
+            chatUserRepository.getOtherChatUserIds(UUID.fromString(chatId), UUID.fromString(userId)),
             notification
         );
     }

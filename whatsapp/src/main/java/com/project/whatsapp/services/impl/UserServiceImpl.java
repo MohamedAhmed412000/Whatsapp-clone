@@ -26,4 +26,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllUsersExceptSelf(UUID.fromString(userId))
             .stream().map(userMapper::toUserResponse).toList();
     }
+
 }

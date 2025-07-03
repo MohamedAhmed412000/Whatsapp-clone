@@ -1,9 +1,11 @@
 package com.project.whatsapp.domain.models;
 
-import com.project.whatsapp.domain.converters.UserRolePriorityConverter;
 import com.project.whatsapp.domain.enums.ChatUserRoleEnum;
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,24 +15,17 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "CHAT_USER")
+@Document(collection = "chat_user")
 public class ChatUser extends BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @ManyToOne
-    @JoinColumn(name = "CHAT_ID")
-    private Chat chat;
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
-    @Enumerated(EnumType.ORDINAL)
-    @Convert(converter = UserRolePriorityConverter.class)
-    @Column(name = "USER_ROLE")
+    @MongoId
+    @Field(value = "_id")
+    private UUID id = UUID.randomUUID();
+    @Field(value = "chat_id")
+    private UUID chatId;
+    @Field(value = "user_id")
+    private UUID userId;
+    @Field(value = "role")
     private ChatUserRoleEnum role;
-    @Column(name = "LAST_SEEN_MESSAGE_AT")
+    @Field(value = "last_seen_message_at", targetType = FieldType.TIMESTAMP)
     private LocalDateTime lastSeenMessageAt;
-
-
 }
