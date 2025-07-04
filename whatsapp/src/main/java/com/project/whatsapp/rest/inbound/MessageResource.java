@@ -16,5 +16,7 @@ public class MessageResource {
     private String senderId;
     private MessageTypeEnum messageType;
     private String chatId;
+    private boolean isForwarded;
+    private Long repliedMessageId;
     private List<MediaUploadResource> mediaResources;
 }

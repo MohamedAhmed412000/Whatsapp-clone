@@ -1,4 +1,6 @@
 spring:
+  cache:
+    type: redis
   data:
     mongodb:
       host: localhost
@@ -8,6 +10,10 @@ spring:
       password: password
       authentication-database: admin
       auto-index-creation: true
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 2s
 
 server:
   port: 8091

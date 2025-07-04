@@ -32,8 +32,6 @@ public class Chat extends BaseModel {
     private String chatImageUrl;
     @Field(value = "last_message")
     private Message lastMessage;
-    @Field(value = "message_ids", targetType = FieldType.ARRAY)
-    private List<UUID> messageIds;
     @Field(value = "user_ids", targetType = FieldType.ARRAY)
     private List<UUID> userIds;
 

@@ -15,6 +15,7 @@ import com.project.whatsapp.services.ChatService;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -43,6 +44,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional(readOnly = true)
     @Override
+    @Cacheable(value = "chats", key = "#root.target.getUserId()")
     public List<ChatResponse> getChatsByReceiverId() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String userId = securityContext.getAuthentication().getPrincipal().toString();
@@ -77,7 +79,6 @@ public class ChatServiceImpl implements ChatService {
             ).toList()
         );
 
-        chat.setMessageIds(List.of());
         chat.setUserIds(chatUserList.stream().map(ChatUser::getUserId).toList());
         return chatRepository.save(chat).getId().toString();
     }
@@ -102,20 +103,23 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = Chat.builder()
             .name(senderId + '&' + optionalSender.get().getFullName() + '#' + receiverId + '&' +
-                optionalReceiver.get().getFullName())
-            .isGroupChat(false)
+                optionalReceiver.get().getFullName()).isGroupChat(false)
             .chatImageUrl(senderId + '&' + optionalSender.get().getProfilePictureUrl() + '#' +
-                receiverId  + '&' + optionalReceiver.get().getProfilePictureUrl())
-            .build();
+                receiverId + '&' + optionalReceiver.get().getProfilePictureUrl()).build();
         ChatUser senderChatUser = ChatUser.builder().chatId(chat.getId())
             .userId(UUID.fromString(senderId)).role(ChatUserRoleEnum.CREATOR).build();
         ChatUser receiverChatUser = ChatUser.builder().chatId(chat.getId())
             .userId(UUID.fromString(receiverId)).role(ChatUserRoleEnum.MEMBER).build();
         chatUserRepository.saveAll(List.of(senderChatUser, receiverChatUser));
 
-        chat.setMessageIds(List.of());
         chat.setUserIds(List.of(UUID.fromString(senderId), UUID.fromString(receiverId)));
         return chatRepository.save(chat).getId().toString();
+    }
+
+    public String getUserId() {
+        return SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getName();
     }
 
     private List<ChatWithUser> findChatsBySenderId(UUID senderId) {

@@ -26,14 +26,6 @@ public class MessageController {
         messageService.saveMessage(resource);
     }
 
-    @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void setMessagesToSeen(
-        @RequestParam("chatId") String chatId
-    ) {
-        messageService.setLastViewTime(chatId);
-    }
-
     @GetMapping(value = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MessageResponse>> getChatMessages(
         @PathVariable("chatId") String chatId,

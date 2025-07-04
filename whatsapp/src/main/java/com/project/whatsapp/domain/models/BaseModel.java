@@ -10,20 +10,20 @@ import java.time.LocalDateTime;
 @Data
 public abstract class BaseModel {
     @CreatedDate
-    @Field("created_at")
+    @Field(value = "created_at")
     private LocalDateTime createdAt;
 
     @CreatedBy
     @Size(max = 20)
-    @Field("created_by")
+    @Field(value = "created_by")
     private String createdBy;
 
     @LastModifiedDate
-    @Field("updated_at")
+    @Field(value = "updated_at")
     private LocalDateTime updatedAt;
 
     @LastModifiedBy
     @Size(max = 20)
-    @Field("updated_by")
+    @Field(value = "updated_by")
     private String updatedBy;
 }

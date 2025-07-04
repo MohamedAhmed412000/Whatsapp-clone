@@ -6,6 +6,7 @@ import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
 import com.project.whatsapp.constants.Application;
 import com.project.whatsapp.domain.dto.Notification;
+import com.project.whatsapp.domain.dto.RepliedMessage;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import com.project.whatsapp.domain.enums.NotificationTypeEnum;
@@ -21,6 +22,7 @@ import com.project.whatsapp.services.NotificationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -56,8 +59,18 @@ public class MessageServiceImpl implements MessageService {
             .chatId(UUID.fromString(request.getChatId()))
             .content(request.getContent())
             .messageType(request.getMessageType())
+            .isForwarded(request.isForwarded())
             .senderId(senderId)
             .build();
+
+        if (request.getRepliedMessageId() != null) {
+            Optional<Message> optionalRepliedMessage = messageRepository.findById(request.getRepliedMessageId());
+            if (optionalRepliedMessage.isPresent()) {
+                Message repliedMessageObject = optionalRepliedMessage.get();
+                RepliedMessage repliedMessage = new RepliedMessage(repliedMessageObject);
+                message.setRepliedMessage(repliedMessage);
+            }
+        }
         messageRepository.save(message);
 
         if (!request.getMessageType().equals(MessageTypeEnum.TEXT)) {
@@ -101,6 +114,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    @Cacheable(value = "messages", key = "#chatId + '-' + #page")
     public List<MessageResponse> findChatMessages(String chatId, int page) {
         setLastViewTime(chatId);
         LocalDateTime lastSeenMessageAt = chatUserServiceImpl.findLastMessageViewedFromAllMembers(
@@ -122,8 +136,7 @@ public class MessageServiceImpl implements MessageService {
         }).toList();
     }
 
-    @Override
-    public void setLastViewTime(String chatId) {
+    private void setLastViewTime(String chatId) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String userId = securityContext.getAuthentication().getPrincipal().toString();
         ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(

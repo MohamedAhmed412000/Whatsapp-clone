@@ -1,5 +1,6 @@
 package com.project.whatsapp.domain.models;
 
+import com.project.whatsapp.domain.dto.RepliedMessage;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,4 +28,8 @@ public class Message extends BaseModel {
     private UUID senderId;
     @Field(value = "message_type")
     private MessageTypeEnum messageType;
+    @Field(value = "is_forwarded", targetType = FieldType.BOOLEAN)
+    private boolean isForwarded = false;
+    @Field(value = "replied_message")
+    private RepliedMessage repliedMessage = null;
 }

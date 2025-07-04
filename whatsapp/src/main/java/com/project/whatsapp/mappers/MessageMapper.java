@@ -22,6 +22,8 @@ public class MessageMapper {
             .state(state)
             .senderId(message.getSenderId().toString())
             .createdAt(message.getCreatedAt())
+            .isForwarded(message.isForwarded())
+            .repliedMessage(message.getRepliedMessage())
             .mediaList(mediaList)
             .build();
     }

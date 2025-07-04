@@ -5,5 +5,5 @@ import com.project.whatsapp.rest.outbound.UserResponse;
 import java.util.List;
 
 public interface UserService {
-    List<UserResponse> getUsers();
+    List<UserResponse> getUsers(String query);
 }

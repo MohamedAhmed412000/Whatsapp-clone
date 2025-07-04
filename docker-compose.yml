@@ -15,6 +15,23 @@ services:
 #    networks:
 #      - whatsapp-clone
 
+  redis-cache:
+    container_name: redis-cache
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: [ "redis-server" ]
+    networks:
+      - whatsapp-clone
+
   mongo:
     container_name: mongo-db
     image: mongo:latest
@@ -68,6 +85,8 @@ volumes:
   mongo_config:
     driver: local
   keycloak_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:

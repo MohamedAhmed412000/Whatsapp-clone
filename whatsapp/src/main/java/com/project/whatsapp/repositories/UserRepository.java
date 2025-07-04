@@ -22,4 +22,8 @@ public interface UserRepository extends MongoRepository<User, UUID> {
 
     @Query(value = "{ '_id' : { $ne : ?0 } }", sort = "{ 'firstName' : 1, 'lastName' : 1 }")
     List<User> findAllUsersExceptSelf(UUID id);
+
+    @Query(value = "{ '_id' : { $ne : ?0 }, 'first_name' : { $regex: '^?1.*', $options: 'i' } }",
+        sort = "{ 'firstName' : 1, 'lastName' : 1 }")
+    List<User> findUsersExceptSelf(UUID id, String query);
 }
