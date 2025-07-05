@@ -8,5 +8,6 @@ export type { MediaContentResponse } from './models/media-content-response';
 export type { MediaUploadResource } from './models/media-upload-resource';
 export type { MessageResource } from './models/message-resource';
 export type { MessageResponse } from './models/message-response';
+export type { RepliedMessage } from './models/replied-message';
 export type { StringResponse } from './models/string-response';
 export type { UserResponse } from './models/user-response';

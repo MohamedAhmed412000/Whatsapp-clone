@@ -1,10 +1,10 @@
 import {inject, Injectable} from '@angular/core';
 import Keycloak from 'keycloak-js';
-import {environment} from '../../../environments/environment.development';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {interval, switchMap} from 'rxjs';
 import {fromPromise} from 'rxjs/internal/observable/innerFrom';
 import {AuthModal} from '../../components/auth-modal/auth-modal';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

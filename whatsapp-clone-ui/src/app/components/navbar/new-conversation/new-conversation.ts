@@ -26,11 +26,6 @@ export class NewConversation implements OnInit, OnDestroy {
 
   protected loadingSearch = true;
   protected query = null;
-  private search = {
-    page: 0,
-    size: 20,
-    sort: ["firstName", "ASC"],
-  }
 
   public usersResponse: Array<UserResponse> = [];
 
@@ -44,7 +39,13 @@ export class NewConversation implements OnInit, OnDestroy {
 
   onQueryChange(query: any): void {
     this.loadingSearch = true;
-    this.userSearchService.getUsers().subscribe({
+    if (query == null || query == "") {
+      this.usersResponse = [];
+      return;
+    }
+    this.userSearchService.getUsers({
+      q: query
+    }).subscribe({
       next: response => {
         this.usersResponse = response;
         this.loadingSearch = false;

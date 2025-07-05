@@ -6,7 +6,9 @@ import { MediaUploadResource } from '../models/media-upload-resource';
 export interface MessageResource {
   chatId?: string;
   content?: string;
+  forwarded?: boolean;
   mediaResources?: Array<MediaUploadResource>;
   messageType?: 'TEXT' | 'MEDIA' | 'AUDIO';
+  repliedMessageId?: number;
   senderId?: string;
 }

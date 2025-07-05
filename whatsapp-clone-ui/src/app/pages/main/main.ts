@@ -89,11 +89,11 @@ export class Main implements OnInit, OnDestroy {
   }
 
   private setMessagesToSeen() {
-    this.messageService.setMessagesToSeen({
-      chatId: this.selectedChat.id as string,
-    }).subscribe({
-      next: () => {}
-    });
+    // this.messageService.setMessagesToSeen({
+    //   chatId: this.selectedChat.id as string,
+    // }).subscribe({
+    //   next: () => {}
+    // });
   }
 
   isSelfMessage(message: MessageResponse) {

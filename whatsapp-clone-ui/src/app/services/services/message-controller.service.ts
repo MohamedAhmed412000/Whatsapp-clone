@@ -16,8 +16,6 @@ import { GetChatMessages$Params } from '../fn/message-controller/get-chat-messag
 import { MessageResponse } from '../models/message-response';
 import { saveMessage } from '../fn/message-controller/save-message';
 import { SaveMessage$Params } from '../fn/message-controller/save-message';
-import { setMessagesToSeen } from '../fn/message-controller/set-messages-to-seen';
-import { SetMessagesToSeen$Params } from '../fn/message-controller/set-messages-to-seen';
 
 @Injectable({ providedIn: 'root' })
 export class MessageControllerService extends BaseService {
@@ -46,31 +44,6 @@ export class MessageControllerService extends BaseService {
    */
   saveMessage(params: SaveMessage$Params, context?: HttpContext): Observable<void> {
     return this.saveMessage$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
-    );
-  }
-
-  /** Path part for operation `setMessagesToSeen()` */
-  static readonly SetMessagesToSeenPath = '/api/v1/messages';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `setMessagesToSeen()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  setMessagesToSeen$Response(params: SetMessagesToSeen$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-    return setMessagesToSeen(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `setMessagesToSeen$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  setMessagesToSeen(params: SetMessagesToSeen$Params, context?: HttpContext): Observable<void> {
-    return this.setMessagesToSeen$Response(params, context).pipe(
       map((r: StrictHttpResponse<void>): void => r.body)
     );
   }

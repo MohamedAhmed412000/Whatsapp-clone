@@ -4,6 +4,7 @@
 
 export interface ChatResponse {
   id?: string;
+  imageUrl?: string;
   isRecipientOnline?: boolean;
   lastMessage?: string;
   lastMessageTime?: string;

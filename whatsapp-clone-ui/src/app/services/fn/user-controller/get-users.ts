@@ -11,11 +11,13 @@ import { RequestBuilder } from '../../request-builder';
 import { UserResponse } from '../../models/user-response';
 
 export interface GetUsers$Params {
+  q?: string;
 }
 
 export function getUsers(http: HttpClient, rootUrl: string, params?: GetUsers$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<UserResponse>>> {
   const rb = new RequestBuilder(rootUrl, getUsers.PATH, 'get');
   if (params) {
+    rb.query('q', params.q, {});
   }
 
   return http.request(
