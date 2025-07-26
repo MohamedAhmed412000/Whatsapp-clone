@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class UserMapper {
@@ -14,7 +13,7 @@ public class UserMapper {
         User user = new User();
 
         if(claims.containsKey("sub")) {
-            user.setId(UUID.fromString(claims.get("sub").toString()));
+            user.setId(claims.get("sub").toString());
         }
 
         if(claims.containsKey("given_name")) {

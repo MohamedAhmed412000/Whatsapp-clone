@@ -35,7 +35,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -54,9 +53,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void saveMessage(MessageResource request) {
-        UUID senderId = UUID.fromString(request.getSenderId());
+        String senderId = request.getSenderId();
         Message message = Message.builder()
-            .chatId(UUID.fromString(request.getChatId()))
+            .chatId(request.getChatId())
             .content(request.getContent())
             .messageType(request.getMessageType())
             .isForwarded(request.isForwarded())
@@ -82,7 +81,7 @@ public class MessageServiceImpl implements MessageService {
                 .build()));
         }
 
-        Chat chat = chatRepository.findById(UUID.fromString(request.getChatId()))
+        Chat chat = chatRepository.findById(request.getChatId())
             .orElseThrow(() -> new MissingResourceException(String.format("Chat with id=%s not found",
                 request.getChatId()), Chat.class.getName(), request.getChatId()));
         chat.setLastMessage(message);
@@ -117,11 +116,10 @@ public class MessageServiceImpl implements MessageService {
     @Cacheable(value = "messages", key = "#chatId + '-' + #page")
     public List<MessageResponse> findChatMessages(String chatId, int page) {
         setLastViewTime(chatId);
-        LocalDateTime lastSeenMessageAt = chatUserServiceImpl.findLastMessageViewedFromAllMembers(
-            UUID.fromString(chatId));
+        LocalDateTime lastSeenMessageAt = chatUserServiceImpl.findLastMessageViewedFromAllMembers(chatId);
 
         PageRequest pageRequest = PageRequest.of(page, chatMaxMessagesSize);
-        return messageRepository.findMessagesByChatId(UUID.fromString(chatId), pageRequest).stream().map(message -> {
+        return messageRepository.findMessagesByChatId(chatId, pageRequest).stream().map(message -> {
             MediaListResponse mediaListResponse = new MediaListResponse();
             if (!message.getMessageType().equals(MessageTypeEnum.TEXT)) {
                 ResponseEntity<MediaContentResponse> response = mediaFeignClient.getMediaContent(
@@ -139,19 +137,18 @@ public class MessageServiceImpl implements MessageService {
     private void setLastViewTime(String chatId) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String userId = securityContext.getAuthentication().getPrincipal().toString();
-        ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(
-            UUID.fromString(chatId), UUID.fromString(userId)
-        ).orElseThrow(() -> new IllegalStateException("User is not member in this chat"));
+        ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(chatId, userId)
+            .orElseThrow(() -> new IllegalStateException("User is not member in this chat"));
         chatUser.setLastSeenMessageAt(LocalDateTime.now());
         chatUserRepository.save(chatUser);
 
         Notification notification = Notification.builder()
-            .chatId(UUID.fromString(chatId))
-            .senderId(UUID.fromString(userId))
+            .chatId(chatId)
+            .senderId(userId)
             .notificationType(NotificationTypeEnum.SEEN)
             .build();
         notificationService.sendNotification(
-            chatUserRepository.getOtherChatUserIds(UUID.fromString(chatId), UUID.fromString(userId)),
+            chatUserRepository.getOtherChatUserIds(chatId, userId),
             notification
         );
     }

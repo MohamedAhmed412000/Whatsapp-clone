@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StringResponse {
-    private String content;
+public class ChatUserResponse {
+    private String id;
+    private String fullname;
+    private String imageUrl;
+    private boolean isAdmin;
 }

@@ -1,24 +1,28 @@
 package com.project.whatsapp.services.impl;
 
 import com.project.whatsapp.domain.dto.ChatWithUser;
+import com.project.whatsapp.domain.dto.UserWithRole;
 import com.project.whatsapp.domain.enums.ChatUserRoleEnum;
+import com.project.whatsapp.domain.enums.GroupChatModeEnum;
 import com.project.whatsapp.domain.models.Chat;
 import com.project.whatsapp.domain.models.ChatUser;
 import com.project.whatsapp.domain.models.User;
+import com.project.whatsapp.mappers.UserMapper;
 import com.project.whatsapp.repositories.MessageRepository;
+import com.project.whatsapp.rest.inbound.ChatUserUpdateResource;
+import com.project.whatsapp.rest.inbound.GroupChatUpdateResource;
 import com.project.whatsapp.rest.outbound.ChatResponse;
 import com.project.whatsapp.mappers.ChatMapper;
 import com.project.whatsapp.repositories.ChatRepository;
 import com.project.whatsapp.repositories.ChatUserRepository;
 import com.project.whatsapp.repositories.UserRepository;
+import com.project.whatsapp.rest.outbound.ChatUserResponse;
 import com.project.whatsapp.services.ChatService;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,18 +45,16 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
     private final ChatMapper chatMapper;
     private final MessageRepository messageRepository;
+    private final UserMapper userMapper;
 
-    @Transactional(readOnly = true)
     @Override
     @Cacheable(value = "chats", key = "#root.target.getUserId()")
     public List<ChatResponse> getChatsByReceiverId() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        String userId = securityContext.getAuthentication().getPrincipal().toString();
-        UUID receiverId = UUID.fromString(userId);
+        String receiverId = securityContext.getAuthentication().getPrincipal().toString();
         return findChatsBySenderId(receiverId).stream()
             .map(chatWithUser -> {
-                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(),
-                    receiverId);
+                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), receiverId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), receiverId,
                     unreadMessageCount, chatWithUser.getLastSeen());
             })
@@ -61,77 +63,265 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public String createChat(String senderId, @NotEmpty List<String> receiversIds, boolean isGroupChat, String chatName) {
-        if (!isGroupChat) {
-            return createOneToOneChat(senderId, receiversIds.get(0));
-        }
-        if (receiversIds.isEmpty()) {
-            throw new IllegalStateException("No receivers passed");
-        }
-
-        Chat chat = Chat.builder().name(chatName).isGroupChat(true).chatImageUrl(null).build();
+    public String createGroupChat(String chatName, String chatImageUrl, String description,
+                                   List<String> receiversIds) {
+        String senderId = getUserId();
+        Chat chat = Chat.builder().id(UUID.randomUUID().toString()).name(chatName).isGroupChat(true)
+            .isNew(true).groupChatMode(GroupChatModeEnum.NORMAL.getValue()).chatImageUrl(null).build();
+        if (chatImageUrl != null) chat.setChatImageUrl(chatImageUrl);
+        if (description != null) chat.setDescription(description);
         List<ChatUser> chatUserList = chatUserRepository.saveAll(
             Stream.concat(
-                Stream.of(ChatUser.builder().chatId(chat.getId()).userId(UUID.fromString(senderId))
+                Stream.of(ChatUser.builder().chatId(chat.getId()).userId(senderId)
                     .role(ChatUserRoleEnum.CREATOR).build()),
                 receiversIds.stream().map(receiverId -> ChatUser.builder().chatId(chat.getId())
-                    .userId(UUID.fromString(receiverId)).role(ChatUserRoleEnum.MEMBER).build())
+                    .userId(receiverId).role(ChatUserRoleEnum.MEMBER).build())
             ).toList()
         );
 
         chat.setUserIds(chatUserList.stream().map(ChatUser::getUserId).toList());
-        return chatRepository.save(chat).getId().toString();
+        return chatRepository.save(chat).getId();
     }
 
-    private String createOneToOneChat(String senderId, String receiverId) {
-        Optional<Chat> existingChat = chatRepository.findChatsBySenderIdAndReceiverId(
-            UUID.fromString(senderId), UUID.fromString(receiverId));
+    @Transactional
+    @Override
+    public String createOneToOneChat(String receiverId) {
+        String senderId = getUserId();
+        Optional<Chat> existingChat = chatRepository.findChatsBySenderIdAndReceiverId(senderId, receiverId);
         if (existingChat.isPresent()) {
-            return existingChat.get().getId().toString();
+            return existingChat.get().getId();
         }
 
-        Optional<User> optionalSender = userRepository.findByPublicId(UUID.fromString(senderId));
+        Optional<User> optionalSender = userRepository.findByPublicId(senderId);
         if (optionalSender.isEmpty()) {
             throw new MissingResourceException(String.format("User with id %s not found", senderId),
                 User.class.getName(), senderId);
         }
-        Optional<User> optionalReceiver = userRepository.findByPublicId(UUID.fromString(receiverId));
+        Optional<User> optionalReceiver = userRepository.findByPublicId(receiverId);
         if (optionalReceiver.isEmpty()) {
             throw new MissingResourceException(String.format("User with id %s not found", receiverId),
                 User.class.getName(), receiverId);
         }
 
         Chat chat = Chat.builder()
+            .id(UUID.randomUUID().toString())
             .name(senderId + '&' + optionalSender.get().getFullName() + '#' + receiverId + '&' +
                 optionalReceiver.get().getFullName()).isGroupChat(false)
+            .isNew(true)
             .chatImageUrl(senderId + '&' + optionalSender.get().getProfilePictureUrl() + '#' +
                 receiverId + '&' + optionalReceiver.get().getProfilePictureUrl()).build();
         ChatUser senderChatUser = ChatUser.builder().chatId(chat.getId())
-            .userId(UUID.fromString(senderId)).role(ChatUserRoleEnum.CREATOR).build();
+            .userId(senderId).role(ChatUserRoleEnum.CREATOR).build();
         ChatUser receiverChatUser = ChatUser.builder().chatId(chat.getId())
-            .userId(UUID.fromString(receiverId)).role(ChatUserRoleEnum.MEMBER).build();
+            .userId(receiverId).role(ChatUserRoleEnum.MEMBER).build();
         chatUserRepository.saveAll(List.of(senderChatUser, receiverChatUser));
 
-        chat.setUserIds(List.of(UUID.fromString(senderId), UUID.fromString(receiverId)));
-        return chatRepository.save(chat).getId().toString();
+        chat.setUserIds(List.of(senderId, receiverId));
+        return chatRepository.save(chat).getId();
+    }
+    
+    @Transactional
+    @Override
+    public Boolean updateGroupChat(String chatId, GroupChatUpdateResource resource) {
+        Optional<Chat> optionalChat = chatRepository.findById(chatId);
+        if (optionalChat.isPresent()) {
+            Chat chat = optionalChat.get();
+            if (!chat.isGroupChat()) {
+                throw new RuntimeException("Action not allowed for 1-to-1 chat");
+            }
+            if (resource.getName() != null) chat.setName(resource.getName());
+            if (resource.getDescription() != null) chat.setDescription(resource.getDescription());
+            if (resource.getImageUrl() != null) chat.setChatImageUrl(resource.getImageUrl());
+            chatRepository.save(chat);
+            return true;
+        }
+        throw new MissingResourceException("Chat with id " + chatId + " not found", "chat", Chat.class.getName());
+    }
+
+    @Override
+    public List<ChatUserResponse> getChatUsers(String chatId) {
+        return findUsersByChatId(chatId).stream().map(userMapper::toChatUserResponse).toList();
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateGroupChatUsers(String chatId, ChatUserUpdateResource resource) {
+        Optional<Chat> chatOptional = chatRepository.findById(chatId);
+        if (chatOptional.isEmpty() || !chatOptional.get().isGroupChat()) {
+            throw new RuntimeException("Chat with id " + chatId + " isn't allowed for this operation.");
+        }
+        Chat chat = chatOptional.get();
+        Optional<ChatUser> meChatUserOptional = chatUserRepository.findByChatIdAndUserId(chatId, getUserId());
+        if (meChatUserOptional.isPresent()) {
+            ChatUser meChatUser = meChatUserOptional.get();
+            switch (resource.getOperation()) {
+                case ADD_NEW_USER:
+                    return addNewChatUser(chat, meChatUser, resource.getUserId());
+                case REMOVE_EXISTING_USER:
+                    return removeExistingChatUser(chat, meChatUser, resource.getUserId());
+                case MODIFY_EXISTING_USER_ROLE:
+                    return modifyExistingChatUserRole(chat, meChatUser, resource.getUserId(),
+                        resource.getUserRole());
+                default:
+                    break;
+            }
+        }
+        throw new RuntimeException("The user doesn't exist in the chat");
+    }
+
+    @Transactional
+    @Override
+    public Boolean deleteGroupChat(String chatId) {
+        Optional<Chat> chatOptional = chatRepository.findById(chatId);
+        if (chatOptional.isEmpty() || !chatOptional.get().isGroupChat()) {
+            throw new RuntimeException("Chat with id " + chatId + " isn't allowed for this operation.");
+        }
+        try {
+            chatRepository.delete(chatOptional.get());
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 
     public String getUserId() {
         return SecurityContextHolder.getContext()
             .getAuthentication()
-            .getName();
+            .getPrincipal().toString();
     }
 
-    private List<ChatWithUser> findChatsBySenderId(UUID senderId) {
+    private Boolean modifyExistingChatUserRole(Chat chat, ChatUser meChatUser,
+                                               String userId, ChatUserRoleEnum role) {
+        if (meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER)) {
+            throw new RuntimeException("You are not allowed to modify group chat user role");
+        }
+
+        Optional<ChatUser> newChatUserOptional = chatUserRepository.findByChatIdAndUserId(chat.getId(), userId);
+        if (newChatUserOptional.isPresent()) {
+            ChatUser newChatUser = newChatUserOptional.get();
+            if (newChatUser.getRole().equals(ChatUserRoleEnum.CREATOR) ||
+                role.equals(ChatUserRoleEnum.CREATOR)) {
+                    throw new RuntimeException("You aren't allowed to change to or from the creator role");
+            }
+            if (newChatUser.getRole().equals(role)) {
+                throw new RuntimeException("User already have the same role");
+            }
+            newChatUser.setRole(role);
+            chatUserRepository.save(newChatUser);
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean removeExistingChatUser(Chat chat, ChatUser meChatUser, String userId) {
+        if ((chat.getGroupChatMode() == GroupChatModeEnum.USERS_MODIFICATION_RESTRICTED.getValue() ||
+            chat.getGroupChatMode() == GroupChatModeEnum.ADMIN_RESTRICTED.getValue()) &&
+            (meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER))) {
+            throw new RuntimeException("You are not allowed to remove group chat user");
+        }
+
+        Optional<ChatUser> newChatUserOptional = chatUserRepository.findByChatIdAndUserId(chat.getId(), userId);
+        if (newChatUserOptional.isPresent()) {
+            if(newChatUserOptional.get().getRole().equals(ChatUserRoleEnum.CREATOR)) {
+                throw new RuntimeException("You are not allowed to remove group chat creator");
+            }
+            if (newChatUserOptional.get().getRole().equals(ChatUserRoleEnum.ADMIN) &&
+                meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER)) {
+                throw new RuntimeException("You are not allowed to remove group chat admin");
+            }
+            chat.setUserIds(chat.getUserIds().stream().filter(uId -> !uId.equals(userId)).toList());
+            chatRepository.save(chat);
+            chatUserRepository.delete(newChatUserOptional.get());
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean addNewChatUser(Chat chat, ChatUser meChatUser, String userId) {
+        if ((chat.getGroupChatMode() == GroupChatModeEnum.USERS_MODIFICATION_RESTRICTED.getValue() ||
+            chat.getGroupChatMode() == GroupChatModeEnum.ADMIN_RESTRICTED.getValue()) &&
+            (meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER))) {
+            throw new RuntimeException("You are not allowed to add group chat user");
+        }
+        if (chat.getUserIds().contains(userId)) {
+            throw new RuntimeException("User already exists in this group chat");
+        }
+
+        try {
+            ChatUser chatUser = ChatUser.builder().chatId(chat.getId()).userId(userId)
+                .role(ChatUserRoleEnum.MEMBER).build();
+            List<String> chatUserIds = chat.getUserIds();
+            chatUserIds.add(userId);
+            chat.setUserIds(chatUserIds);
+            chatUserRepository.save(chatUser);
+            chatRepository.save(chat);
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
+    }
+
+    private List<UserWithRole> findUsersByChatId(String chatId) {
         Aggregation aggregation = Aggregation.newAggregation(
-            Aggregation.match(Criteria.where("userId").is(senderId)),
-            Aggregation.lookup("user", "userId", "_id", "userInfo"),
+            Aggregation.match(Criteria.where("chat_id").is(chatId)),
+
+            Aggregation.lookup("user", "user_id", "_id", "userInfo"),
             Aggregation.unwind("userInfo"),
-            Aggregation.lookup("chats", "chatId", "_id", "chatInfo"),
+
+            Aggregation.project()
+                .and("userInfo").as("user")
+                .and("role").as("role")
+        );
+
+        AggregationResults<UserWithRole> results = mongoTemplate.aggregate(
+            aggregation, "chat_user", UserWithRole.class
+        );
+
+        return results.getMappedResults();
+    }
+
+    private List<ChatWithUser> findChatsBySenderId(String senderId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+            // 1. Match only current user's chat memberships
+            Aggregation.match(Criteria.where("user_id").is(senderId)),
+
+            // 2. Lookup the chat
+            Aggregation.lookup("chat", "chat_id", "_id", "chatInfo"),
             Aggregation.unwind("chatInfo"),
+
+            // 3. Add otherUserId only for non-group chats
+            Aggregation.addFields()
+                .addField("otherUserId")
+                .withValue(
+                    ConditionalOperators.when(ComparisonOperators.Eq.valueOf("chatInfo.is_group_chat").equalToValue(false))
+                        .thenValueOf(
+                            ArrayOperators.ArrayElemAt.arrayOf(
+                                ArrayOperators.Filter
+                                    .filter("chatInfo.user_ids")
+                                    .as("id")
+                                    .by(
+                                        ComparisonOperators.Ne.valueOf("$$id").notEqualToValue(senderId)
+                                    )
+                            ).elementAt(0)
+                        )
+                        .otherwise(ConvertOperators.ToDate.toDate(
+                            LiteralOperators.Literal.asLiteral("2000-01-04T12:00:00Z")))
+                ).build(),
+
+            // 4. Lookup the other user only if it's a non-group chat
+            Aggregation.lookup("user", "otherUserId", "_id", "otherUserInfo"),
+            Aggregation.unwind("otherUserInfo", true),
+
+            // 5. Project the desired fields
             Aggregation.project()
                 .and("chatInfo").as("chat")
-                .and("userInfo.lastSeen").as("lastSeen")
+                .and(
+                    ConditionalOperators
+                        .when(ComparisonOperators.Eq.valueOf("chatInfo.is_group_chat").equalToValue(false))
+                        .thenValueOf("otherUserInfo.last_seen")
+                        .otherwise(ConvertOperators.ToDate.toDate(
+                            LiteralOperators.Literal.asLiteral("2000-01-04T12:00:00Z")))
+                ).as("lastSeen")
         );
 
         AggregationResults<ChatWithUser> results = mongoTemplate.aggregate(
@@ -141,7 +331,7 @@ public class ChatServiceImpl implements ChatService {
         return results.getMappedResults();
     }
 
-    private long getUnreadMessageCount(UUID chatId, UUID senderId) {
+    private long getUnreadMessageCount(String chatId, String senderId) {
         Optional<ChatUser> optionalChatUser = chatUserRepository.findByChatIdAndUserId(chatId, senderId);
         if (optionalChatUser.isPresent()) {
             ChatUser chatUser = optionalChatUser.get();

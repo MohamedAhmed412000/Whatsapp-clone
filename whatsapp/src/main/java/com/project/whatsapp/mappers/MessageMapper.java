@@ -20,7 +20,7 @@ public class MessageMapper {
             .content(message.getContent())
             .type(message.getMessageType())
             .state(state)
-            .senderId(message.getSenderId().toString())
+            .senderId(message.getSenderId())
             .createdAt(message.getCreatedAt())
             .isForwarded(message.isForwarded())
             .repliedMessage(message.getRepliedMessage())

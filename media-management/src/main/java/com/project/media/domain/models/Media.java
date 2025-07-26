@@ -26,5 +26,7 @@ public class Media extends BaseModel {
     private Long size;
     @Field(value = "reference")
     private String reference;
+    @Field(value = "is_deleted", targetType = FieldType.BOOLEAN)
+    private Boolean isDeleted;
 }
 

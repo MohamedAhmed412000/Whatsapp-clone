@@ -16,9 +16,9 @@ import java.util.UUID;
 public class StarredMessage extends BaseModel {
     @MongoId
     @Field(value = "_id")
-    private UUID id = UUID.randomUUID();
+    private String id = UUID.randomUUID().toString();
     @Field(value = "message_id")
     private Long messageId;
     @Field(value = "user_id")
-    private UUID userId;
+    private String userId;
 }

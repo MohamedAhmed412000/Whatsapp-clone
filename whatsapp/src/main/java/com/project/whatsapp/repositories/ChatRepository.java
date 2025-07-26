@@ -6,12 +6,10 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface ChatRepository extends MongoRepository<Chat, UUID> {
+public interface ChatRepository extends MongoRepository<Chat, String> {
 
     @Query(value = "{ 'isGroupChat': false, 'userIds': { '$all': [ ?0, ?1 ] } }")
-    Optional<Chat> findChatsBySenderIdAndReceiverId(UUID senderId, UUID receiverId);
-
+    Optional<Chat> findChatsBySenderIdAndReceiverId(String senderId, String receiverId);
 }

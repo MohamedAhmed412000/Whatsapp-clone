@@ -8,16 +8,15 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public interface MessageRepository extends MongoRepository<Message, Long> {
 
     @Query(value = "{ 'chatId' : ?0 }", sort = "{ 'createdAt' : 1 }")
-    List<Message> findMessagesByChatId(UUID chatId, Pageable pageable);
+    List<Message> findMessagesByChatId(String chatId, Pageable pageable);
 
     @Query(value = "{ 'chatId' : ?0, 'createdAt' : { '$gt' : ?1 } }", count = true)
-    long findUnreadMessageCount(UUID chatId, LocalDateTime createdAt);
+    long findUnreadMessageCount(String chatId, LocalDateTime createdAt);
 
 }
 

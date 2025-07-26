@@ -18,6 +18,8 @@ server:
 application:
   file:
     uploads:
+      media-soft-delete: false
+      media-storage-type: local
       media-output-path: ./uploads
 
 eureka:

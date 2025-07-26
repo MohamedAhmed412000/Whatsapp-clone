@@ -5,6 +5,7 @@ import {interval, switchMap} from 'rxjs';
 import {fromPromise} from 'rxjs/internal/observable/innerFrom';
 import {AuthModal} from '../../components/auth-modal/auth-modal';
 import {environment} from '../../../environments/environment';
+import {UserResponse} from '../../services/models/user-response';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,18 @@ export class KeycloakService {
 
   get fullname(): string {
     return this.keycloak?.tokenParsed?.['name'] as string;
+  }
+
+  get me(): UserResponse {
+    let claims = this.keycloak.tokenParsed!;
+    return {
+      userId: this.userId,
+      email: claims['email'],
+      firstName: claims['given_name'],
+      lastName: claims['last_name'],
+      online: true,
+      profilePictureUrl: this.profilePictureUrl,
+    } as UserResponse;
   }
 
   get profilePictureUrl(): string | null {

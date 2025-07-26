@@ -10,20 +10,20 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "chat_user")
-public class ChatUser extends BaseModel {
+public class ChatUser {
     @MongoId
     @Field(value = "_id")
-    private UUID id = UUID.randomUUID();
+    private String id = UUID.randomUUID().toString();
     @Field(value = "chat_id")
-    private UUID chatId;
+    private String chatId;
     @Field(value = "user_id")
-    private UUID userId;
+    private String userId;
     @Field(value = "role")
     private ChatUserRoleEnum role;
     @Field(value = "last_seen_message_at", targetType = FieldType.TIMESTAMP)

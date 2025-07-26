@@ -1,14 +1,12 @@
 package com.project.media.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static java.io.File.separator;
 import static java.lang.System.currentTimeMillis;
@@ -44,11 +42,23 @@ public class FileUtils {
         }
         try {
             Files.write(targetPath, file.getBytes());
-            log.info("Successfully save media to " + targetPath);
+            log.info("Successfully save media to: " + targetPath);
         } catch (Exception ex) {
-            log.error("File wasn't saved", ex);
+            log.error("File wasn't saved with error: ", ex);
         }
         return reference;
+    }
+
+    public static void deleteLocalFile(String mediaBasePath, String reference) {
+        final String fileFullPath = mediaBasePath + separator + reference;
+        if (fileFullPath.isEmpty()) return;
+        try {
+            File file = new File(fileFullPath);
+            file.delete();
+        } catch (Exception ex) {
+            log.error("Error deleting file at {}", fileFullPath, ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     private static String extractFileExtension(String fileName) {

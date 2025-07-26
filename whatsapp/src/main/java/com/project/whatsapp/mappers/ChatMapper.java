@@ -5,26 +5,26 @@ import com.project.whatsapp.rest.outbound.ChatResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static com.project.whatsapp.constants.Application.LAST_ACTIVE_INTERVAL_IN_MINUTES;
 
 @Component
 public class ChatMapper {
 
-    public ChatResponse toChatResponse(Chat chat, UUID senderId, long unreadMessageCount,
+    public ChatResponse toChatResponse(Chat chat, String senderId, long unreadMessageCount,
                                        LocalDateTime lastSeen) {
         return ChatResponse.builder()
             .id(chat.getId())
             .name(chat.getChatName(senderId))
+            .description(chat.getDescription())
             .imageUrl(chat.getChatImageUrl(senderId))
             .unreadCount(unreadMessageCount)
             .isRecipientOnline(isOnlineUser(lastSeen))
             .lastMessage(chat.getLastMessage())
             .lastMessageTime(chat.getLastMessageTime())
-            .senderId(senderId.toString())
+            .senderId(senderId)
             .receiversId(chat.getUserIds().stream().filter(userId -> !userId.equals(senderId))
-                .map(UUID::toString).toList())
+                .toList())
             .build();
     }
 

@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class ChatUserServiceImpl {
 
     private final MongoTemplate mongoTemplate;
 
-    LocalDateTime findLastMessageViewedFromAllMembers(UUID chatId) {
+    LocalDateTime findLastMessageViewedFromAllMembers(String chatId) {
         Aggregation aggregation = Aggregation.newAggregation(
             Aggregation.match(Criteria.where("chatId").is(chatId)),
             Aggregation.sort(Sort.by("lastSeenMessageAt").ascending()),

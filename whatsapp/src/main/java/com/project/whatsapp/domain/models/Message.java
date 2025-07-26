@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.UUID;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -23,9 +21,9 @@ public class Message extends BaseModel {
     @Field(value = "content")
     private String content;
     @Field(value = "chat_id")
-    private UUID chatId;
+    private String chatId;
     @Field(value = "sender_id")
-    private UUID senderId;
+    private String senderId;
     @Field(value = "message_type")
     private MessageTypeEnum messageType;
     @Field(value = "is_forwarded", targetType = FieldType.BOOLEAN)

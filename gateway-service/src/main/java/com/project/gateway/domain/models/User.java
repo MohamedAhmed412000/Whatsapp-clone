@@ -18,7 +18,7 @@ import java.util.UUID;
 public class User {
     @MongoId
     @Field(value = "_id")
-    private UUID id = UUID.randomUUID();
+    private String id = UUID.randomUUID().toString();
     @Field(value = "first_name")
     private String firstName;
     @Field(value = "last_name")

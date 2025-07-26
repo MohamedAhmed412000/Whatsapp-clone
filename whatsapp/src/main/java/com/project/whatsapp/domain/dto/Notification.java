@@ -9,16 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Notification {
-    private UUID chatId;
+    private String chatId;
     private String content;
-    private UUID senderId;
+    private String senderId;
     private String chatName;
     private MessageTypeEnum messageType;
     private NotificationTypeEnum notificationType;

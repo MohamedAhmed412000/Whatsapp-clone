@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +24,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable(value = "users", key = "#root.target.getUserId() + '-' + #query")
     public List<UserResponse> getUsers(String query) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        String userIdStr = securityContext.getAuthentication().getPrincipal().toString();
-        UUID userId = UUID.fromString(userIdStr);
+        String userId = securityContext.getAuthentication().getPrincipal().toString();
         List<User> users;
         if (query == null) query = "";
         query = query.trim();
@@ -41,7 +39,7 @@ public class UserServiceImpl implements UserService {
     public String getUserId() {
         return SecurityContextHolder.getContext()
             .getAuthentication()
-            .getName();
+            .getPrincipal().toString();
     }
 
 }

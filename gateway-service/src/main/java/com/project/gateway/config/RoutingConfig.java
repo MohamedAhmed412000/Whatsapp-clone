@@ -28,9 +28,9 @@ public class RoutingConfig {
                 .uri("ws://CORE")
             )
             .route("media", p -> p
-                .path("/api/v1/media/**")
+                .path("/media/api/v1/media/**", "/media/**")
                 .filters(f -> f
-                    .rewritePath("/(?<api>.*)", "/${api}")
+                    .rewritePath("/media/(?<api>.*)", "/${api}")
                 )
                 .uri("lb://MEDIA-MANAGEMENT")
             )

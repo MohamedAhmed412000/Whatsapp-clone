@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StringResponse {
-    private String content;
+public class BooleanResponse {
+    private boolean isDone;
 }
