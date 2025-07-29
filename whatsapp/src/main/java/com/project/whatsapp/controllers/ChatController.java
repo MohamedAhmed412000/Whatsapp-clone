@@ -1,11 +1,9 @@
 package com.project.whatsapp.controllers;
 
-import com.project.whatsapp.rest.inbound.ChatUserUpdateResource;
 import com.project.whatsapp.rest.inbound.GroupChatCreationResource;
 import com.project.whatsapp.rest.inbound.GroupChatUpdateResource;
 import com.project.whatsapp.rest.outbound.BooleanResponse;
 import com.project.whatsapp.rest.outbound.ChatResponse;
-import com.project.whatsapp.rest.outbound.ChatUserResponse;
 import com.project.whatsapp.rest.outbound.StringResponse;
 import com.project.whatsapp.services.ChatService;
 import jakarta.validation.Valid;
@@ -57,23 +55,6 @@ public class ChatController {
         return ResponseEntity.ok(new BooleanResponse(isUpdated));
     }
 
-    @GetMapping(value = "/{chat-id}/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ChatUserResponse>> getChatUsers(
-        @NotEmpty @PathVariable("chat-id") String chatId
-    ) {
-        return ResponseEntity.ok(chatService.getChatUsers(chatId));
-    }
-
-    @PatchMapping(value = "/{chat-id}/update-users", consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BooleanResponse> updateGroupChatUsers(
-        @NotEmpty @PathVariable("chat-id") String chatId,
-        @Valid @RequestBody ChatUserUpdateResource resource
-    ) {
-        final Boolean isUpdated = chatService.updateGroupChatUsers(chatId, resource);
-        return ResponseEntity.ok(new BooleanResponse(isUpdated));
-    }
-
     @DeleteMapping("/{chat-id}")
     public ResponseEntity<BooleanResponse> deleteGroupChat(
         @NotEmpty @PathVariable("chat-id") String chatId
@@ -81,5 +62,4 @@ public class ChatController {
         final Boolean isDeleted = chatService.deleteGroupChat(chatId);
         return ResponseEntity.ok(new BooleanResponse(isDeleted));
     }
-
 }

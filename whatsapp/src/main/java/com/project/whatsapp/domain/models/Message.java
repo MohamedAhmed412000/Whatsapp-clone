@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -30,4 +32,8 @@ public class Message extends BaseModel {
     private boolean isForwarded = false;
     @Field(value = "replied_message")
     private RepliedMessage repliedMessage = null;
+    @Field(value = "is_deleted_for_everyone", targetType = FieldType.BOOLEAN)
+    private boolean isDeletedForEveryone = false;
+    @Field(value = "delete_for_users")
+    private List<String> deleteForUserIds;
 }

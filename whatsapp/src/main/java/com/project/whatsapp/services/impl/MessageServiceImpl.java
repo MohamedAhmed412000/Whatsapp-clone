@@ -1,10 +1,6 @@
 package com.project.whatsapp.services.impl;
 
-import com.project.whatsapp.clients.MediaFeignClient;
-import com.project.whatsapp.clients.dto.inbound.MediaUploadResource;
-import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
-import com.project.whatsapp.constants.Application;
 import com.project.whatsapp.domain.dto.Notification;
 import com.project.whatsapp.domain.dto.RepliedMessage;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
@@ -19,17 +15,19 @@ import com.project.whatsapp.rest.inbound.MessageResource;
 import com.project.whatsapp.rest.outbound.MessageResponse;
 import com.project.whatsapp.services.MessageService;
 import com.project.whatsapp.services.NotificationService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,10 +41,10 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
     private final ChatUserRepository chatUserRepository;
-    private final ChatUserServiceImpl chatUserServiceImpl;
-    private final MediaFeignClient mediaFeignClient;
+    private final MediaServiceImpl mediaService;
     private final MessageMapper messageMapper;
     private final NotificationService notificationService;
+    private final MongoTemplate mongoTemplate;
 
     @Value("${chats.page.max-messages-size:20}")
     private Integer chatMaxMessagesSize;
@@ -74,11 +72,7 @@ public class MessageServiceImpl implements MessageService {
 
         if (!request.getMessageType().equals(MessageTypeEnum.TEXT)) {
             request.getMediaResources().forEach(mediaResource ->
-                mediaFeignClient.saveMedia(MediaUploadResource.builder()
-                .file(mediaResource.getFile())
-                .entityId(generateMediaMessageId(message.getId()))
-                .filePath(request.getChatId() + File.separator + message.getId().toString())
-                .build()));
+                mediaService.saveMessageMedia(mediaResource, message, request.getChatId()));
         }
 
         Chat chat = chatRepository.findById(request.getChatId())
@@ -116,22 +110,54 @@ public class MessageServiceImpl implements MessageService {
     @Cacheable(value = "messages", key = "#chatId + '-' + #page")
     public List<MessageResponse> findChatMessages(String chatId, int page) {
         setLastViewTime(chatId);
-        LocalDateTime lastSeenMessageAt = chatUserServiceImpl.findLastMessageViewedFromAllMembers(chatId);
+        LocalDateTime lastSeenMessageAt = findLastMessageViewedFromAllMembers(chatId);
 
         PageRequest pageRequest = PageRequest.of(page, chatMaxMessagesSize);
         return messageRepository.findMessagesByChatId(chatId, pageRequest).stream().map(message -> {
-            MediaListResponse mediaListResponse = new MediaListResponse();
-            if (!message.getMessageType().equals(MessageTypeEnum.TEXT)) {
-                ResponseEntity<MediaContentResponse> response = mediaFeignClient.getMediaContent(
-                    generateMediaMessageId(message.getId()));
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    assert response.getBody() != null;
-                    mediaListResponse.setMediaContentResponses(List.of(response.getBody()));
-                }
-            }
+            MediaListResponse mediaListResponse = mediaService.retrieveMediaContentForMessage(message);
             return messageMapper.toMessageResponse(message, (message.getCreatedAt().isAfter(lastSeenMessageAt))?
                 MessageStateEnum.SENT: MessageStateEnum.SEEN, mediaListResponse.getMediaContentResponses());
         }).toList();
+    }
+
+    @Override
+    public boolean editMessage(Long messageId, String messageContent) {
+        String userId = getUserId();
+        Optional<Message> messageOptional = messageRepository.findById(messageId);
+        if (messageOptional.isPresent()) {
+            Message message = messageOptional.get();
+            if (!message.getSenderId().equals(userId) ||
+                !message.getMessageType().equals(MessageTypeEnum.TEXT)
+            ) {
+                throw new RuntimeException("This action isn't allowed for this message");
+            }
+            message.setContent(messageContent);
+            messageRepository.save(message);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteMessage(Long messageId, boolean deleteForEveryone) {
+        String userId = getUserId();
+        Optional<Message> messageOptional = messageRepository.findById(messageId);
+        if (messageOptional.isPresent()) {
+            Message message = messageOptional.get();
+            if (!message.getSenderId().equals(userId)) {
+                throw new RuntimeException("This action isn't allowed for this message");
+            }
+            if (deleteForEveryone) {
+                message.setDeletedForEveryone(true);
+            } else {
+                List<String> deleteUserIds = message.getDeleteForUserIds();
+                deleteUserIds.add(userId);
+                message.setDeleteForUserIds(deleteUserIds);
+            }
+            messageRepository.save(message);
+            return true;
+        }
+        return false;
     }
 
     private void setLastViewTime(String chatId) {
@@ -153,8 +179,26 @@ public class MessageServiceImpl implements MessageService {
         );
     }
 
-    private String generateMediaMessageId(@NonNull Long messageId) {
-        return Application.MSG_MEDIA_PREFIX + messageId;
+    private String getUserId() {
+        return SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal().toString();
     }
 
+    private LocalDateTime findLastMessageViewedFromAllMembers(String chatId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("chatId").is(chatId)),
+            Aggregation.sort(Sort.by("lastSeenMessageAt").ascending()),
+            Aggregation.limit(1),
+            Aggregation.project("lastSeenMessageAt")
+        );
+
+        AggregationResults<LocalDateTime> result = mongoTemplate.aggregate(
+            aggregation,
+            "chat_user",
+            LocalDateTime.class
+        );
+
+        return result.getUniqueMappedResult();
+    }
 }

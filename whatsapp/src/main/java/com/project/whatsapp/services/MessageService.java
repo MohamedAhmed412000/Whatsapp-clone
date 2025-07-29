@@ -8,4 +8,6 @@ import java.util.List;
 public interface MessageService {
     void saveMessage(MessageResource request);
     List<MessageResponse> findChatMessages(String chatId, int page);
+    boolean editMessage(Long messageId, String messageContent);
+    boolean deleteMessage(Long messageId, boolean deleteForEveryone);
 }
