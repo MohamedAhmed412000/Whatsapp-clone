@@ -6,18 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.UUID;
-
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @Data
 @Document(collection = "media")
-@AllArgsConstructor
-@NoArgsConstructor
 public class Media extends BaseModel {
     @MongoId
     @Field(value = "_id")
-    private UUID id;
+    private String id;
     @Field(value = "entity_id")
     private String entityId;
     @Field(value = "name")
@@ -29,4 +25,3 @@ public class Media extends BaseModel {
     @Field(value = "is_deleted", targetType = FieldType.BOOLEAN)
     private Boolean isDeleted;
 }
-

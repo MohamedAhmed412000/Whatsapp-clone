@@ -7,13 +7,11 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
 @Repository
-public interface MediaRepository extends ReactiveMongoRepository<Media, UUID> {
-    @Query(value = "{ 'entity_id' : ?0 }")
+public interface MediaRepository extends ReactiveMongoRepository<Media, String> {
+    @Query(value = "{ 'entity_id' : ?0, 'is_deleted' : false }")
     Flux<Media> findMediaByEntityId(String entityId);
 
-    @Query(value = "{ 'reference' : ?0 }")
-    Mono<Media> findMediaByReference(String reference);
+    @Query(value = "{ '_id' : ?0, 'is_deleted' : false }")
+    Mono<Media> findMediaById(String id);
 }

@@ -1,12 +1,15 @@
 package com.project.media.controllers;
 
-import com.project.media.rest.inbound.MediaUploadResource;
-import com.project.media.rest.outbound.MediaContentResponse;
+import com.project.media.rest.outbound.BooleanResponse;
+import com.project.media.rest.outbound.MediaReferenceListResponse;
 import com.project.media.services.MediaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,37 +21,47 @@ public class MediaController {
     private final MediaService mediaService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<String>> uploadMedia(@RequestBody MediaUploadResource resource) {
-        return mediaService.saveMedia(resource.getFile(), resource.getFilePath(), resource.getEntityId())
+    public Mono<ResponseEntity<MediaReferenceListResponse>> uploadMedia(
+        @RequestPart("file") Flux<FilePart> file,
+        @RequestPart("filePath") String filePath,
+        @RequestPart("entityId") String entityId
+    ) {
+        return file.flatMap(filePart -> mediaService.saveMedia(filePart, filePath, entityId))
+            .collectList()
+            .map(MediaReferenceListResponse::new)
             .map(ResponseEntity::ok);
     }
 
     @GetMapping("/list/{entityId}")
-    public Flux<MediaContentResponse> getMediaList(@PathVariable String entityId) {
-        return mediaService.getMediaList(entityId);
+    public Mono<ResponseEntity<MediaReferenceListResponse>> getMediaListReferences(
+        @PathVariable String entityId
+    ) {
+        return mediaService.getMediaList(entityId)
+            .map(MediaReferenceListResponse::new)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{reference}")
-    public Mono<ResponseEntity<MediaContentResponse>> getMedia(@PathVariable String reference) {
-        return mediaService.getMedia(reference).map(ResponseEntity::ok);
-    }
-
-    @PostMapping("/url")
-    public Mono<ResponseEntity<String>> getMediaUrl(@RequestBody String reference) {
+    public Mono<ResponseEntity<Resource>> getMediaView(@PathVariable String reference) {
         return Mono.just(mediaService.canGenerateMediaUrl())
             .flatMap(canGenerate -> {
                 if (canGenerate) {
-                    return mediaService.getMediaUrl(reference).map(ResponseEntity::ok);
+                    return mediaService.getMediaView(reference).map(mediaResourceDto ->
+                        ResponseEntity.ok()
+                            .contentType(mediaResourceDto.getMediaType())
+                            .body(mediaResourceDto.getResource())
+                    );
                 } else {
-                    return Mono.just(ResponseEntity.badRequest()
-                        .body("Media URL generation is not available for this storage type."));
+                    return Mono.just(ResponseEntity.badRequest().body(null));
                 }
             });
     }
 
     @DeleteMapping("/{reference}")
-    public Mono<ResponseEntity<Boolean>> deleteMedia(@PathVariable String reference) {
-        return Mono.just(ResponseEntity.ok(mediaService.deleteMedia(reference)));
+    public Mono<ResponseEntity<BooleanResponse>> deleteMedia(@PathVariable String reference) {
+        return mediaService.deleteMedia(reference)
+            .map(BooleanResponse::new)
+            .map(ResponseEntity::ok);
     }
-
 }
