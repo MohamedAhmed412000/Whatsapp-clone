@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = AtLeastOneFieldNotEmptyValidator.class)
 @Documented
 public @interface AtLeastOneFieldNotEmpty {
-    String message() default "At least one of name, imageUrl, or description must be non-empty";
+    String message() default "At least one field must be non-empty";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

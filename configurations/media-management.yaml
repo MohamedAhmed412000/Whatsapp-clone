@@ -21,6 +21,7 @@ application:
       media-soft-delete: false
       media-storage-type: local
       media-output-path: ./uploads
+      cloudinary-media-path: Whatsapp_clone
 
 eureka:
   instance:

@@ -1,0 +1,2491 @@
+{
+	"info": {
+		"_postman_id": "92e49695-33c5-45fc-bf01-8ac34164965f",
+		"name": "Whatsapp-clone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32902590"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Keycloak Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.environment.set(\"whatsapp-clone-token\", response.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "whatsapp-clone-app",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "ahmed.emam@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "M0h@med__412000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloak-url}}/realms/whatsapp-clone/protocol/openid-connect/token",
+							"host": [
+								"{{keycloak-url}}"
+							],
+							"path": [
+								"realms",
+								"whatsapp-clone",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "whatsapp-clone-app",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "mohamed.ahmed04012000@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "M0h@med__412000",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloak-url}}/realms/whatsapp-clone/protocol/openid-connect/token",
+									"host": [
+										"{{keycloak-url}}"
+									],
+									"path": [
+										"realms",
+										"whatsapp-clone",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-store"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "content-length",
+									"value": "2352"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJCMzlvN1JheTdxRGJQSUlaeVM1YndKU2hjeXVKWGdMdW1VMXlCUC0yQWhJIn0.eyJleHAiOjE3NTE2MjE1MzAsImlhdCI6MTc1MTYyMTIzMCwianRpIjoiZGJiNmFlZmYtZDcxYy00ZDExLWFjOTktNGZiNzc4YjAwYjQ4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDkwL3JlYWxtcy93aGF0c2FwcC1jbG9uZSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0MWNjODM3Zi04NDdjLTQ1MzItOGVmZi03MTRjYjViYzIyMTgiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3aGF0c2FwcC1jbG9uZS1hcHAiLCJzaWQiOiI2MmIxZGY2MS1hOTg5LTQ0MTItYTg5Ni1hNjMxMWVjMmM2NmUiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtd2hhdHNhcHAtY2xvbmUiLCJST0xFX1VTRVIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBpbWFnZV91cmwgcHJvZmlsZSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6Ik1vaGFtZWQgQWhtZWQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJtb2hhbWVkLmFobWVkMDQwMTIwMDBAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6Ik1vaGFtZWQiLCJmYW1pbHlfbmFtZSI6IkFobWVkIiwiZW1haWwiOiJtb2hhbWVkLmFobWVkMDQwMTIwMDBAZ21haWwuY29tIn0.YdWqWy2Zxx9XT99P7dHQZVdAGnILBp5zjjJujYqwvu0BAuWtNY5YYzhthAG9f-6-QWOYjXjvKRnCRjEsAWFSsYSL3q3YW7FxzBfVjqxBOPFIUzvi4USYzQrgUiZV8z5v7d5kzNX8yJvBIjVKPTmN5sQ68iE20QAmlCCBG-F2PwU-ICKmC6d_90--nZeqAPJkUC71sOlWy0Hw4YHGEJAtrV9reXxUOAKtENfFar3dIW0luJwJu1tLGdEAOW7_S8xc187KVUU1O52PdldqT2wWPFkULDzcEgQT0wcZc8S4CgBef-LjRTO9P6exPuudknR4QsRRnqH5YXLEQCVksTHPfg\",\n    \"expires_in\": 300,\n    \"refresh_expires_in\": 1800,\n    \"refresh_token\": \"eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjOWVmZDU0NS04NDM5LTRhMmEtODBhNC03NDc0ZmI3MjdjMTEifQ.eyJleHAiOjE3NTE2MjMwMzAsImlhdCI6MTc1MTYyMTIzMCwianRpIjoiOGQ4MmJmZGItNGVhOS00OWQ0LTg0MWUtZTYxMTY2ZjlkMzUyIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDkwL3JlYWxtcy93aGF0c2FwcC1jbG9uZSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTA5MC9yZWFsbXMvd2hhdHNhcHAtY2xvbmUiLCJzdWIiOiI0MWNjODM3Zi04NDdjLTQ1MzItOGVmZi03MTRjYjViYzIyMTgiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoid2hhdHNhcHAtY2xvbmUtYXBwIiwic2lkIjoiNjJiMWRmNjEtYTk4OS00NDEyLWE4OTYtYTYzMTFlYzJjNjZlIiwic2NvcGUiOiJyb2xlcyBlbWFpbCBpbWFnZV91cmwgcHJvZmlsZSB3ZWItb3JpZ2lucyBiYXNpYyBhY3IifQ.Lc1G6o4vB3zGo-mILSsLQaEWKL1J3ETLrlireKkXdIS6PfqpV5c3ptmIhlmfU7jRt1tNS9seeQ8vtRVZel-4mA\",\n    \"token_type\": \"Bearer\",\n    \"not-before-policy\": 0,\n    \"session_state\": \"62b1df61-a989-4412-a896-a6311ec2c66e\",\n    \"scope\": \"email image_url profile\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Core",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Get Users Except Me",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/users?q=h",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "h"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/users",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"users"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 04 Jul 2025 09:21:54 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": \"ab310f38-7cf6-47d8-a9ec-dc9cb3338e93\",\n        \"firstName\": \"Ahmed\",\n        \"lastName\": \"Emam\",\n        \"email\": \"ahmed.emam@gmail.com\",\n        \"lastSeen\": \"2025-07-03T19:41:58.241\",\n        \"profilePictureUrl\": null,\n        \"online\": false\n    }\n]"
+								},
+								{
+									"name": "success (query)",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/users?q=ahmed ",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"users"
+											],
+											"query": [
+												{
+													"key": "q",
+													"value": "ahmed "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 04 Jul 2025 09:27:54 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": \"ab310f38-7cf6-47d8-a9ec-dc9cb3338e93\",\n        \"firstName\": \"Ahmed\",\n        \"lastName\": \"Emam\",\n        \"email\": \"ahmed.emam@gmail.com\",\n        \"lastSeen\": \"2025-07-03T19:41:58.241\",\n        \"profilePictureUrl\": null,\n        \"online\": false\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Get my details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/users/me",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/users/me",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 10 Aug 2025 04:03:16 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n    \"firstName\": \"Mamdouh\",\n    \"lastName\": \"Mekky\",\n    \"email\": \"mamdouh.mekky@gmail.com\",\n    \"lastSeen\": \"2025-08-10T07:03:16.267\",\n    \"online\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "Update my details",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "firstName",
+											"value": "Mamdouh",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "Mekky",
+											"type": "text"
+										},
+										{
+											"key": "profilePicture",
+											"type": "file",
+											"src": "postman-cloud:///1efd591e-a3f0-4eb0-9c4e-d0c9ebd74959"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/users/me",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "multipart/form-data",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "firstName",
+													"value": "Mamdouh",
+													"type": "text"
+												},
+												{
+													"key": "lastName",
+													"value": "Mekky",
+													"type": "text"
+												},
+												{
+													"key": "profilePicture",
+													"type": "file",
+													"src": "postman-cloud:///1efd591e-a3f0-4eb0-9c4e-d0c9ebd74959"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/users/me",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 15 Aug 2025 05:23:13 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Chats",
+					"item": [
+						{
+							"name": "Create 1-to-1 chat",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats?receiver-id=ab310f38-7cf6-47d8-a9ec-dc9cb3338e93",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats"
+									],
+									"query": [
+										{
+											"key": "receiver-id",
+											"value": "ab310f38-7cf6-47d8-a9ec-dc9cb3338e93"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats?receiver-id=ab310f38-7cf6-47d8-a9ec-dc9cb3338e93",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats"
+											],
+											"query": [
+												{
+													"key": "receiver-id",
+													"value": "ab310f38-7cf6-47d8-a9ec-dc9cb3338e93"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Jul 2025 14:36:34 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"687bad72f2055d4576a8960d\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Create group chat",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Friends for ever",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1efd591e-a3f0-4eb0-9c4e-d0c9ebd74959"
+										},
+										{
+											"key": "receiversIds",
+											"value": "ab310f38-7cf6-47d8-a9ec-dc9cb3338e93, 41cc837f-847c-4532-8eff-714cb5bc2218",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats/group",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats",
+										"group"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "name",
+													"value": "Friends for ever",
+													"type": "text"
+												},
+												{
+													"key": "file",
+													"type": "file",
+													"src": "postman-cloud:///1efd591e-a3f0-4eb0-9c4e-d0c9ebd74959"
+												},
+												{
+													"key": "receiversIds",
+													"value": "ab310f38-7cf6-47d8-a9ec-dc9cb3338e93, 41cc837f-847c-4532-8eff-714cb5bc2218",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/group",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												"group"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 10 Aug 2025 03:21:12 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"content\": \"8a994d8d-369a-469d-8e98-32e36d610670\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get chat list",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n}"
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}"
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 10 Aug 2025 03:57:29 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": \"fcb36942-c3da-41c0-b64f-b2ce48444397\",\n        \"name\": \"Ahmed Emam\",\n        \"isGroupChat\": false,\n        \"unreadCount\": 0,\n        \"lastMessage\": \"Chat created\",\n        \"lastMessageTime\": \"2025-07-25T10:36:29.403\",\n        \"isRecipientOnline\": false,\n        \"senderId\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n        \"receiversId\": [\n            \"ab310f38-7cf6-47d8-a9ec-dc9cb3338e93\"\n        ]\n    },\n    {\n        \"id\": \"8a994d8d-369a-469d-8e98-32e36d610670\",\n        \"name\": \"Friends for ever\",\n        \"isGroupChat\": true,\n        \"chatImageReference\": \"c5c9d2a9f36a494db2db03c8\",\n        \"unreadCount\": 0,\n        \"lastMessage\": \"Chat created\",\n        \"lastMessageTime\": \"2025-08-10T06:21:12.868\",\n        \"isRecipientOnline\": false,\n        \"senderId\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n        \"receiversId\": [\n            \"ab310f38-7cf6-47d8-a9ec-dc9cb3338e93\",\n            \"41cc837f-847c-4532-8eff-714cb5bc2218\"\n        ]\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Update chat details",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Friends for ever\",\r\n    \"description\": \"Group for our ejada friends\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats",
+										":chat-id",
+										"update"
+									],
+									"variable": [
+										{
+											"key": "chat-id",
+											"value": "c34bda8a-f95b-4722-a147-0a406ee26973"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Friends for ever\",\r\n    \"description\": \"Group for our ejada friends\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id",
+												"update"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "d2ab722b-d86b-424e-bce5-d80bd69a285b"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 24 Jul 2025 14:23:34 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"content\": \"d2ab722b-d86b-424e-bce5-d80bd69a285b\"\n}"
+								},
+								{
+									"name": "not allowed for single chat",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"edf\",\r\n    \"description\": \"\",\r\n    \"imageUrl\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id",
+												"update"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "469af40f-1a45-487c-ad72-cf42217bbb7e"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 24 Jul 2025 13:58:39 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"timestamp\": \"2025-07-24T13:58:39.967+00:00\",\n    \"status\": 500,\n    \"error\": \"Internal Server Error\",\n    \"trace\": \"java.lang.RuntimeException: Action not allowed for 1-to-1 chat\\r\\n\\tat com.project.whatsapp.services.impl.ChatServiceImpl.updateGroupChat(ChatServiceImpl.java:126)\\r\\n\\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\\r\\n\\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\\r\\n\\tat org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)\\r\\n\\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:724)\\r\\n\\tat com.project.whatsapp.services.impl.ChatServiceImpl$$SpringCGLIB$$0.updateGroupChat(<generated>)\\r\\n\\tat com.project.whatsapp.controllers.ChatController.updateGroupChat(ChatController.java:53)\\r\\n\\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\\r\\n\\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\\r\\n\\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)\\r\\n\\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)\\r\\n\\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\\r\\n\\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)\\r\\n\\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)\\r\\n\\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\\r\\n\\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)\\r\\n\\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)\\r\\n\\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)\\r\\n\\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:888)\\r\\n\\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat com.project.whatsapp.filters.AuthenticationFilter.doFilterInternal(AuthenticationFilter.java:34)\\r\\n\\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\\r\\n\\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\\r\\n\\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114)\\r\\n\\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\\r\\n\\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\\r\\n\\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\\r\\n\\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)\\r\\n\\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)\\r\\n\\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)\\r\\n\\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)\\r\\n\\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)\\r\\n\\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)\\r\\n\\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)\\r\\n\\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)\\r\\n\\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)\\r\\n\\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)\\r\\n\\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)\\r\\n\\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)\\r\\n\\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)\\r\\n\\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)\\r\\n\\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)\\r\\n\\tat java.base/java.lang.Thread.run(Thread.java:1583)\\r\\n\",\n    \"message\": \"Action not allowed for 1-to-1 chat\",\n    \"path\": \"/api/v1/chats/469af40f-1a45-487c-ad72-cf42217bbb7e/update\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete group chat",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n}"
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats",
+										":chat-id"
+									],
+									"variable": [
+										{
+											"key": "chat-id",
+											"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}"
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 25 Jul 2025 09:28:24 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Chat Users",
+					"item": [
+						{
+							"name": "Get chat users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/users",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats",
+										":chat-id",
+										"users"
+									],
+									"variable": [
+										{
+											"key": "chat-id",
+											"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/users",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id",
+												"users"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 25 Jul 2025 15:26:49 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n        \"fullname\": \"Mamdouh Mekky\",\n        \"admin\": true\n    },\n    {\n        \"id\": \"41cc837f-847c-4532-8eff-714cb5bc2218\",\n        \"fullname\": \"Mohamed Ahmed\",\n        \"imageUrl\": \"https://img.freepik.com/premium-photo/color-user-icon-white-background_961147-8.jpg?w=1380\",\n        \"admin\": false\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Update chat users",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\": \"41cc837f-847c-4532-8eff-714cb5bc2218\",\r\n    \"operation\": \"ADD_NEW_USER\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update-users",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"chats",
+										":chat-id",
+										"update-users"
+									],
+									"variable": [
+										{
+											"key": "chat-id",
+											"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Upgrade user role into admin",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\": \"ab310f38-7cf6-47d8-a9ec-dc9cb3338e93\",\r\n    \"operation\": \"MODIFY_EXISTING_USER_ROLE\",\r\n    \"userRole\": \"ADMIN\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update-users",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id",
+												"update-users"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 25 Jul 2025 06:40:22 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"content\": \"c34bda8a-f95b-4722-a147-0a406ee26973\"\n}"
+								},
+								{
+									"name": "Remove user from group chat",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\": \"41cc837f-847c-4532-8eff-714cb5bc2218\",\r\n    \"operation\": \"REMOVE_EXISTING_USER\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update-users",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id",
+												"update-users"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 25 Jul 2025 07:37:09 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Add new user to group chat",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\": \"41cc837f-847c-4532-8eff-714cb5bc2218\",\r\n    \"operation\": \"ADD_NEW_USER\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/chats/:chat-id/update-users",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"chats",
+												":chat-id",
+												"update-users"
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 25 Jul 2025 09:18:39 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Messages",
+					"item": [
+						{
+							"name": "Send message in chat",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/messages",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Media",
+			"item": [
+				{
+					"name": "Upload media files list",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"/E:/Mohamed Data/Hard Data/Mostafa/Images/pictures/WhatsApp2Plus_Statuses/hot/images/WhatsApp Image 2025-02-08 at 20.45.42_d6d273dd.jpg",
+										"/E:/Mohamed Data/Hard Data/Mostafa/Images/pictures/WhatsApp2Plus_Statuses/hot/images/069mw1e5.jpg",
+										"/E:/Mohamed Data/Hard Data/Mostafa/Images/pictures/WhatsApp2Plus_Statuses/hot/images/yassmin.jpg"
+									]
+								},
+								{
+									"key": "entityId",
+									"value": "USR_{{$guid}}",
+									"type": "text"
+								},
+								{
+									"key": "filePath",
+									"value": "{{$guid}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gateway-url}}/media/api/v1/media",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"media",
+								"api",
+								"v1",
+								"media"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": [
+												"/E:/Mohamed Data/Hard Data/Mostafa/Images/pictures/WhatsApp2Plus_Statuses/hot/images/WhatsApp Image 2025-02-08 at 20.45.42_d6d273dd.jpg",
+												"/E:/Mohamed Data/Hard Data/Mostafa/Images/pictures/WhatsApp2Plus_Statuses/hot/images/069mw1e5.jpg",
+												"/E:/Mohamed Data/Hard Data/Mostafa/Images/pictures/WhatsApp2Plus_Statuses/hot/images/yassmin.jpg"
+											]
+										},
+										{
+											"key": "entityId",
+											"value": "USR_{{$guid}}",
+											"type": "text"
+										},
+										{
+											"key": "filePath",
+											"value": "{{$guid}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{gateway-url}}/media/api/v1/media",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"media",
+										"api",
+										"v1",
+										"media"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "79"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"mediaReferencesList\": [\n        \"9fc2063be7274b44840dacf9\",\n        \"12b15d5df4654723b52aaf5c\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get media files references",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-url}}/media/api/v1/media/list/:entity-id",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"media",
+								"api",
+								"v1",
+								"media",
+								"list",
+								":entity-id"
+							],
+							"variable": [
+								{
+									"key": "entity-id",
+									"value": "USR_471c8874-d69e-4f38-a4ca-bf3b78cc9972"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/media/api/v1/media/list/:entity-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"media",
+										"api",
+										"v1",
+										"media",
+										"list",
+										":entity-id"
+									],
+									"variable": [
+										{
+											"key": "entity-id",
+											"value": "USR_471c8874-d69e-4f38-a4ca-bf3b78cc9972"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "79"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"mediaReferencesList\": [\n        \"9fc2063be7274b44840dacf9\",\n        \"12b15d5df4654723b52aaf5c\"\n    ]\n}"
+						},
+						{
+							"name": "media not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/media/api/v1/media/list/:entity-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"media",
+										"api",
+										"v1",
+										"media",
+										"list",
+										":entity-id"
+									],
+									"variable": [
+										{
+											"key": "entity-id",
+											"value": "USR_471c8874-d69e-4f38-a4ca-bf3b78cc997"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "content-length",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "View media file",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-url}}/media/api/v1/media/:reference",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"media",
+								"api",
+								"v1",
+								"media",
+								":reference"
+							],
+							"variable": [
+								{
+									"key": "reference",
+									"value": "0f7af1efe26c4892bbc8630b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete media file",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-url}}/media/api/v1/media/:reference",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"media",
+								"api",
+								"v1",
+								"media",
+								":reference"
+							],
+							"variable": [
+								{
+									"key": "reference",
+									"value": "9fc2063be7274b44840dacf9"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/media/api/v1/media/:reference",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"media",
+										"api",
+										"v1",
+										"media",
+										":reference"
+									],
+									"variable": [
+										{
+											"key": "reference",
+											"value": "9fc2063be7274b44840dacf9"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "15"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isDone\": true\n}"
+						},
+						{
+							"name": "Not deleted file",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/media/api/v1/media/:reference",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"media",
+										"api",
+										"v1",
+										"media",
+										":reference"
+									],
+									"variable": [
+										{
+											"key": "reference",
+											"value": "9fc2063be7274b44840dacf9"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "16"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isDone\": false\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "username",
+				"value": "mamdouh.mekky@gmail.com",
+				"type": "string"
+			},
+			{
+				"key": "refreshTokenUrl",
+				"value": "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/token",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "M0h@med__412000",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "WhatsappCloneToken",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "password_credentials",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{client-id}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/token",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/auth",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "client-id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "whatsapp-clone-token",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

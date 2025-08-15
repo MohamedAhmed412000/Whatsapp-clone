@@ -1,6 +1,5 @@
 package com.project.whatsapp.domain.dto;
 
-import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import com.project.whatsapp.domain.enums.NotificationTypeEnum;
 import lombok.AllArgsConstructor;
@@ -21,5 +20,5 @@ public class Notification {
     private String chatName;
     private MessageTypeEnum messageType;
     private NotificationTypeEnum notificationType;
-    private List<MediaContentResponse> mediaList;
+    private List<String> mediaReferencesList;
 }

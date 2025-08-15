@@ -1,22 +1,18 @@
 package com.project.whatsapp.services.impl;
 
 import com.project.whatsapp.domain.dto.ChatWithUser;
-import com.project.whatsapp.domain.dto.UserWithRole;
 import com.project.whatsapp.domain.enums.ChatUserRoleEnum;
 import com.project.whatsapp.domain.enums.GroupChatModeEnum;
 import com.project.whatsapp.domain.models.Chat;
 import com.project.whatsapp.domain.models.ChatUser;
 import com.project.whatsapp.domain.models.User;
-import com.project.whatsapp.mappers.UserMapper;
 import com.project.whatsapp.repositories.MessageRepository;
-import com.project.whatsapp.rest.inbound.ChatUserUpdateResource;
 import com.project.whatsapp.rest.inbound.GroupChatUpdateResource;
 import com.project.whatsapp.rest.outbound.ChatResponse;
 import com.project.whatsapp.mappers.ChatMapper;
 import com.project.whatsapp.repositories.ChatRepository;
 import com.project.whatsapp.repositories.ChatUserRepository;
 import com.project.whatsapp.repositories.UserRepository;
-import com.project.whatsapp.rest.outbound.ChatUserResponse;
 import com.project.whatsapp.services.ChatService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +24,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.MissingResourceException;
@@ -45,7 +42,7 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
     private final ChatMapper chatMapper;
     private final MessageRepository messageRepository;
-    private final UserMapper userMapper;
+    private final  MediaServiceImpl mediaServiceImpl;
 
     @Override
     @Cacheable(value = "chats", key = "#root.target.getUserId()")
@@ -63,13 +60,17 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public String createGroupChat(String chatName, String chatImageUrl, String description,
+    public String createGroupChat(String chatName, String description, MultipartFile groupChatProfileFile,
                                    List<String> receiversIds) {
         String senderId = getUserId();
         Chat chat = Chat.builder().id(UUID.randomUUID().toString()).name(chatName).isGroupChat(true)
-            .isNew(true).groupChatMode(GroupChatModeEnum.NORMAL.getValue()).chatImageUrl(null).build();
-        if (chatImageUrl != null) chat.setChatImageUrl(chatImageUrl);
+            .isNew(true).groupChatMode(GroupChatModeEnum.NORMAL.getValue()).chatImageReference(null).build();
         if (description != null) chat.setDescription(description);
+        if (groupChatProfileFile != null) {
+            String groupChatProfilePictureReference = mediaServiceImpl.saveGroupChatProfilePicture(
+                groupChatProfileFile, chat.getId());
+            chat.setChatImageReference(groupChatProfilePictureReference);
+        }
         List<ChatUser> chatUserList = chatUserRepository.saveAll(
             Stream.concat(
                 Stream.of(ChatUser.builder().chatId(chat.getId()).userId(senderId)
@@ -108,8 +109,8 @@ public class ChatServiceImpl implements ChatService {
             .name(senderId + '&' + optionalSender.get().getFullName() + '#' + receiverId + '&' +
                 optionalReceiver.get().getFullName()).isGroupChat(false)
             .isNew(true)
-            .chatImageUrl(senderId + '&' + optionalSender.get().getProfilePictureUrl() + '#' +
-                receiverId + '&' + optionalReceiver.get().getProfilePictureUrl()).build();
+            .chatImageReference(senderId + '&' + optionalSender.get().getProfilePictureReference() + '#' +
+                receiverId + '&' + optionalReceiver.get().getProfilePictureReference()).build();
         ChatUser senderChatUser = ChatUser.builder().chatId(chat.getId())
             .userId(senderId).role(ChatUserRoleEnum.CREATOR).build();
         ChatUser receiverChatUser = ChatUser.builder().chatId(chat.getId())
@@ -129,11 +130,20 @@ public class ChatServiceImpl implements ChatService {
             if (!chat.isGroupChat()) {
                 throw new RuntimeException("Action not allowed for 1-to-1 chat");
             }
-            if (resource.getName() != null) chat.setName(resource.getName());
-            if (resource.getDescription() != null) chat.setDescription(resource.getDescription());
-            if (resource.getImageUrl() != null) chat.setChatImageUrl(resource.getImageUrl());
-            chatRepository.save(chat);
-            return true;
+
+            try {
+                if (resource.getName() != null) chat.setName(resource.getName());
+                if (resource.getDescription() != null) chat.setDescription(resource.getDescription());
+                if (resource.getChatImage() != null) {
+                    String groupChatProfilePictureReference = mediaServiceImpl.updateGroupChatProfilePicture(
+                        chat.getChatImageReference(), resource.getChatImage(), chatId);
+                    chat.setChatImageReference(groupChatProfilePictureReference);
+                }
+                chatRepository.save(chat);
+                return true;
+            } catch (Exception exception) {
+                return false;
+            }
         }
         throw new MissingResourceException("Chat with id " + chatId + " not found", "chat", Chat.class.getName());
     }
@@ -161,14 +171,11 @@ public class ChatServiceImpl implements ChatService {
 
     private List<ChatWithUser> findChatsBySenderId(String senderId) {
         Aggregation aggregation = Aggregation.newAggregation(
-            // 1. Match only current user's chat memberships
             Aggregation.match(Criteria.where("user_id").is(senderId)),
 
-            // 2. Lookup the chat
             Aggregation.lookup("chat", "chat_id", "_id", "chatInfo"),
             Aggregation.unwind("chatInfo"),
 
-            // 3. Add otherUserId only for non-group chats
             Aggregation.addFields()
                 .addField("otherUserId")
                 .withValue(
@@ -187,11 +194,9 @@ public class ChatServiceImpl implements ChatService {
                             LiteralOperators.Literal.asLiteral("2000-01-04T12:00:00Z")))
                 ).build(),
 
-            // 4. Lookup the other user only if it's a non-group chat
             Aggregation.lookup("user", "otherUserId", "_id", "otherUserInfo"),
             Aggregation.unwind("otherUserInfo", true),
 
-            // 5. Project the desired fields
             Aggregation.project()
                 .and("chatInfo").as("chat")
                 .and(

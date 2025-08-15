@@ -1,6 +1,5 @@
 package com.project.whatsapp.controllers;
 
-import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import com.project.whatsapp.rest.inbound.MessageResource;
 import com.project.whatsapp.rest.outbound.BooleanResponse;
 import com.project.whatsapp.rest.outbound.MessageResponse;
@@ -12,7 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/messages")
@@ -24,12 +25,11 @@ public class MessageController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void saveMessage(@RequestBody MessageResource resource) {
-        if (resource.getMessageType().equals(MessageTypeEnum.TEXT)) resource.setMediaResources(List.of());
         messageService.saveMessage(resource);
     }
 
     @GetMapping(value = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MessageResponse>> getChatMessages(
+    public ResponseEntity<Map<Date, List<MessageResponse>>> getChatMessages(
         @PathVariable("chatId") String chatId,
         @RequestParam("page") Integer page
     ) {

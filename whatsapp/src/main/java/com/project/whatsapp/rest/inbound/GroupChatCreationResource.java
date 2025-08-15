@@ -1,9 +1,12 @@
 package com.project.whatsapp.rest.inbound;
 
+import com.project.whatsapp.validators.ValidImageExtension;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,8 +16,9 @@ import java.util.List;
 public class GroupChatCreationResource {
     @NotEmpty
     private String name;
-    private String imageUrl;
     private String description;
-    @NotEmpty(message = "At least one receiver id is required")
+    @ValidImageExtension
+    private MultipartFile file;
+    @Size(min = 1, max = 20, message = "Not allowed number of receivers")
     private List<String> receiversIds;
 }

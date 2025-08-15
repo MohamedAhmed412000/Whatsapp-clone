@@ -1,9 +1,6 @@
 package com.project.whatsapp.rest.outbound;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
-import com.project.whatsapp.domain.dto.RepliedMessage;
-import com.project.whatsapp.domain.enums.MessageStateEnum;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +19,5 @@ public class StarredMessageResponse {
     private MessageTypeEnum type;
     private String senderId;
     private LocalDateTime createdAt;
-    private List<MediaContentResponse> mediaList;
+    private List<String> mediaListReferences;
 }

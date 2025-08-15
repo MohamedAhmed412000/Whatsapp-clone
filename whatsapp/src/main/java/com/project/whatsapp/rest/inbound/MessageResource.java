@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @Builder
@@ -18,5 +16,5 @@ public class MessageResource {
     private String chatId;
     private boolean isForwarded;
     private Long repliedMessageId;
-    private List<MediaUploadResource> mediaResources;
+    private MediaUploadResource mediaResource;
 }

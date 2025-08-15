@@ -1,7 +1,6 @@
 package com.project.whatsapp.rest.outbound;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
 import com.project.whatsapp.domain.dto.RepliedMessage;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
 import com.project.whatsapp.domain.enums.MessageTypeEnum;
@@ -25,5 +24,5 @@ public class MessageResponse {
     private LocalDateTime createdAt;
     private boolean isForwarded;
     private RepliedMessage repliedMessage;
-    private List<MediaContentResponse> mediaList;
+    private List<String> mediaListReferences;
 }

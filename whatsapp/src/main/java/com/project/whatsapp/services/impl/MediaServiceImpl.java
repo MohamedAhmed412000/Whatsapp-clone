@@ -2,15 +2,13 @@ package com.project.whatsapp.services.impl;
 
 import com.project.whatsapp.clients.MediaFeignClient;
 import com.project.whatsapp.clients.dto.inbound.MediaUploadResource;
-import com.project.whatsapp.clients.dto.outbound.MediaContentResponse;
-import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
+import com.project.whatsapp.clients.dto.outbound.MediaUploadResponse;
 import com.project.whatsapp.constants.Application;
-import com.project.whatsapp.domain.enums.MessageTypeEnum;
-import com.project.whatsapp.domain.models.Message;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -21,34 +19,65 @@ public class MediaServiceImpl {
 
     private final MediaFeignClient mediaFeignClient;
 
-    public void saveMessageMedia(
-        MediaUploadResource mediaUploadResource,
-        Message message,
-        String chatId
+    public List<String> saveMessageMediaList(
+        List<MultipartFile> files, String chatId, Long messageId
     ) {
-        mediaFeignClient.saveMedia(
+        ResponseEntity<MediaUploadResponse> response = mediaFeignClient.saveMediaList(
             MediaUploadResource.builder()
-                .file(mediaUploadResource.getFile())
-                .entityId(generateMediaMessageId(message.getId()))
-                .filePath(chatId + File.separator + message.getId().toString())
+                .files(files)
+                .entityId(generateMediaId(Application.MSG_MEDIA_PREFIX, messageId.toString()))
+                .filePath(chatId + File.separator + messageId)
                 .build()
         );
-    }
 
-    public MediaListResponse retrieveMediaContentForMessage(Message message) {
-        MediaListResponse mediaListResponse = new MediaListResponse();
-        if (!message.getMessageType().equals(MessageTypeEnum.TEXT)) {
-            ResponseEntity<MediaContentResponse> response = mediaFeignClient.getMediaContent(
-                generateMediaMessageId(message.getId()));
-            if (response.getStatusCode().is2xxSuccessful()) {
-                assert response.getBody() != null;
-                mediaListResponse.setMediaContentResponses(List.of(response.getBody()));
-            }
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody().getMediaReferencesList();
         }
-        return mediaListResponse;
+        throw new RuntimeException("Error saving media list");
     }
 
-    private String generateMediaMessageId(@NonNull Long messageId) {
-        return Application.MSG_MEDIA_PREFIX + messageId;
+    public String saveUserProfilePicture(MultipartFile file, String userId) {
+        ResponseEntity<MediaUploadResponse> response = mediaFeignClient.saveMediaList(
+            MediaUploadResource.builder()
+                .files(List.of(file))
+                .entityId(generateMediaId(Application.USER_MEDIA_PREFIX, userId))
+                .filePath(userId)
+                .build()
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody().getMediaReferencesList().get(0);
+        }
+        throw new RuntimeException("Error saving media list");
+    }
+
+    public String updateUserProfilePicture(String reference, MultipartFile file, String userId) {
+        if (reference != null)
+            mediaFeignClient.deleteMediaFile(reference);
+        return saveUserProfilePicture(file, userId);
+    }
+
+    public String saveGroupChatProfilePicture(MultipartFile file, String chatId) {
+        ResponseEntity<MediaUploadResponse> response = mediaFeignClient.saveMediaList(
+            MediaUploadResource.builder()
+                .files(List.of(file))
+                .entityId(generateMediaId(Application.CHAT_MEDIA_PREFIX, chatId))
+                .filePath(chatId +  File.separator + "PROFILE")
+                .build()
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody().getMediaReferencesList().get(0);
+        }
+        throw new RuntimeException("Error saving media list");
+    }
+
+    public String updateGroupChatProfilePicture(String reference, MultipartFile file, String chatId) {
+        if (reference != null) mediaFeignClient.deleteMediaFile(reference);
+        return saveGroupChatProfilePicture(file, chatId);
+    }
+
+    private String generateMediaId(@NonNull String prefix, @NonNull String entityId) {
+        return prefix + entityId;
     }
 }

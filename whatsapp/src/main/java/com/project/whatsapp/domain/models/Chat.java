@@ -32,8 +32,8 @@ public class Chat extends BaseModel implements Persistable<String> {
     private int groupChatMode;
     @Field(value = "description")
     private String description;
-    @Field(value = "chat_image_url")
-    private String chatImageUrl;
+    @Field(value = "chat_image_reference")
+    private String chatImageReference;
     @Field(value = "last_message")
     private Message lastMessage;
     @Field(value = "user_ids")
@@ -50,13 +50,13 @@ public class Chat extends BaseModel implements Persistable<String> {
         }
     }
 
-    public String getChatImageUrl(String userId) {
-        if (isGroupChat) return chatImageUrl;
+    public String getChatImageReference(String userId) {
+        if (isGroupChat) return chatImageReference;
         else {
-            String userImageUrl = Arrays.stream(chatImageUrl.split("#")).filter(id ->
-                    !id.startsWith(userId)).findFirst()
-                .map(idWithUrl -> idWithUrl.split("&")[1]).orElseThrow();
-            return userImageUrl.equals("null") ? null : userImageUrl;
+            String userImageReference = Arrays.stream(chatImageReference.split("#")).filter(id ->
+                !id.startsWith(userId)).findFirst().map(idWithReference ->
+                idWithReference.split("&")[1]).orElseThrow();
+            return userImageReference.equals("null") ? null : userImageReference;
         }
     }
 

@@ -1,14 +1,14 @@
 package com.project.whatsapp.controllers;
 
+import com.project.whatsapp.rest.inbound.UserUpdateResource;
+import com.project.whatsapp.rest.outbound.BooleanResponse;
 import com.project.whatsapp.rest.outbound.UserResponse;
 import com.project.whatsapp.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +24,19 @@ public class UserController {
         @RequestParam(value = "q", required = false) String query
     ) {
         return ResponseEntity.ok(userService.getUsers(query));
+    }
+
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponse> getUser() {
+        return ResponseEntity.ok(userService.getMyUserDetails());
+    }
+
+    @PatchMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BooleanResponse> updateUser(
+        @Valid @ModelAttribute UserUpdateResource resource
+    ) {
+        boolean isUpdated = userService.updateUserDetails(resource);
+        return ResponseEntity.ok(new BooleanResponse(isUpdated));
     }
 }

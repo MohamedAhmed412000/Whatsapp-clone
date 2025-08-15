@@ -1,7 +1,9 @@
 package com.project.gateway.config;
 
+import com.project.gateway.constants.Headers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -25,6 +27,7 @@ public class WebSecurityConfig {
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchange -> exchange
                 .pathMatchers(getSwaggerPaths()).permitAll()
+                .pathMatchers("/core/actuator/**", "/media/actuator/**").permitAll()
                 .pathMatchers("/ws/**").permitAll()
                 .pathMatchers("/configuration/ui", "/configuration/security").permitAll()
                 .anyExchange().permitAll()
@@ -44,19 +47,18 @@ public class WebSecurityConfig {
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:4200");
-        config.addAllowedHeader("*");
-//        config.setAllowedHeaders(Arrays.asList(
-//            HttpHeaders.ORIGIN,
-//            HttpHeaders.CONTENT_TYPE,
-//            HttpHeaders.ACCEPT,
-//            HttpHeaders.AUTHORIZATION,
-//            Headers.REQUEST_ID,
-//            Headers.USER_ID,
-//            Headers.USER_EMAIL,
-//            Headers.ACCEPT_WEB_SOCKETS,
-//            HttpHeaders.UPGRADE,
-//            HttpHeaders.CONNECTION
-//        ));
+        config.setAllowedHeaders(Arrays.asList(
+            HttpHeaders.ORIGIN,
+            HttpHeaders.CONTENT_TYPE,
+            HttpHeaders.ACCEPT,
+            HttpHeaders.AUTHORIZATION,
+            Headers.REQUEST_ID,
+            Headers.USER_ID,
+            Headers.USER_EMAIL,
+            Headers.ACCEPT_WEB_SOCKETS,
+            HttpHeaders.UPGRADE,
+            HttpHeaders.CONNECTION
+        ));
         config.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(),
             HttpMethod.PUT.name(), HttpMethod.DELETE.name(), HttpMethod.PATCH.name()));
         source.registerCorsConfiguration("/**", config);
@@ -67,5 +69,4 @@ public class WebSecurityConfig {
         return List.of("/v3/api-docs", "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**",
             "/swagger-ui/**", "/webjars/**", "/swagger-ui.html").toArray(String[]::new);
     }
-
 }

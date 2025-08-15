@@ -1,16 +1,14 @@
 package com.project.whatsapp.clients.dto.outbound;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediaContentResponse {
-    private String name;
-    private Long size;
-    private byte[] data;
+public class MediaUploadResponse {
+    private List<String> mediaReferencesList;
 }

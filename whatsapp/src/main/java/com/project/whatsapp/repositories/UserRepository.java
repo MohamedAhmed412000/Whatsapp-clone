@@ -10,14 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
-    @Query("{ 'email' : ?0 }")
-    Optional<User> findByEmail(String email);
-
     @Query("{ '_id' : ?0 }")
     Optional<User> findByPublicId(String publicId);
-
-    @Query("{ '_id' : { '$in' : ids } }")
-    List<User> findByPublicIds(List<String> ids);
 
     @Query(value = "{ '_id' : { $ne : ?0 } }", sort = "{ 'firstName' : 1, 'lastName' : 1 }")
     List<User> findAllUsersExceptSelf(String id);

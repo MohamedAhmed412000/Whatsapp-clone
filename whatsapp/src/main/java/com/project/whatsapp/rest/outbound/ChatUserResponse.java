@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class ChatUserResponse {
     private String id;
     private String fullname;
-    private String imageUrl;
+    private String imageFileReference;
     private boolean isAdmin;
 }

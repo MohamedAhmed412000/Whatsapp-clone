@@ -16,7 +16,8 @@ public class ChatResponse {
     private String id;
     private String name;
     private String description;
-    private String imageUrl;
+    private Boolean isGroupChat;
+    private String chatImageReference;
     private long unreadCount;
     private String lastMessage;
     private LocalDateTime lastMessageTime;

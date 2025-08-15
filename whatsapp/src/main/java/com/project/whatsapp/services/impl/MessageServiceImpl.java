@@ -1,6 +1,5 @@
 package com.project.whatsapp.services.impl;
 
-import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
 import com.project.whatsapp.domain.dto.Notification;
 import com.project.whatsapp.domain.dto.RepliedMessage;
 import com.project.whatsapp.domain.enums.MessageStateEnum;
@@ -28,11 +27,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,18 +65,24 @@ public class MessageServiceImpl implements MessageService {
                 message.setRepliedMessage(repliedMessage);
             }
         }
-        messageRepository.save(message);
 
-        if (!request.getMessageType().equals(MessageTypeEnum.TEXT)) {
-            request.getMediaResources().forEach(mediaResource ->
-                mediaService.saveMessageMedia(mediaResource, message, request.getChatId()));
+        if (!request.getMessageType().equals(MessageTypeEnum.TEXT) &&
+            !request.getMediaResource().getFiles().isEmpty()) {
+            List<String> references = mediaService.saveMessageMediaList(
+                request.getMediaResource().getFiles(),
+                request.getChatId(),
+                message.getId()
+            );
+            message.setMediaReferencesList(references);
         }
+        messageRepository.save(message);
 
         Chat chat = chatRepository.findById(request.getChatId())
             .orElseThrow(() -> new MissingResourceException(String.format("Chat with id=%s not found",
                 request.getChatId()), Chat.class.getName(), request.getChatId()));
         chat.setLastMessage(message);
         chatRepository.save(chat);
+
         Notification notification = Notification.builder()
             .chatId(chat.getId())
             .chatName(chat.getChatName(senderId))
@@ -91,14 +94,7 @@ public class MessageServiceImpl implements MessageService {
             notification.setContent(message.getContent());
         } else {
             notification.setNotificationType(NotificationTypeEnum.MEDIA);
-            notification.setMediaList(request.getMediaResources().stream().map(
-                mediaResource -> {
-                try {
-                    return messageMapper.toMediaResponse(mediaResource.getFile());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }).toList());
+            notification.setMediaReferencesList(message.getMediaReferencesList());
         }
         notificationService.sendNotification(
             chatUserRepository.getOtherChatUserIds(chat.getId(), senderId),
@@ -108,16 +104,31 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Cacheable(value = "messages", key = "#chatId + '-' + #page")
-    public List<MessageResponse> findChatMessages(String chatId, int page) {
+    public Map<Date, List<MessageResponse>> findChatMessages(String chatId, int page) {
         setLastViewTime(chatId);
         LocalDateTime lastSeenMessageAt = findLastMessageViewedFromAllMembers(chatId);
 
+        Map<Date, List<MessageResponse>> groupedMessagesMap = new HashMap<>();
+        Date messageDate = null;
+        List<MessageResponse> messageResponses = null;
         PageRequest pageRequest = PageRequest.of(page, chatMaxMessagesSize);
-        return messageRepository.findMessagesByChatId(chatId, pageRequest).stream().map(message -> {
-            MediaListResponse mediaListResponse = mediaService.retrieveMediaContentForMessage(message);
-            return messageMapper.toMessageResponse(message, (message.getCreatedAt().isAfter(lastSeenMessageAt))?
-                MessageStateEnum.SENT: MessageStateEnum.SEEN, mediaListResponse.getMediaContentResponses());
-        }).toList();
+        List<Message> messages = messageRepository.findMessagesByChatId(chatId, pageRequest);
+        for(Message message: messages) {
+            if (messageDate == null || !messageDate.equals(Date.from(
+                message.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant()))) {
+                if (messageDate != null) {
+                    groupedMessagesMap.put(messageDate, messageResponses);
+                }
+                messageResponses = new ArrayList<>();
+                messageDate = Date.from(message.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
+            }
+
+            messageResponses.add(
+                messageMapper.toMessageResponse(message, (message.getCreatedAt().isAfter(lastSeenMessageAt))?
+                    MessageStateEnum.SENT: MessageStateEnum.SEEN)
+            );
+        }
+        return groupedMessagesMap;
     }
 
     @Override

@@ -30,6 +30,8 @@ public class Message extends BaseModel {
     private MessageTypeEnum messageType;
     @Field(value = "is_forwarded", targetType = FieldType.BOOLEAN)
     private boolean isForwarded = false;
+    @Field(value = "media_references")
+    private List<String> mediaReferencesList;
     @Field(value = "replied_message")
     private RepliedMessage repliedMessage = null;
     @Field(value = "is_deleted_for_everyone", targetType = FieldType.BOOLEAN)

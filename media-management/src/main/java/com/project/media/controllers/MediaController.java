@@ -22,11 +22,11 @@ public class MediaController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity<MediaReferenceListResponse>> uploadMedia(
-        @RequestPart("file") Flux<FilePart> file,
+        @RequestPart("files") Flux<FilePart> files,
         @RequestPart("filePath") String filePath,
         @RequestPart("entityId") String entityId
     ) {
-        return file.flatMap(filePart -> mediaService.saveMedia(filePart, filePath, entityId))
+        return files.flatMap(filePart -> mediaService.saveMedia(filePart, filePath, entityId))
             .collectList()
             .map(MediaReferenceListResponse::new)
             .map(ResponseEntity::ok);

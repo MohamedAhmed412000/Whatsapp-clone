@@ -1,6 +1,5 @@
 package com.project.whatsapp.services.impl;
 
-import com.project.whatsapp.clients.dto.outbound.MediaListResponse;
 import com.project.whatsapp.domain.models.Message;
 import com.project.whatsapp.domain.models.StarredMessage;
 import com.project.whatsapp.mappers.MessageMapper;
@@ -26,17 +25,13 @@ public class StarredMessageServiceImpl implements StarredMessageService {
 
     private final MongoTemplate mongoTemplate;
     private final StarredMessageRepository starredMessageRepository;
-    private final MediaServiceImpl mediaService;
     private final MessageMapper messageMapper;
 
     @Override
     public List<StarredMessageResponse> findStarredMessages(int page) {
         String userId = getUserId();
-        return findStarredMessagesByUserId(userId, page).stream().map(message -> {
-            MediaListResponse mediaListResponse = mediaService.retrieveMediaContentForMessage(message);
-            return messageMapper.toStarredMessageResponse(message,
-                mediaListResponse.getMediaContentResponses());
-        }).toList();
+        return findStarredMessagesByUserId(userId, page).stream().map(
+            messageMapper::toStarredMessageResponse).toList();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.project.whatsapp.rest.outbound;
 
+import com.project.whatsapp.domain.dto.MobileNumber;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,8 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
+    private MobileNumber mobileNumber;
     private LocalDateTime lastSeen;
     private boolean isOnline;
-    private String profilePictureUrl;
+    private String profilePictureReference;
 }

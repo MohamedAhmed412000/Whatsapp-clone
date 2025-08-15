@@ -30,13 +30,13 @@ public class ChatController {
         return ResponseEntity.ok(new StringResponse(chatId));
     }
 
-    @PostMapping(value = "/group", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/group", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StringResponse> createGroupChat(
-        @Valid @RequestBody GroupChatCreationResource resource
+        @Valid @ModelAttribute GroupChatCreationResource resource
     ) {
-        final String chatId = chatService.createGroupChat(resource.getName(), resource.getImageUrl(),
-            resource.getDescription(), resource.getReceiversIds());
+        final String chatId = chatService.createGroupChat(resource.getName(), resource.getDescription(),
+            resource.getFile(), resource.getReceiversIds());
         return ResponseEntity.ok(new StringResponse(chatId));
     }
 
@@ -45,11 +45,11 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getChatsByReceiverId());
     }
 
-    @PatchMapping(value = "/{chat-id}/update", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PatchMapping(value = "/{chat-id}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BooleanResponse> updateGroupChat(
         @NotEmpty @PathVariable("chat-id") String chatId,
-        @Valid @RequestBody GroupChatUpdateResource resource
+        @Valid @ModelAttribute GroupChatUpdateResource resource
     ) {
         final Boolean isUpdated = chatService.updateGroupChat(chatId, resource);
         return ResponseEntity.ok(new BooleanResponse(isUpdated));

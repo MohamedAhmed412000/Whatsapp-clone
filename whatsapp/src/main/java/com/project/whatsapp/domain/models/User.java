@@ -37,8 +37,8 @@ public class User extends BaseModel {
     private String phoneNumber;
     @Field(value = "last_seen", targetType = FieldType.TIMESTAMP)
     private LocalDateTime lastSeen;
-    @Field(value = "profile_picture_url")
-    private String profilePictureUrl;
+    @Field(value = "profile_picture_reference")
+    private String profilePictureReference;
 
     public boolean isOnlineUser() {
         // last seen => 10:05

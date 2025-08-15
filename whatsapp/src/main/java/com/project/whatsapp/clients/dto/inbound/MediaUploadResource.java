@@ -7,13 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MediaUploadResource {
     @NotEmpty
-    private MultipartFile file;
+    private List<MultipartFile> files;
+    @NotEmpty
     private String entityId;
     @NotEmpty
     private String filePath;
