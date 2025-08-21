@@ -11,11 +11,10 @@ import java.util.Optional;
 @Repository
 public interface ChatUserRepository extends MongoRepository<ChatUser, String> {
 
-    @Query(value = "{ 'chatId' : ?0, 'userId' : ?1 }")
+    @Query(value = "{ 'chat_id' : ?0, 'user_id' : ?1 }")
     Optional<ChatUser> findByChatIdAndUserId(String chatId, String userId);
 
-    @Query(value = "{ 'chatId' : ?0, 'userId' : { '$ne' : ?1 } }", fields = "userId")
+    @Query(value = "{ 'chat_id' : ?0, 'user_id' : { '$ne' : ?1 } }", fields = "userId")
     List<String> getOtherChatUserIds(String chatId, String senderId);
 
-    void deleteByChatIdAndUserId(String chatId, String userId);
 }

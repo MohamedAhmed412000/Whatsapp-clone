@@ -910,16 +910,9 @@
 						},
 						{
 							"name": "Get chat list",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \r\n}"
-								},
 								"url": {
 									"raw": "{{gateway-url}}/core/api/v1/chats",
 									"host": [
@@ -1393,7 +1386,7 @@
 									"variable": [
 										{
 											"key": "chat-id",
-											"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+											"value": "8a994d8d-369a-469d-8e98-32e36d610670"
 										}
 									]
 								}
@@ -1820,6 +1813,35 @@
 							"request": {
 								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "chatId",
+											"value": "51df7853-e905-45db-82dc-aa938208f883",
+											"type": "text"
+										},
+										{
+											"key": "content",
+											"value": "Hello",
+											"type": "text"
+										},
+										{
+											"key": "messageType",
+											"value": "MEDIA",
+											"type": "text"
+										},
+										{
+											"key": "mediaFiles",
+											"type": "file",
+											"src": [
+												"postman-cloud:///1efd591e-a3f0-4eb0-9c4e-d0c9ebd74959",
+												"postman-cloud:///1f06eb62-1564-4310-b6d6-3cf7a4632e81",
+												"postman-cloud:///1efd591e-e3b9-40b0-8308-cd9d6e5bd265"
+											]
+										}
+									]
+								},
 								"url": {
 									"raw": "{{gateway-url}}/core/api/v1/messages",
 									"host": [
@@ -1833,7 +1855,1887 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "success (text message)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "chatId",
+													"value": "51df7853-e905-45db-82dc-aa938208f883",
+													"type": "text"
+												},
+												{
+													"key": "content",
+													"value": "Hello",
+													"type": "text"
+												},
+												{
+													"key": "messageType",
+													"value": "TEXT",
+													"type": "text"
+												}
+											],
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/messages",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"messages"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 15 Aug 2025 08:43:25 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": null
+								},
+								{
+									"name": "success (media message)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "chatId",
+													"value": "51df7853-e905-45db-82dc-aa938208f883",
+													"type": "text"
+												},
+												{
+													"key": "content",
+													"value": "Hello",
+													"type": "text"
+												},
+												{
+													"key": "messageType",
+													"value": "MEDIA",
+													"type": "text"
+												},
+												{
+													"key": "mediaFiles",
+													"type": "file",
+													"src": [
+														"postman-cloud:///1efd591e-a3f0-4eb0-9c4e-d0c9ebd74959",
+														"postman-cloud:///1f06eb62-1564-4310-b6d6-3cf7a4632e81",
+														"postman-cloud:///1efd591e-e3b9-40b0-8308-cd9d6e5bd265"
+													]
+												}
+											]
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/messages",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"messages"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 15 Aug 2025 11:35:32 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": null
+								}
+							]
+						},
+						{
+							"name": "Get chat messages by page",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/messages/chat/:chat-id?page=0",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"messages",
+										"chat",
+										":chat-id"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										}
+									],
+									"variable": [
+										{
+											"key": "chat-id",
+											"value": "51df7853-e905-45db-82dc-aa938208f883"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/messages/chat/:chat-id?page=0",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"messages",
+												"chat",
+												":chat-id"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												}
+											],
+											"variable": [
+												{
+													"key": "chat-id",
+													"value": "51df7853-e905-45db-82dc-aa938208f883"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:07:50 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"2025-08-15\": [\n        {\n            \"id\": 1755250373935,\n            \"content\": \"صباح الخير\",\n            \"type\": \"TEXT\",\n            \"state\": \"SEEN\",\n            \"senderId\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n            \"createdAt\": \"2025-08-15T12:32:53.935\",\n            \"forwarded\": false\n        }\n    ],\n    \"2025-08-21\": [\n        {\n            \"id\": 1755749259351,\n            \"content\": \"Hello\",\n            \"type\": \"MEDIA\",\n            \"state\": \"SENT\",\n            \"senderId\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n            \"createdAt\": \"2025-08-21T07:07:39.351\",\n            \"mediaListReferences\": [\n                \"72c7e3d6fe3943ed83bb1d6e\",\n                \"bbb07b4bf8db4149a8d4dcb5\",\n                \"139d6548a5274cceaf05ecc2\"\n            ],\n            \"forwarded\": false\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Update message by id",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"صباح الخير\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/messages/:message-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"messages",
+										":message-id"
+									],
+									"variable": [
+										{
+											"key": "message-id",
+											"value": "1755250373935"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"content\": \"Hi\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/messages/:message-id",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"messages",
+												":message-id"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755250373935"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 19 Aug 2025 03:07:41 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete message by id",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/messages/:message-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"messages",
+										":message-id"
+									],
+									"query": [
+										{
+											"key": "delete-for-everyone",
+											"value": "false",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "message-id",
+											"value": "1755749259351"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/messages/:message-id",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"messages",
+												":message-id"
+											],
+											"query": [
+												{
+													"key": "delete-for-everyone",
+													"value": "false",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:08:03 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Starred Messages",
+					"item": [
+						{
+							"name": "Star message",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/star-message",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"starred-messages",
+										":message-id",
+										"star-message"
+									],
+									"variable": [
+										{
+											"key": "message-id",
+											"value": "1755749259351"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/star-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"star-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:22:26 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "Unstar message",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"starred-messages",
+										":message-id",
+										"unstar-message"
+									],
+									"variable": [
+										{
+											"key": "message-id",
+											"value": "1755749259351"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								},
+								{
+									"name": "Unstar message",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages/:message-id/unstar-message",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages",
+												":message-id",
+												"unstar-message"
+											],
+											"variable": [
+												{
+													"key": "message-id",
+													"value": "1755749259351"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:36:14 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"done\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "Get starred messages by page",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/core/api/v1/starred-messages?page=0",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"core",
+										"api",
+										"v1",
+										"starred-messages"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/starred-messages?page=0",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"starred-messages"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 21 Aug 2025 04:34:12 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1755749259351,\n        \"content\": \"Hello\",\n        \"type\": \"MEDIA\",\n        \"senderId\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n        \"createdAt\": \"2025-08-21T07:07:39.351\",\n        \"mediaListReferences\": [\n            \"72c7e3d6fe3943ed83bb1d6e\",\n            \"bbb07b4bf8db4149a8d4dcb5\",\n            \"139d6548a5274cceaf05ecc2\"\n        ]\n    }\n]"
+								}
+							]
 						}
 					]
 				}
@@ -2194,7 +4096,7 @@
 							"variable": [
 								{
 									"key": "reference",
-									"value": "0f7af1efe26c4892bbc8630b"
+									"value": "12d92e09bb14420ab7da2b28"
 								}
 							]
 						}
@@ -2479,13 +4381,11 @@
 	"variable": [
 		{
 			"key": "client-id",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
 			"key": "whatsapp-clone-token",
-			"value": "",
-			"type": "default"
+			"value": ""
 		}
 	]
 }

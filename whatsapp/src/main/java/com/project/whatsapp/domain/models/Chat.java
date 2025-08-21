@@ -26,6 +26,7 @@ public class Chat extends BaseModel implements Persistable<String> {
     private String id = UUID.randomUUID().toString();
     @Field(value = "name")
     private String name;
+    @Builder.Default
     @Field(value = "is_group_chat", targetType = FieldType.BOOLEAN)
     private boolean isGroupChat = false;
     @Field(value = "group_chat_mode")
@@ -62,7 +63,8 @@ public class Chat extends BaseModel implements Persistable<String> {
 
     public String getLastMessage() {
         if (lastMessage == null) return "Chat created";
-        if (lastMessage.getMessageType().equals(MessageTypeEnum.TEXT)) return lastMessage.getContent();
+        if (lastMessage.getMessageType().equals(MessageTypeEnum.TEXT))
+            return lastMessage.getContent().getContent();
         return "Attachment";
     }
 

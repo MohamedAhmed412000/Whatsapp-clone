@@ -65,8 +65,7 @@ public class StarredMessageServiceImpl implements StarredMessageService {
             Aggregation.match(Criteria.where("user_id").is(userId)),
             Aggregation.lookup("message", "message_id", "_id", "messageInfo"),
             Aggregation.unwind("messageInfo"),
-            Aggregation.project()
-                .and("messageInfo").as("message"),
+            Aggregation.replaceRoot("messageInfo"),
             Aggregation.skip((long) page * PAGE_SIZE),
             Aggregation.limit(PAGE_SIZE)
         );

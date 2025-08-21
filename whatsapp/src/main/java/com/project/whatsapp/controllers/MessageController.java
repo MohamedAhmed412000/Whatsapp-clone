@@ -1,6 +1,7 @@
 package com.project.whatsapp.controllers;
 
 import com.project.whatsapp.rest.inbound.MessageResource;
+import com.project.whatsapp.rest.inbound.MessageUpdateResource;
 import com.project.whatsapp.rest.outbound.BooleanResponse;
 import com.project.whatsapp.rest.outbound.MessageResponse;
 import com.project.whatsapp.services.MessageService;
@@ -11,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -22,30 +23,31 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveMessage(@RequestBody MessageResource resource) {
+    public void saveMessage(@Valid @ModelAttribute MessageResource resource) {
         messageService.saveMessage(resource);
     }
 
     @GetMapping(value = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Date, List<MessageResponse>>> getChatMessages(
+    public ResponseEntity<Map<LocalDate, List<MessageResponse>>> getChatMessages(
         @PathVariable("chatId") String chatId,
         @RequestParam("page") Integer page
     ) {
         return ResponseEntity.ok(messageService.findChatMessages(chatId, page));
     }
 
-    @PatchMapping(value = "/{message-id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{message-id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BooleanResponse> editMessage(
         @PathVariable("message-id") Long messageId,
-        @Valid @RequestBody String messageContent
+        @Valid @RequestBody MessageUpdateResource resource
     ) {
-        boolean isUpdated = messageService.editMessage(messageId, messageContent);
+        boolean isUpdated = messageService.editMessage(messageId, resource);
         return ResponseEntity.ok(new BooleanResponse(isUpdated));
     }
 
-    @DeleteMapping(value = "/{message-id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{message-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BooleanResponse> deleteMessage(
         @PathVariable("message-id") Long messageId,
         @RequestParam(value = "delete-for-everyone", defaultValue = "false") boolean deleteForEveryone

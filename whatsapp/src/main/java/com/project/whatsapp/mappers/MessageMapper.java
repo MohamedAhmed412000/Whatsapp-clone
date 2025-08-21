@@ -12,25 +12,25 @@ public class MessageMapper {
     public MessageResponse toMessageResponse(Message message, MessageStateEnum state) {
         return MessageResponse.builder()
             .id(message.getId())
-            .content(message.getContent())
+            .content(message.getContent().getContent())
             .type(message.getMessageType())
             .state(state)
             .senderId(message.getSenderId())
             .createdAt(message.getCreatedAt())
             .isForwarded(message.isForwarded())
             .repliedMessage(message.getRepliedMessage())
-            .mediaListReferences(message.getMediaReferencesList())
+            .mediaListReferences(message.getContent().getMediaReferences())
             .build();
     }
 
     public StarredMessageResponse toStarredMessageResponse(Message message) {
         return StarredMessageResponse.builder()
             .id(message.getId())
-            .content(message.getContent())
+            .content(message.getContent().getContent())
             .type(message.getMessageType())
             .senderId(message.getSenderId())
             .createdAt(message.getCreatedAt())
-            .mediaListReferences(message.getMediaReferencesList())
+            .mediaListReferences(message.getContent().getMediaReferences())
             .build();
     }
 

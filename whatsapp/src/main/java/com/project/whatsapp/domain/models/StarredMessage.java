@@ -3,9 +3,9 @@ package com.project.whatsapp.domain.models;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,8 +17,8 @@ import java.util.UUID;
 public class StarredMessage extends BaseModel {
     @MongoId
     @Field(value = "_id")
-    private Long id;
-    @Field(value = "message_id")
+    private String id = UUID.randomUUID().toString();
+    @Field(value = "message_id", targetType = FieldType.INT64)
     private Long messageId;
     @Field(value = "user_id")
     private String userId;

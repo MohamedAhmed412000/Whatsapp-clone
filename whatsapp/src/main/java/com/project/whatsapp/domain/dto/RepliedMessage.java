@@ -13,7 +13,7 @@ public class RepliedMessage {
     @Field(value = "_id", targetType = FieldType.INT64)
     private Long id;
     @Field(value = "content")
-    private String content;
+    private MessageContent content;
     @Field(value = "message_type")
     private MessageTypeEnum messageType;
 
