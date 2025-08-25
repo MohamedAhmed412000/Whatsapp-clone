@@ -1,0 +1,27 @@
+package com.project.core.rest.outbound;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ChatResponse {
+    private String id;
+    private String name;
+    private String description;
+    private Boolean isGroupChat;
+    private String chatImageReference;
+    private long unreadCount;
+    private String lastMessage;
+    private LocalDateTime lastMessageTime;
+    private Boolean isRecipientOnline;
+    private String senderId;
+    private List<String> receiversId;
+}

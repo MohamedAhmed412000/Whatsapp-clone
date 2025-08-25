@@ -11,6 +11,8 @@ eureka:
       defaultZone: "http://localhost:8090/eureka/"
 
 spring:
+  main:
+    web-application-type: reactive
   security:
     oauth2:
       resourceserver:

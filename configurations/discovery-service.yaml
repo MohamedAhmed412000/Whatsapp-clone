@@ -1,6 +1,10 @@
 server:
   port: 8090
 
+spring:
+  main:
+    web-application-type: servlet
+
 eureka:
   instance:
     hostname: "localhost"

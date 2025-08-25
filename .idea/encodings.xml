@@ -5,6 +5,9 @@
     <file url="file://$PROJECT_DIR$/discovery-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gateway-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/media-management/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/whatsapp-pom/commons/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/whatsapp-pom/commons/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/whatsapp-pom/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/whatsapp/src/main/java" charset="UTF-8" />
   </component>
 </project>

@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   webflux:
     multipart:
       max-file-size: 50MB
