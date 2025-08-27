@@ -8,9 +8,9 @@
 		<version>0.0.1-SNAPSHOT</version>
         <relativePath>../whatsapp-pom/pom.xml</relativePath>
 	</parent>
-    <artifactId>whatsapp</artifactId>
+    <artifactId>core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>whatsapp</name>
+	<name>core</name>
 	<description>Core microservice to serve all WhatsApp core functionality</description>
     <packaging>jar</packaging>
     <developers>
