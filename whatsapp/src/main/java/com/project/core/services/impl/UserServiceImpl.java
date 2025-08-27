@@ -1,6 +1,7 @@
 package com.project.core.services.impl;
 
 import com.project.core.domain.models.User;
+import com.project.core.exceptions.UserNotFoundException;
 import com.project.core.mappers.UserMapper;
 import com.project.core.repositories.UserRepository;
 import com.project.core.rest.inbound.UserUpdateResource;
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getMyUserDetails() {
         String userId = getUserId();
         Optional<User> userOptional = userRepository.findByPublicId(userId);
-        if (userOptional.isEmpty()) throw new RuntimeException("User not found");
+        if (userOptional.isEmpty()) throw new UserNotFoundException("User not found");
         return userMapper.toUserResponse(userOptional.get(), true);
     }
 
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public boolean updateUserDetails(UserUpdateResource resource) {
         String userId = getUserId();
         Optional<User> userOptional = userRepository.findByPublicId(userId);
-        if (userOptional.isEmpty()) throw new RuntimeException("User not found");
+        if (userOptional.isEmpty()) throw new UserNotFoundException("User not found");
         User user = userOptional.get();
 
         try {

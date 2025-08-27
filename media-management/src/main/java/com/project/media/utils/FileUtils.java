@@ -1,5 +1,8 @@
 package com.project.media.utils;
 
+import com.project.media.exceptions.FileCreationException;
+import com.project.media.exceptions.FileDeletionException;
+import com.project.media.exceptions.FileNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -26,8 +29,8 @@ public class FileUtils {
             return new UrlResource(file.toUri());
         } catch (Exception ex) {
             log.error("No file found at {}", fileUploadFullPath, ex);
+            throw new FileNotFoundException("No file found at " + fileUploadFullPath, ex);
         }
-        return null;
     }
 
     public static byte[] readLocalFile(String mediaBasePath,  String reference, String fileName) {
@@ -38,8 +41,8 @@ public class FileUtils {
             return Files.readAllBytes(file);
         } catch (Exception ex) {
             log.error("No file found at {}", fileUploadFullPath, ex);
+            throw new FileNotFoundException("No file found at " + fileUploadFullPath, ex);
         }
-        return new byte[0];
     }
 
     public static Mono<String> saveLocalFile(FilePart filePart, String mediaBasePath, String relativePath) {
@@ -53,7 +56,7 @@ public class FileUtils {
 
         if (!uploadDir.exists() && !uploadDir.mkdirs()) {
             log.error("Error creating upload directory");
-            return Mono.error(new RuntimeException("Could not create upload directory"));
+            return Mono.error(new FileCreationException("Could not create upload directory"));
         }
 
         return filePart.transferTo(targetPath)
@@ -62,7 +65,7 @@ public class FileUtils {
                 return fileName;
             }))
             .onErrorResume(ex -> {
-                log.error("File wasn't saved with error: ", ex);
+                log.error("File not saved", ex);
                 return Mono.error(ex);
             });
     }
@@ -78,7 +81,7 @@ public class FileUtils {
             return file.delete();
         } catch (Exception ex) {
             log.error("Error deleting file at {}", fileFullPath, ex);
-            throw new RuntimeException(ex);
+            throw new FileDeletionException("File not deleted", ex);
         }
     }
 

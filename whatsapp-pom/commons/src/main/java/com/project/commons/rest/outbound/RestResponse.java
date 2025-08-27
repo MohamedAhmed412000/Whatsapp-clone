@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"header", "body"})
+@JsonPropertyOrder({"headers", "body"})
 public class RestResponse {
-    @JsonProperty("header")
+    @JsonProperty("headers")
     private Header header;
     @JsonProperty("body")
     private Object body;

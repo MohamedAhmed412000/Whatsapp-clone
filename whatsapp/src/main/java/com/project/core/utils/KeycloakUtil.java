@@ -1,5 +1,6 @@
 package com.project.core.utils;
 
+import com.project.core.exceptions.UserNotFoundException;
 import lombok.Data;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -43,7 +44,7 @@ public class KeycloakUtil {
     ) {
         UserResource userResource = keycloak.realm(realm).users().get(userId);
         if (userResource == null) {
-            throw new RuntimeException("User not found");
+            throw new UserNotFoundException("User not found");
         }
 
         UserRepresentation user = userResource.toRepresentation();

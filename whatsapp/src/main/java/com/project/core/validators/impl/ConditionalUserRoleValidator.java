@@ -14,7 +14,7 @@ public class ConditionalUserRoleValidator implements ConstraintValidator<ValidRe
             return false;
         }
 
-        if (value.getOperation() == ChatUserOperationEnum.MODIFY_EXISTING_USER_ROLE
+        if (value.getOperation().equals(ChatUserOperationEnum.MODIFY_EXISTING_USER_ROLE)
             && value.getUserRole() == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("userRole is required when operation is MODIFY_EXISTING_USER_ROLE")

@@ -1,6 +1,7 @@
 package com.project.core.rest.inbound;
 
 import com.project.core.domain.enums.MessageTypeEnum;
+import com.project.core.validators.ValidResourceWhenCreateMessage;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Validated
+@ValidResourceWhenCreateMessage
 public class MessageResource {
     private String content;
     @NotNull

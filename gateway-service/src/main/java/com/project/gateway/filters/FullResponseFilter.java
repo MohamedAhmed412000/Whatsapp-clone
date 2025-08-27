@@ -13,6 +13,8 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -22,6 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -32,9 +35,10 @@ public class FullResponseFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
+        MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
         if (path.contains("/swagger") || path.contains("/api-docs") || path.contains("/v3/api-docs") ||
             path.contains("/webjars") || path.endsWith(".css") || path.endsWith(".js") ||
-            path.endsWith(".html")) {
+            path.endsWith(".html") || !Objects.equals(mediaType, MediaType.APPLICATION_JSON)) {
             return chain.filter(exchange);
         }
 

@@ -6,6 +6,7 @@ import com.project.core.rest.outbound.BooleanResponse;
 import com.project.core.rest.outbound.MessageResponse;
 import com.project.core.services.MessageService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class MessageController {
 
     @GetMapping(value = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<LocalDate, List<MessageResponse>>> getChatMessages(
-        @PathVariable("chatId") String chatId,
+        @NotEmpty @PathVariable("chatId") String chatId,
         @RequestParam("page") Integer page
     ) {
         return ResponseEntity.ok(messageService.findChatMessages(chatId, page));
@@ -40,7 +41,7 @@ public class MessageController {
     @PatchMapping(value = "/{message-id}", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BooleanResponse> editMessage(
-        @PathVariable("message-id") Long messageId,
+        @NotEmpty @PathVariable("message-id") Long messageId,
         @Valid @RequestBody MessageUpdateResource resource
     ) {
         boolean isUpdated = messageService.editMessage(messageId, resource);
@@ -49,7 +50,7 @@ public class MessageController {
 
     @DeleteMapping(value = "/{message-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BooleanResponse> deleteMessage(
-        @PathVariable("message-id") Long messageId,
+        @NotEmpty @PathVariable("message-id") Long messageId,
         @RequestParam(value = "delete-for-everyone", defaultValue = "false") boolean deleteForEveryone
     ) {
         boolean isUpdated = messageService.deleteMessage(messageId, deleteForEveryone);

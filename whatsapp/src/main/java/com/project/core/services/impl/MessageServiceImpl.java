@@ -7,6 +7,9 @@ import com.project.core.domain.enums.MessageStateEnum;
 import com.project.core.domain.enums.MessageTypeEnum;
 import com.project.core.domain.enums.NotificationTypeEnum;
 import com.project.core.domain.models.*;
+import com.project.core.exceptions.ChatNotFoundException;
+import com.project.core.exceptions.DeleteActionNotAllowedException;
+import com.project.core.exceptions.UpdateActionNotAllowedException;
 import com.project.core.mappers.MessageMapper;
 import com.project.core.repositories.ChatRepository;
 import com.project.core.repositories.ChatUserRepository;
@@ -87,8 +90,8 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.save(message);
 
         Chat chat = chatRepository.findById(request.getChatId())
-            .orElseThrow(() -> new MissingResourceException(String.format("Chat with id=%s not found",
-                request.getChatId()), Chat.class.getName(), request.getChatId()));
+            .orElseThrow(() -> new ChatNotFoundException(String.format("Chat with id [%s] not found",
+                request.getChatId())));
         chat.setLastMessage(message);
         chatRepository.save(chat);
 
@@ -159,7 +162,7 @@ public class MessageServiceImpl implements MessageService {
             if (!message.getSenderId().equals(userId) ||
                 !message.getMessageType().equals(MessageTypeEnum.TEXT)
             ) {
-                throw new RuntimeException("This action isn't allowed for this message");
+                throw new UpdateActionNotAllowedException("This action isn't allowed for this message");
             }
             MessageContent messageContentObject = message.getContent();
             messageContentObject.setContent(resource.getContent());
@@ -177,7 +180,7 @@ public class MessageServiceImpl implements MessageService {
         if (messageOptional.isPresent()) {
             Message message = messageOptional.get();
             if (!message.getSenderId().equals(userId)) {
-                throw new RuntimeException("This action isn't allowed for this message");
+                throw new DeleteActionNotAllowedException("This action isn't allowed for this message");
             }
             if (deleteForEveryone) {
                 message.setDeletedForEveryone(true);
@@ -194,8 +197,6 @@ public class MessageServiceImpl implements MessageService {
 
     private void setLastViewTime(String chatId) {
         String userId = getUserId();
-        System.out.println(chatId);
-        System.out.println(userId);
         ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(chatId, userId)
             .orElseThrow(() -> new IllegalStateException("User is not member in this chat"));
         chatUser.setLastSeenMessageAt(LocalDateTime.now());

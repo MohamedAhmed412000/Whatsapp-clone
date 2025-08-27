@@ -4,6 +4,7 @@ import com.project.core.clients.MediaFeignClient;
 import com.project.core.clients.dto.inbound.MediaUploadResource;
 import com.project.core.clients.dto.outbound.MediaUploadResponse;
 import com.project.core.constants.Application;
+import com.project.core.exceptions.MediaUploadException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class MediaServiceImpl {
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             return response.getBody().getMediaReferencesList();
         }
-        throw new RuntimeException("Error saving media list");
+        throw new MediaUploadException("Error saving media list");
     }
 
     public String saveUserProfilePicture(MultipartFile file, String userId) {
@@ -48,7 +49,7 @@ public class MediaServiceImpl {
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             return response.getBody().getMediaReferencesList().get(0);
         }
-        throw new RuntimeException("Error saving media list");
+        throw new MediaUploadException("Error saving media list");
     }
 
     public String updateUserProfilePicture(String reference, MultipartFile file, String userId) {
@@ -69,7 +70,7 @@ public class MediaServiceImpl {
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             return response.getBody().getMediaReferencesList().get(0);
         }
-        throw new RuntimeException("Error saving media list");
+        throw new MediaUploadException("Error saving media list");
     }
 
     public String updateGroupChatProfilePicture(String reference, MultipartFile file, String chatId) {

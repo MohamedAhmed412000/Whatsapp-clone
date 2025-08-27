@@ -2,6 +2,7 @@ package com.project.media.services.impl;
 
 import com.project.media.domain.dto.MediaResourceDto;
 import com.project.media.domain.models.Media;
+import com.project.media.exceptions.MediaNotFoundException;
 import com.project.media.repositories.CustomMediaRepository;
 import com.project.media.repositories.MediaRepository;
 import com.project.media.services.MediaService;
@@ -55,7 +56,7 @@ public class LocalMediaServiceImpl implements MediaService {
             .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list))
             .onErrorResume(e -> {
                 log.error("Error fetching media content for entityId: {}", entityId, e);
-                return Mono.error(new RuntimeException("Failed to fetch media content", e));
+                return Mono.error(new MediaNotFoundException("Failed to fetch media content", e));
             });
     }
 
@@ -74,7 +75,7 @@ public class LocalMediaServiceImpl implements MediaService {
                 return new MediaResourceDto(resource, resolveMediaType(media.getName()));
             }).onErrorResume(e -> {
                 log.error("Error fetching media content for reference: {}", reference, e);
-                return Mono.error(new RuntimeException("Failed to fetch media content", e));
+                return Mono.error(new MediaNotFoundException("Failed to fetch media content", e));
             });
     }
 

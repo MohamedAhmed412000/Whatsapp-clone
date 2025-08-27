@@ -5,6 +5,7 @@ import com.project.core.domain.enums.ChatUserRoleEnum;
 import com.project.core.domain.enums.GroupChatModeEnum;
 import com.project.core.domain.models.Chat;
 import com.project.core.domain.models.ChatUser;
+import com.project.core.exceptions.*;
 import com.project.core.mappers.UserMapper;
 import com.project.core.repositories.ChatRepository;
 import com.project.core.repositories.ChatUserRepository;
@@ -42,7 +43,7 @@ public class ChatUserServiceImpl implements ChatUserService {
     public Boolean updateGroupChatUsers(String chatId, ChatUserUpdateResource resource) {
         Optional<Chat> chatOptional = chatRepository.findById(chatId);
         if (chatOptional.isEmpty() || !chatOptional.get().isGroupChat()) {
-            throw new RuntimeException("Chat with id " + chatId + " isn't allowed for this operation.");
+            throw new UpdateActionNotAllowedException("Chat with id " + chatId + " isn't allowed for this operation.");
         }
         Chat chat = chatOptional.get();
         Optional<ChatUser> meChatUserOptional = chatUserRepository.findByChatIdAndUserId(chatId, getUserId());
@@ -60,13 +61,13 @@ public class ChatUserServiceImpl implements ChatUserService {
                     break;
             }
         }
-        throw new RuntimeException("The user doesn't exist in the chat");
+        throw new UserNotExistInChatException("The user doesn't exist in the chat");
     }
 
     private Boolean modifyExistingChatUserRole(Chat chat, ChatUser meChatUser,
                                                String userId, ChatUserRoleEnum role) {
         if (meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER)) {
-            throw new RuntimeException("You are not allowed to modify group chat user role");
+            throw new UpdateActionNotAllowedException("You are not allowed to modify group chat user role");
         }
 
         Optional<ChatUser> newChatUserOptional = chatUserRepository.findByChatIdAndUserId(chat.getId(), userId);
@@ -74,10 +75,10 @@ public class ChatUserServiceImpl implements ChatUserService {
             ChatUser newChatUser = newChatUserOptional.get();
             if (newChatUser.getRole().equals(ChatUserRoleEnum.CREATOR) ||
                 role.equals(ChatUserRoleEnum.CREATOR)) {
-                throw new RuntimeException("You aren't allowed to change to or from the creator role");
+                throw new InsufficientRolesException("You aren't allowed to change to or from the creator role");
             }
             if (newChatUser.getRole().equals(role)) {
-                throw new RuntimeException("User already have the same role");
+                throw new UserAlreadyHaveRoleException("User already have the same role");
             }
             newChatUser.setRole(role);
             chatUserRepository.save(newChatUser);
@@ -90,17 +91,17 @@ public class ChatUserServiceImpl implements ChatUserService {
         if ((chat.getGroupChatMode() == GroupChatModeEnum.USERS_MODIFICATION_RESTRICTED.getValue() ||
             chat.getGroupChatMode() == GroupChatModeEnum.ADMIN_RESTRICTED.getValue()) &&
             (meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER))) {
-            throw new RuntimeException("You are not allowed to remove group chat user");
+            throw new DeleteActionNotAllowedException("You are not allowed to remove group chat user");
         }
 
         Optional<ChatUser> newChatUserOptional = chatUserRepository.findByChatIdAndUserId(chat.getId(), userId);
         if (newChatUserOptional.isPresent()) {
             if(newChatUserOptional.get().getRole().equals(ChatUserRoleEnum.CREATOR)) {
-                throw new RuntimeException("You are not allowed to remove group chat creator");
+                throw new InsufficientRolesException("You are not allowed to remove group chat creator");
             }
             if (newChatUserOptional.get().getRole().equals(ChatUserRoleEnum.ADMIN) &&
                 meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER)) {
-                throw new RuntimeException("You are not allowed to remove group chat admin");
+                throw new InsufficientRolesException("You are not allowed to remove group chat admin");
             }
             chat.setUserIds(chat.getUserIds().stream().filter(uId -> !uId.equals(userId)).toList());
             chatRepository.save(chat);
@@ -114,10 +115,10 @@ public class ChatUserServiceImpl implements ChatUserService {
         if ((chat.getGroupChatMode() == GroupChatModeEnum.USERS_MODIFICATION_RESTRICTED.getValue() ||
             chat.getGroupChatMode() == GroupChatModeEnum.ADMIN_RESTRICTED.getValue()) &&
             (meChatUser.getRole().equals(ChatUserRoleEnum.MEMBER))) {
-            throw new RuntimeException("You are not allowed to add group chat user");
+            throw new InsufficientRolesException("You are not allowed to add group chat user");
         }
         if (chat.getUserIds().contains(userId)) {
-            throw new RuntimeException("User already exists in this group chat");
+            throw new UserAlreadyExistsInTheChatException("User already exists in this group chat");
         }
 
         try {

@@ -3,6 +3,7 @@ package com.project.core.controllers;
 import com.project.core.rest.outbound.BooleanResponse;
 import com.project.core.rest.outbound.StarredMessageResponse;
 import com.project.core.services.StarredMessageService;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class StarredMessageController {
 
     @PostMapping(value = "/{message-id}/star-message")
     public ResponseEntity<BooleanResponse> starMessage(
-        @PathVariable("message-id") Long messageId
+        @NotEmpty @PathVariable("message-id") Long messageId
     ) {
         boolean isStarred = starredMessageService.starMessage(messageId);
         return ResponseEntity.ok(new BooleanResponse(isStarred));
@@ -34,7 +35,7 @@ public class StarredMessageController {
 
     @PostMapping(value = "/{message-id}/unstar-message")
     public ResponseEntity<BooleanResponse> unstarMessage(
-        @PathVariable("message-id") Long messageId
+        @NotEmpty @PathVariable("message-id") Long messageId
     ) {
         boolean isStarred = starredMessageService.unstarMessage(messageId);
         return ResponseEntity.ok(new BooleanResponse(isStarred));

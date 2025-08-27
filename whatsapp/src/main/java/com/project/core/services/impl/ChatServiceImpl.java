@@ -6,6 +6,10 @@ import com.project.core.domain.enums.GroupChatModeEnum;
 import com.project.core.domain.models.Chat;
 import com.project.core.domain.models.ChatUser;
 import com.project.core.domain.models.User;
+import com.project.core.exceptions.ChatNotFoundException;
+import com.project.core.exceptions.DeleteActionNotAllowedException;
+import com.project.core.exceptions.UpdateActionNotAllowedException;
+import com.project.core.exceptions.UserNotFoundException;
 import com.project.core.repositories.MessageRepository;
 import com.project.core.rest.inbound.GroupChatUpdateResource;
 import com.project.core.rest.outbound.ChatResponse;
@@ -95,13 +99,11 @@ public class ChatServiceImpl implements ChatService {
 
         Optional<User> optionalSender = userRepository.findByPublicId(senderId);
         if (optionalSender.isEmpty()) {
-            throw new MissingResourceException(String.format("User with id %s not found", senderId),
-                User.class.getName(), senderId);
+            throw new UserNotFoundException(String.format("User with id [%s] not found", senderId));
         }
         Optional<User> optionalReceiver = userRepository.findByPublicId(receiverId);
         if (optionalReceiver.isEmpty()) {
-            throw new MissingResourceException(String.format("User with id %s not found", receiverId),
-                User.class.getName(), receiverId);
+            throw new UserNotFoundException(String.format("User with id [%s] not found", receiverId));
         }
 
         Chat chat = Chat.builder()
@@ -128,7 +130,7 @@ public class ChatServiceImpl implements ChatService {
         if (optionalChat.isPresent()) {
             Chat chat = optionalChat.get();
             if (!chat.isGroupChat()) {
-                throw new RuntimeException("Action not allowed for 1-to-1 chat");
+                throw new UpdateActionNotAllowedException("Action not allowed for 1-to-1 chat");
             }
 
             try {
@@ -145,7 +147,7 @@ public class ChatServiceImpl implements ChatService {
                 return false;
             }
         }
-        throw new MissingResourceException("Chat with id " + chatId + " not found", "chat", Chat.class.getName());
+        throw new ChatNotFoundException("Chat with id [" + chatId + "] not found");
     }
 
     @Transactional
@@ -153,7 +155,7 @@ public class ChatServiceImpl implements ChatService {
     public Boolean deleteGroupChat(String chatId) {
         Optional<Chat> chatOptional = chatRepository.findById(chatId);
         if (chatOptional.isEmpty() || !chatOptional.get().isGroupChat()) {
-            throw new RuntimeException("Chat with id " + chatId + " isn't allowed for this operation.");
+            throw new DeleteActionNotAllowedException("Chat with id " + chatId + " isn't allowed for this operation.");
         }
         try {
             chatRepository.delete(chatOptional.get());
