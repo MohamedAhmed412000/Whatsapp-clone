@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/whatsapp-bom/pom.xml" />
         <option value="$PROJECT_DIR$/whatsapp-pom/pom.xml" />
         <option value="$PROJECT_DIR$/whatsapp-pom/commons/pom.xml" />
+        <option value="$PROJECT_DIR$/core/pom.xml" />
       </list>
     </option>
   </component>

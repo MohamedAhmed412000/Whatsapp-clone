@@ -1,17 +1,15 @@
 package com.project.core.config;
 
-import com.project.commons.enums.GeneralCodesEnum;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.UUID;
 
 @Configuration
 public class SwaggerConfig {
@@ -27,16 +25,12 @@ public class SwaggerConfig {
                             Schema<?> originalSchema = mediaTypeValue.getSchema();
                             if (originalSchema != null) {
                                 Schema<?> headersSchema = new ObjectSchema()
-                                    .addProperty("requestId", new Schema<>()
-                                        .type("string")
+                                    .addProperty("requestId", new StringSchema()
                                         .description("Unique request identifier")
-                                        .example(UUID.randomUUID().toString())
-                                    )
-                                    .addProperty("statusCode", new Schema<>()
-                                        .type("string")
+                                        .example("string"))
+                                    .addProperty("statusCode", new StringSchema()
                                         .description("Status code of the response")
-                                        .example(GeneralCodesEnum.SUCCESS.getApplicationCode())
-                                    );
+                                        .example("string"));
 
                                 Schema<?> wrapper = new ObjectSchema()
                                     .addProperty("headers", headersSchema)

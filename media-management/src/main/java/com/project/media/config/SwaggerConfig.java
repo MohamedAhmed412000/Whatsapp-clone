@@ -1,6 +1,5 @@
 package com.project.media.config;
 
-import com.project.commons.enums.GeneralCodesEnum;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
@@ -12,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 
-import java.util.UUID;
-
 @Configuration
 public class SwaggerConfig {
 
@@ -23,27 +20,34 @@ public class SwaggerConfig {
             pathItem.readOperations().forEach(operation ->
                 operation.getResponses().forEach((status, apiResponse) -> {
                     Content content = apiResponse.getContent();
-                    if (content != null) {
+                    if (content != null && !status.equals("204")) {
                         content.forEach((mediaTypeKey, mediaTypeValue) -> {
-                            if (mediaTypeKey.contains(MediaType.APPLICATION_JSON_VALUE)) {
+                            if (mediaTypeKey.contains(MediaType.APPLICATION_JSON_VALUE) || !status.equals("200")) {
                                 Schema<?> originalSchema = mediaTypeValue.getSchema();
                                 if (originalSchema != null) {
                                     Schema<?> headersSchema = new ObjectSchema()
                                         .addProperty("requestId", new Schema<>()
                                             .type("string")
                                             .description("Unique request identifier")
-                                            .example(UUID.randomUUID().toString())
+                                            .example("string")
                                         )
                                         .addProperty("statusCode", new Schema<>()
                                             .type("string")
                                             .description("Status code of the response")
-                                            .example(GeneralCodesEnum.SUCCESS.getApplicationCode())
+                                            .example("string")
                                         );
 
                                     Schema<?> wrapper = new ObjectSchema()
                                         .addProperty("headers", headersSchema)
                                         .addProperty("body", originalSchema);
-                                    mediaTypeValue.setSchema(wrapper);
+
+                                    Content newContent = new Content();
+                                    io.swagger.v3.oas.models.media.MediaType jsonMediaType =
+                                        new io.swagger.v3.oas.models.media.MediaType();
+                                    jsonMediaType.setSchema(wrapper);
+                                    newContent.addMediaType(MediaType.APPLICATION_JSON_VALUE, jsonMediaType);
+
+                                    apiResponse.setContent(newContent);
                                 }
                             }
                         });
