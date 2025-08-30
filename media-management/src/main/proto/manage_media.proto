@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.project.media.grpc";
+option java_outer_classname = "MediaManageProto";
+
+package media;
+
+service MediaManage {
+  rpc UploadMedia(MediaUploadResource) returns (MediaUploadResponse) {}
+  rpc GetMediaReferencesList(MediaReferencesListEntityIdResource) returns (MediaReferencesListEntityIdResponse) {}
+  rpc ViewMediaFile(ViewMediaResource) returns (ViewMediaResponse) {}
+  rpc DeleteMediaFile(DeleteMediaResource) returns (DeleteMediaResponse) {}
+}
+
+// Upload Media File
+message MediaUploadResource {
+  repeated string fileNames = 1;
+  repeated bytes files = 2;
+  string filePath = 3;
+  string entityId = 4;
+}
+message MediaUploadResponse {
+  repeated string references = 1;
+}
+
+// Get Media References List
+message MediaReferencesListEntityIdResource {
+  string entityId = 1;
+}
+message MediaReferencesListEntityIdResponse {
+  repeated string reference = 1;
+}
+
+// View Media File
+message ViewMediaResource {
+  string reference = 1;
+}
+message ViewMediaResponse {
+  bytes data = 1;
+}
+
+// Delete Media File
+message DeleteMediaResource {
+  string reference = 1;
+}
+message DeleteMediaResponse {
+  bool isDone = 1;
+}

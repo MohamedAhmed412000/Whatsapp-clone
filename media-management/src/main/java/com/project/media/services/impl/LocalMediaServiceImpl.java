@@ -33,7 +33,11 @@ public class LocalMediaServiceImpl implements MediaService {
     private final CustomMediaRepository customMediaRepository;
 
     @Override
-    public Mono<String> saveMedia(@NonNull FilePart filePart, @NonNull String relativePath, @NonNull String entityId) {
+    public Mono<String> saveMedia(
+        @NonNull FilePart filePart,
+        @NonNull String relativePath,
+        @NonNull String entityId
+    ) {
         return FileUtils.saveLocalFile(filePart, mediaBasePath, relativePath)
             .flatMap(fileName -> {
                 Media media = Media.builder()

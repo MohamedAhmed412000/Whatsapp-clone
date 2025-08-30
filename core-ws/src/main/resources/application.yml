@@ -1,6 +1,6 @@
 spring:
   application:
-    name: media-management
+    name: core-ws
   config:
     import: optional:configserver:http://localhost:8071
   profiles:

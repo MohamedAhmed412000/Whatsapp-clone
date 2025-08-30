@@ -18,7 +18,7 @@ spring:
       connect-timeout: 2s
 
 server:
-  port: 8091
+  port: 8094
 
 eureka:
   instance:
@@ -28,20 +28,3 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: "http://localhost:8090/eureka/"
-
-chats:
-  page:
-    max-messages-size: 20
-
-keycloak:
-  server-url: http://localhost:9090
-  realm: whatsapp-clone
-  client-id: spring-admin-client
-  client-secret: RCwaliDnp2Pyc8I5aA88IoKA7ivrElK4
-
-media:
-  service:
-    grpc:
-      host: localhost
-      port: 9092
-      enabled: true

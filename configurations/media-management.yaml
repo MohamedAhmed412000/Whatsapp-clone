@@ -13,6 +13,9 @@ spring:
       password: password
       authentication-database: admin
       auto-index-creation: true
+  grpc:
+    server:
+      port: 9092
 
 server:
   port: 8092

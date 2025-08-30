@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.project</groupId>
-    <artifactId>whatsapp-pom</artifactId>
+    <artifactId>whatsapp-clone-root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>whatsapp-pom</name>
+    <name>Whatsapp Clone Root</name>
     <description>Reference dependencies for whatsapp packages</description>
     <packaging>pom</packaging>
     <developers>
@@ -34,7 +34,19 @@
         <cloudinary.version>2.3.0</cloudinary.version>
         <dotenv-java.version>2.2.4</dotenv-java.version>
         <spring-cloud-gateway-webflux.version>4.3.0-RC1</spring-cloud-gateway-webflux.version>
+        <spring-grpc.version>0.10.0</spring-grpc.version>
     </properties>
+
+    <modules>
+        <module>commons</module>
+        <module>config-service</module>
+        <module>discovery-service</module>
+        <module>core</module>
+        <module>core-ws</module>
+        <module>media-management</module>
+        <module>story-management</module>
+        <module>gateway-service</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -61,6 +73,15 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-bom</artifactId>
                 <version>${spring-security.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring GRPC BOM -->
+            <dependency>
+                <groupId>org.springframework.grpc</groupId>
+                <artifactId>spring-grpc-dependencies</artifactId>
+                <version>${spring-grpc.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

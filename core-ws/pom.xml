@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.project</groupId>
-        <artifactId>whatsapp-pom</artifactId>
+        <artifactId>whatsapp-clone-root</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>commons</artifactId>
-    <version>${commons-lib.version}</version>
-    <name>commons</name>
-    <description>Commons project for whatsapp clone microservices</description>
+    <artifactId>core-ws</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>core-ws</name>
+    <description>Microservice to provide websocket functionality</description>
     <packaging>jar</packaging>
     <developers>
         <developer>
@@ -20,17 +20,31 @@
             <url>https://github.com/MohamedAhmed412000</url>
         </developer>
     </developers>
-
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.project</groupId>
+            <artifactId>commons</artifactId>
+            <version>${commons-lib.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -42,4 +56,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins/>
+    </build>
 </project>

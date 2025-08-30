@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.project</groupId>
-        <artifactId>whatsapp-pom</artifactId>
+        <artifactId>whatsapp-clone-root</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../whatsapp-pom/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>discovery-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
