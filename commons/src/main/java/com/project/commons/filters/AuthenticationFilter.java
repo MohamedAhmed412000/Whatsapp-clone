@@ -1,7 +1,7 @@
-package com.project.core.filters;
+package com.project.commons.filters;
 
-import com.project.core.filters.dto.CustomAuthentication;
-import com.project.core.utils.JwtTokenUtil;
+import com.project.commons.filters.dto.CustomAuthentication;
+import com.project.commons.utils.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

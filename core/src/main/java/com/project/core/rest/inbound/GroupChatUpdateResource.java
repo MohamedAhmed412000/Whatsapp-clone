@@ -1,7 +1,7 @@
 package com.project.core.rest.inbound;
 
-import com.project.core.validators.AtLeastOneFieldNotEmpty;
-import com.project.core.validators.ValidImageExtension;
+import com.project.commons.validators.AtLeastOneFieldNotEmpty;
+import com.project.commons.validators.ValidImageExtension;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

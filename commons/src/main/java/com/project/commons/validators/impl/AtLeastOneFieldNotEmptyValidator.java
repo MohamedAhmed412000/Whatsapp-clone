@@ -1,8 +1,9 @@
-package com.project.core.validators.impl;
+package com.project.commons.validators.impl;
 
-import com.project.core.validators.AtLeastOneFieldNotEmpty;
+import com.project.commons.validators.AtLeastOneFieldNotEmpty;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.lang.reflect.Field;
 
 public class AtLeastOneFieldNotEmptyValidator implements ConstraintValidator<AtLeastOneFieldNotEmpty, Object> {

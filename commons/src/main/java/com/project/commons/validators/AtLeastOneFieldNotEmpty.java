@@ -1,6 +1,6 @@
-package com.project.core.validators;
+package com.project.commons.validators;
 
-import com.project.core.validators.impl.AtLeastOneFieldNotEmptyValidator;
+import com.project.commons.validators.impl.AtLeastOneFieldNotEmptyValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

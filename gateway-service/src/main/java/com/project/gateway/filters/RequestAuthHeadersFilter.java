@@ -1,7 +1,7 @@
 package com.project.gateway.filters;
 
 import com.project.gateway.constants.Headers;
-import com.project.gateway.utils.JwtTokenUtil;
+import com.project.gateway.utils.ReactiveJwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestAuthHeadersFilter implements GlobalFilter {
     private static final List<String> PUBLIC_PATHS = List.of("/core", "/media", "/v3/api-docs");
-    private final JwtTokenUtil jwtTokenUtil;
+    private final ReactiveJwtTokenUtil jwtTokenUtil;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

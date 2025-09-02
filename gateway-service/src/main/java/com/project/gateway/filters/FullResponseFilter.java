@@ -13,8 +13,6 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -24,7 +22,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -38,7 +35,7 @@ public class FullResponseFilter implements GlobalFilter, Ordered {
         MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
         if (path.contains("/swagger") || path.contains("/api-docs") || path.contains("/v3/api-docs") ||
             path.contains("/webjars") || path.endsWith(".css") || path.endsWith(".js") ||
-            path.endsWith(".html") || !Objects.equals(mediaType, MediaType.APPLICATION_JSON)) {
+            path.endsWith(".html")) {
             return chain.filter(exchange);
         }
 
@@ -48,6 +45,10 @@ public class FullResponseFilter implements GlobalFilter, Ordered {
         ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
             @Override
             public @NonNull Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
+                MediaType mediaType = getHeaders().getContentType();
+                if (mediaType == null || !mediaType.equals(MediaType.APPLICATION_JSON)) {
+                    return super.writeWith(body);
+                }
                 if (body instanceof Flux<? extends DataBuffer> fluxBody) {
                     return super.writeWith(
                         fluxBody.buffer().handle((dataBuffers, sink) -> {

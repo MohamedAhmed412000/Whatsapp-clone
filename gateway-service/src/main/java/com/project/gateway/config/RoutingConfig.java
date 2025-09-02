@@ -19,6 +19,13 @@ public class RoutingConfig {
                 )
                 .uri("lb://CORE")
             )
+            .route("story", p -> p
+                .path("/story/api/v1/user-stories/**", "/story/**")
+                .filters(f -> f
+                    .rewritePath("/story/(?<api>/?.*)", "/${api}")
+                )
+                .uri("lb://STORY-MANAGEMENT")
+            )
             .route("core-ws-route", p -> p
                 .path("/ws/info**")
                 .uri("ws://CORE")

@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenUtil {
+public class ReactiveJwtTokenUtil {
 
     private final ReactiveJwtDecoder jwtDecoder;
 

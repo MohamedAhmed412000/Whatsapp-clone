@@ -455,6 +455,180 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"id\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n    \"firstName\": \"Mamdouh\",\n    \"lastName\": \"Mekky\",\n    \"email\": \"mamdouh.mekky@gmail.com\",\n    \"lastSeen\": \"2025-08-10T07:03:16.267\",\n    \"online\": true\n}"
+								},
+								{
+									"name": "Get my details",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/users/me",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 02 Sep 2025 03:48:41 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n    \"firstName\": \"Mamdouh\",\n    \"lastName\": \"Mekky\",\n    \"email\": \"mamdouh.mekky@gmail.com\",\n    \"lastSeen\": \"2025-09-02T06:48:41.072\",\n    \"profilePictureReference\": \"853c913f3c1b47959f351017\",\n    \"stories\": [\n        {\n            \"id\": 1756784758613,\n            \"content\": \"First Story\",\n            \"storyType\": \"TEXT\",\n            \"createdAt\": \"2025-09-02T09:45:58.613\"\n        }\n    ],\n    \"online\": true\n}"
+								},
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{gateway-url}}/core/api/v1/users/me",
+											"host": [
+												"{{gateway-url}}"
+											],
+											"path": [
+												"core",
+												"api",
+												"v1",
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 02 Sep 2025 04:24:05 GMT"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "433"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"headers\": {\n        \"requestId\": \"c658254b-5b77-4171-b5c2-d470c27d1ae9\",\n        \"statusCode\": \"I000000\"\n    },\n    \"body\": {\n        \"id\": \"6ba37abd-fd71-45bf-8d9f-c5331f231954\",\n        \"firstName\": \"Mamdouh\",\n        \"lastName\": \"Mekky\",\n        \"email\": \"mamdouh.mekky@gmail.com\",\n        \"lastSeen\": \"2025-09-02T07:24:05.582\",\n        \"profilePictureReference\": \"853c913f3c1b47959f351017\",\n        \"stories\": [\n            {\n                \"id\": 1756784758613,\n                \"content\": \"First Story\",\n                \"storyType\": \"TEXT\",\n                \"createdAt\": \"2025-09-02T09:45:58.613\"\n            }\n        ],\n        \"online\": true\n    }\n}"
 								}
 							]
 						},
@@ -1269,7 +1443,7 @@
 									"variable": [
 										{
 											"key": "chat-id",
-											"value": "4c1abedb-3ffe-4d39-bd56-9c8e8f67e6e7"
+											"value": "cbcc7f6b-4635-460b-9044-d22795f66061"
 										}
 									]
 								}
@@ -3156,7 +3330,7 @@
 							"variable": [
 								{
 									"key": "reference",
-									"value": "210f923ee54c45939bd75776"
+									"value": "20f758e2763547a7b8dba75a"
 								}
 							]
 						}
@@ -3350,6 +3524,513 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"isDone\": false\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Stories",
+			"item": [
+				{
+					"name": "Create story",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"First Story\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-url}}/story/api/v1/user-stories",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"story",
+								"api",
+								"v1",
+								"user-stories"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"First Story\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{gateway-url}}/story/api/v1/user-stories",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"story",
+										"api",
+										"v1",
+										"user-stories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 02 Sep 2025 04:24:38 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "122"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"headers\": {\n        \"requestId\": \"b0eca9b2-2234-4b3b-bb73-4a07b5101ca1\",\n        \"statusCode\": \"I000000\"\n    },\n    \"body\": {\n        \"content\": \"1756787078685\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all stories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-url}}/story/api/v1/user-stories/me",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"story",
+								"api",
+								"v1",
+								"user-stories",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{gateway-url}}/story/api/v1/user-stories/me",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"story",
+										"api",
+										"v1",
+										"user-stories",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 02 Sep 2025 04:29:16 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "316"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"headers\": {\n        \"requestId\": \"3f38b57e-1131-4054-b52f-93e1a00b32fe\",\n        \"statusCode\": \"I000000\"\n    },\n    \"body\": {\n        \"storiesList\": [\n            {\n                \"id\": 1756787078685,\n                \"content\": \"First Story\",\n                \"storyType\": \"TEXT\",\n                \"createdAt\": \"2025-09-02T07:24:38.685\"\n            },\n            {\n                \"id\": 1756784758613,\n                \"content\": \"First Story\",\n                \"storyType\": \"TEXT\",\n                \"createdAt\": \"2025-09-02T06:45:58.613\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update story content",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"Hello world !!!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-url}}/story/api/v1/user-stories/:story-id",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"story",
+								"api",
+								"v1",
+								"user-stories",
+								":story-id"
+							],
+							"variable": [
+								{
+									"key": "story-id",
+									"value": "1756787078685"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Hello world !!!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{gateway-url}}/story/api/v1/user-stories/:story-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"story",
+										"api",
+										"v1",
+										"user-stories",
+										":story-id"
+									],
+									"variable": [
+										{
+											"key": "story-id",
+											"value": "1756787078685"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 02 Sep 2025 04:38:34 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "108"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"headers\": {\n        \"requestId\": \"771b8c0a-d3e7-4854-9dc2-bf6c0d73cc37\",\n        \"statusCode\": \"I000000\"\n    },\n    \"body\": {\n        \"done\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete story",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"Hello world !!!\"\r\n}"
+						},
+						"url": {
+							"raw": "{{gateway-url}}/story/api/v1/user-stories/:story-id",
+							"host": [
+								"{{gateway-url}}"
+							],
+							"path": [
+								"story",
+								"api",
+								"v1",
+								"user-stories",
+								":story-id"
+							],
+							"variable": [
+								{
+									"key": "story-id",
+									"value": "1756787078685"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Hello world !!!\"\r\n}"
+								},
+								"url": {
+									"raw": "{{gateway-url}}/story/api/v1/user-stories/:story-id",
+									"host": [
+										"{{gateway-url}}"
+									],
+									"path": [
+										"story",
+										"api",
+										"v1",
+										"user-stories",
+										":story-id"
+									],
+									"variable": [
+										{
+											"key": "story-id",
+											"value": "1756787078685"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 02 Sep 2025 05:45:55 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "108"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"headers\": {\n        \"requestId\": \"3c5dbc21-d8ee-4b5f-9da3-7a14dd5a6822\",\n        \"statusCode\": \"I000000\"\n    },\n    \"body\": {\n        \"done\": true\n    }\n}"
 						}
 					]
 				}

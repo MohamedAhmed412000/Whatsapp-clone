@@ -16,6 +16,9 @@ spring:
       host: localhost
       port: 6379
       connect-timeout: 2s
+  grpc:
+    server:
+      enabled: false
 
 server:
   port: 8091
@@ -44,4 +47,11 @@ media:
     grpc:
       host: localhost
       port: 9092
+      enabled: true
+
+story:
+  service:
+    grpc:
+      host: localhost
+      port: 9093
       enabled: true

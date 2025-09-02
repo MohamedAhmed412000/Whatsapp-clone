@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.project.core.grpc";
+option java_outer_classname = "StoryManageProto";
+
+package story;
+
+import "google/protobuf/timestamp.proto";
+
+service StoryManage {
+  rpc GetStoriesList(StoriesListResource) returns (StoriesListResponse);
+}
+
+// Stories list resource
+message StoriesListResource {
+  string userId = 1;
+}
+
+enum StoryTypeEnum {
+  STORY_TYPE_ENUM_UNSPECIFIED = 0;
+  TEXT = 1;
+  MEDIA = 2;
+}
+
+// Story details response
+message StoryDetailsResponse {
+  int64 id = 1;
+  string content = 2;
+  string mediaReference = 3;
+  StoryTypeEnum storyType = 4;
+  google.protobuf.Timestamp createdAt = 5;
+}
+
+// Stories list response
+message StoriesListResponse {
+  repeated StoryDetailsResponse storiesList = 1;
+}

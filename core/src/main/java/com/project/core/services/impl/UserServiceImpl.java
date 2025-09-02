@@ -1,5 +1,8 @@
 package com.project.core.services.impl;
 
+import com.project.core.clients.StoryClient;
+import com.project.core.clients.dto.inbound.UserStoriesListResource;
+import com.project.core.clients.dto.outbound.UserStoriesListResponse;
 import com.project.core.domain.models.User;
 import com.project.core.exceptions.UserNotFoundException;
 import com.project.core.mappers.UserMapper;
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MediaServiceImpl mediaServiceImpl;
+    private final StoryClient storyClient;
 
     @Override
     @Cacheable(value = "users", key = "#root.target.getUserId() + '-' + #query")
@@ -41,7 +45,7 @@ public class UserServiceImpl implements UserService {
         }  else {
             users = userRepository.findUsersExceptSelf(userId, query);
         }
-        return users.stream().map(user -> userMapper.toUserResponse(user, false)).toList();
+        return users.stream().map(user -> userMapper.toUserResponse(user, false, null)).toList();
     }
 
     @Override
@@ -49,7 +53,13 @@ public class UserServiceImpl implements UserService {
         String userId = getUserId();
         Optional<User> userOptional = userRepository.findByPublicId(userId);
         if (userOptional.isEmpty()) throw new UserNotFoundException("User not found");
-        return userMapper.toUserResponse(userOptional.get(), true);
+        UserStoriesListResponse storiesListResponse = storyClient.saveStoriesList(
+            UserStoriesListResource.builder()
+            .userId(userId)
+            .build()
+        );
+        return userMapper.toUserResponse(userOptional.get(), true,
+            storiesListResponse.getStoriesList());
     }
 
     @Override

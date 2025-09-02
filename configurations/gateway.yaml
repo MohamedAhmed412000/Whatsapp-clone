@@ -36,3 +36,5 @@ springdoc:
         url: /core/v3/api-docs
       - name: Media
         url: /media/v3/api-docs
+      - name: Story
+        url: /story/v3/api-docs

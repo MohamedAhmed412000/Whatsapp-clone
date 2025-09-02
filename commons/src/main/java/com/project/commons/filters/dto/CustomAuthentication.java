@@ -1,4 +1,4 @@
-package com.project.core.filters.dto;
+package com.project.commons.filters.dto;
 
 import lombok.ToString;
 import org.springframework.security.core.Authentication;

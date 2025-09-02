@@ -1,4 +1,4 @@
-package com.project.core.utils;
+package com.project.commons.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;

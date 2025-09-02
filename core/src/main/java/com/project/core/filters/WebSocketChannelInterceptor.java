@@ -1,7 +1,7 @@
 package com.project.core.filters;
 
-import com.project.core.filters.dto.CustomAuthentication;
-import com.project.core.utils.JwtTokenUtil;
+import com.project.commons.filters.dto.CustomAuthentication;
+import com.project.commons.utils.JwtTokenUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

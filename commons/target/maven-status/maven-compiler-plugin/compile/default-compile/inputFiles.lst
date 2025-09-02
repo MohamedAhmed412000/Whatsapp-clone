@@ -7,3 +7,7 @@ E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commo
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\dto\ErrorBody.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\dto\Header.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\RestResponse.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\AtLeastOneFieldNotEmpty.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\impl\AtLeastOneFieldNotEmptyValidator.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\impl\ImageExtensionValidator.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\ValidImageExtension.java

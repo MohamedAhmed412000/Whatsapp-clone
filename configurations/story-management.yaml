@@ -10,6 +10,9 @@ spring:
       password: password
       authentication-database: admin
       auto-index-creation: true
+  grpc:
+    server:
+      port: 9093
 
 server:
   port: 8093
@@ -22,3 +25,11 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: "http://localhost:8090/eureka/"
+
+media:
+  service:
+    grpc:
+      host: localhost
+      port: 9092
+      enabled: true
+  hard-delete-flag: true

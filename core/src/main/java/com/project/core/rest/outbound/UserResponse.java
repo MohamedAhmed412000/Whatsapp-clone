@@ -1,5 +1,7 @@
 package com.project.core.rest.outbound;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.project.core.clients.dto.outbound.StoryDetailsDto;
 import com.project.core.domain.dto.MobileNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -8,11 +10,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
     @Schema(description = "The user Id", example = "550e8400-e29b-41d4-a716-446655440000")
     private String id;
@@ -29,4 +33,6 @@ public class UserResponse {
     private boolean isOnline;
     @Schema(description = "The user profile image reference", example = "407dd10ad78743e49d0b58e7")
     private String profilePictureReference;
+    @Schema(description = "The stories list")
+    private List<StoryDetailsDto> stories;
 }

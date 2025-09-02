@@ -1,6 +1,6 @@
-package com.project.core.validators.impl;
+package com.project.commons.validators.impl;
 
-import com.project.core.validators.ValidImageExtension;
+import com.project.commons.validators.ValidImageExtension;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;

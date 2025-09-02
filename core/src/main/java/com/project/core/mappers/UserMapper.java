@@ -1,5 +1,6 @@
 package com.project.core.mappers;
 
+import com.project.core.clients.dto.outbound.StoryDetailsDto;
 import com.project.core.domain.dto.MobileNumber;
 import com.project.core.domain.dto.UserWithRole;
 import com.project.core.domain.enums.ChatUserRoleEnum;
@@ -8,10 +9,13 @@ import com.project.core.rest.outbound.ChatUserResponse;
 import com.project.core.rest.outbound.UserResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserMapper {
 
-    public UserResponse toUserResponse(User user, boolean isMe) {
+    public UserResponse toUserResponse(User user, boolean isMe,
+                                       List<StoryDetailsDto> storiesList) {
         UserResponse userResponse = UserResponse.builder()
             .id(user.getId())
             .firstName(user.getFirstName())
@@ -29,6 +33,7 @@ public class UserMapper {
                     .phoneNumber(user.getPhoneNumber())
                     .build()
             );
+        if (isMe) userResponse.setStories(storiesList);
         return userResponse;
     }
 

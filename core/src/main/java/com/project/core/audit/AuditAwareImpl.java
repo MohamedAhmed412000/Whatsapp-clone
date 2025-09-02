@@ -1,6 +1,6 @@
 package com.project.core.audit;
 
-import com.project.core.filters.dto.CustomAuthentication;
+import com.project.commons.filters.dto.CustomAuthentication;
 import lombok.NonNull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;
