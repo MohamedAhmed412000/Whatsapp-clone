@@ -9,4 +9,5 @@ public interface StoryService {
     boolean updateStory(Long id, StoryUpdateResource storyUpdateResource);
     boolean deleteStory(Long id);
     UserStoriesListResponse getUserStories();
+    void hideOutdatedStories();
 }

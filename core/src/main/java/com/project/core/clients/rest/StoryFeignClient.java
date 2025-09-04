@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "story-management")
+@FeignClient(name = "story-management", dismiss404 = true, fallback = StoryClientFallback.class)
 @ConditionalOnProperty(name = "story.service.grpc.enabled", havingValue = "false")
 public interface StoryFeignClient extends StoryClient {
     @GetMapping(value = "/api/v1/user-stories/me", produces = MediaType.APPLICATION_JSON_VALUE)

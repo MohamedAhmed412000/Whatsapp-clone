@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "media-management")
+@FeignClient(value = "media-management", dismiss404 = true, fallback = MediaClientFallback.class)
 @ConditionalOnProperty(name = "media.service.grpc.enabled", havingValue = "false")
 public interface MediaFeignClient extends MediaClient {
     @PostMapping(value = "/api/v1/media", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -103,6 +103,13 @@ public class StoryServiceImpl implements StoryService {
         return new UserStoriesListResponse(storyDetailsList);
     }
 
+    @Override
+    public void hideOutdatedStories() {
+        List<Story> outdatedStories = storyRepository.findOutdatedStories(LocalDateTime.now().minusDays(1)).stream()
+            .peek(story -> story.setDeleted(true)).toList();
+        storyRepository.saveAll(outdatedStories);
+    }
+
     private String getUserId() {
         return SecurityContextHolder.getContext()
             .getAuthentication()

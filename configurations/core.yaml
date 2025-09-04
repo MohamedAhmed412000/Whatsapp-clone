@@ -47,7 +47,7 @@ media:
     grpc:
       host: localhost
       port: 9092
-      enabled: true
+      enabled: false
 
 story:
   service:

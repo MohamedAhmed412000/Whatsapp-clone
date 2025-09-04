@@ -33,3 +33,15 @@ media:
       port: 9092
       enabled: true
   hard-delete-flag: true
+
+jobrunr:
+  job-scheduler:
+    enabled: true
+  background-job-server:
+    enabled: true
+    name: STORIES-HIDING-SERVER
+  dashboard:
+    enabled: true
+    username: admin
+    password: admin
+    port: 8073
