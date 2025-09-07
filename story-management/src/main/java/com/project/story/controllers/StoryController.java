@@ -1,10 +1,11 @@
 package com.project.story.controllers;
 
+import com.project.commons.rest.outbound.BooleanResponse;
 import com.project.commons.rest.outbound.dto.ErrorBody;
+import com.project.commons.rest.outbound.StringResponse;
+import com.project.story.domain.dto.StoryDetailsDto;
 import com.project.story.rest.inbound.StoryUpdateResource;
-import com.project.story.rest.outbound.BooleanResponse;
 import com.project.story.rest.inbound.StoryCreationResource;
-import com.project.story.rest.outbound.StringResponse;
 import com.project.story.rest.outbound.UserStoriesListResponse;
 import com.project.story.services.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Tag(
     name = "User Stories Controller",
@@ -50,18 +54,26 @@ public class StoryController {
     }
 
     @Operation(
-        summary = "Retrieve all stories",
+        summary = "Retrieve my stories",
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Get stories successfully",
-                content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserStoriesListResponse.class)))
+                description = "Get my stories successfully",
+                content = @Content(schema = @Schema(implementation = UserStoriesListResponse.class))
             )
         }
     )
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserStoriesListResponse> getStories() {
+    public ResponseEntity<UserStoriesListResponse> getMyStories() {
         return ResponseEntity.ok(storyService.getUserStories());
+    }
+
+    @Operation(
+        summary = "Retrieve my contacts stories"
+    )
+    @GetMapping(value = "/contacts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, List<StoryDetailsDto>>> getMyContactsStories() {
+        return ResponseEntity.ok(storyService.getUserContactsStories().getContactsStoriesList());
     }
 
     @Operation(

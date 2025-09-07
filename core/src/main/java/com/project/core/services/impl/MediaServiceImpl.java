@@ -37,27 +37,6 @@ public class MediaServiceImpl {
         throw new MediaUploadException("Error saving media list");
     }
 
-    public String saveUserProfilePicture(MultipartFile file, String userId) {
-        ResponseEntity<MediaUploadResponse> response = mediaClient.saveMediaList(
-            MediaUploadResource.builder()
-                .files(List.of(file))
-                .entityId(generateMediaId(Application.USER_MEDIA_PREFIX, userId))
-                .filePath(userId)
-                .build()
-        );
-
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            return response.getBody().getMediaReferencesList().get(0);
-        }
-        throw new MediaUploadException("Error saving media list");
-    }
-
-    public String updateUserProfilePicture(String reference, MultipartFile file, String userId) {
-        if (reference != null)
-            mediaClient.deleteMediaFile(reference);
-        return saveUserProfilePicture(file, userId);
-    }
-
     public String saveGroupChatProfilePicture(MultipartFile file, String chatId) {
         ResponseEntity<MediaUploadResponse> response = mediaClient.saveMediaList(
             MediaUploadResource.builder()

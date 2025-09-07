@@ -3,7 +3,7 @@ package com.project.core.controllers;
 import com.project.commons.rest.outbound.dto.ErrorBody;
 import com.project.core.rest.inbound.MessageResource;
 import com.project.core.rest.inbound.MessageUpdateResource;
-import com.project.core.rest.outbound.BooleanResponse;
+import com.project.commons.rest.outbound.BooleanResponse;
 import com.project.core.rest.outbound.MessageResponse;
 import com.project.core.services.MessageService;
 import io.swagger.v3.oas.annotations.Operation;

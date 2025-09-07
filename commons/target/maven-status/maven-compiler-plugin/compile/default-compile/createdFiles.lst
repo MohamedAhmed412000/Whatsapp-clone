@@ -2,6 +2,7 @@ com\project\commons\enums\GeneralCodesEnum.class
 com\project\commons\exceptions\ApplicationException.class
 com\project\commons\validators\impl\AtLeastOneFieldNotEmptyValidator.class
 com\project\commons\validators\ValidImageExtension.class
+com\project\commons\filters\AuthenticationFilter.class
 com\project\commons\rest\outbound\RestResponse.class
 com\project\commons\exceptions\RestServletExceptionHandler.class
 com\project\commons\exceptions\RestReactiveExceptionHandler.class
@@ -9,8 +10,14 @@ com\project\commons\rest\outbound\dto\Header$HeaderBuilder.class
 com\project\commons\validators\impl\ImageExtensionValidator.class
 com\project\commons\validators\AtLeastOneFieldNotEmpty.class
 com\project\commons\rest\outbound\dto\ErrorBody.class
+com\project\commons\utils\JwtTokenUtil.class
+com\project\commons\rest\outbound\BooleanResponse.class
+com\project\commons\rest\outbound\BooleanResponse$BooleanResponseBuilder.class
 com\project\commons\rest\outbound\dto\Header.class
 com\project\commons\enums\IContentException.class
+com\project\commons\filters\dto\CustomAuthentication.class
 com\project\commons\rest\outbound\dto\ErrorBody$ErrorBodyBuilder.class
+com\project\commons\rest\outbound\StringResponse.class
+com\project\commons\rest\outbound\StringResponse$StringResponseBuilder.class
 com\project\commons\constants\Headers.class
 com\project\commons\rest\outbound\RestResponse$RestResponseBuilder.class

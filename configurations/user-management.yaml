@@ -1,0 +1,53 @@
+spring:
+  main:
+    web-application-type: servlet
+  cache:
+    type: redis
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: whatsapp-clone
+      username: root
+      password: password
+      authentication-database: admin
+      auto-index-creation: true
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 2s
+  grpc:
+    server:
+      enabled: false
+
+server:
+  port: 8094
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: "http://localhost:8090/eureka/"
+
+keycloak:
+  server-url: http://localhost:9090
+  realm: whatsapp-clone
+  client-id: spring-admin-client
+  client-secret: RCwaliDnp2Pyc8I5aA88IoKA7ivrElK4
+
+media:
+  service:
+    grpc:
+      host: localhost
+      port: 9092
+      enabled: true
+
+story:
+  service:
+    grpc:
+      host: localhost
+      port: 9093
+      enabled: true

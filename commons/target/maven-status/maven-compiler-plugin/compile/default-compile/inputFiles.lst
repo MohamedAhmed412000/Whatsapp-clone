@@ -4,9 +4,14 @@ E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commo
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\exceptions\ApplicationException.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\exceptions\RestReactiveExceptionHandler.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\exceptions\RestServletExceptionHandler.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\filters\AuthenticationFilter.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\filters\dto\CustomAuthentication.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\BooleanResponse.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\dto\ErrorBody.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\dto\Header.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\RestResponse.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\rest\outbound\StringResponse.java
+E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\utils\JwtTokenUtil.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\AtLeastOneFieldNotEmpty.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\impl\AtLeastOneFieldNotEmptyValidator.java
 E:\Coding\Spring Projects\Whatsapp Clone\commons\src\main\java\com\project\commons\validators\impl\ImageExtensionValidator.java

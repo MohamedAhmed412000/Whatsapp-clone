@@ -9,17 +9,22 @@ import com.project.story.mappers.StoryMapper;
 import com.project.story.repositories.StoryRepository;
 import com.project.story.rest.inbound.StoryCreationResource;
 import com.project.story.rest.inbound.StoryUpdateResource;
+import com.project.story.rest.outbound.ContactsStoriesListResponse;
 import com.project.story.rest.outbound.UserStoriesListResponse;
 import com.project.story.services.StoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -31,6 +36,7 @@ public class StoryServiceImpl implements StoryService {
     private final StoryMapper storyMapper;
     private final StoryRepository storyRepository;
     private final MediaServiceImpl mediaService;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public Long createStory(StoryCreationResource resource) {
@@ -97,6 +103,21 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
+    public ContactsStoriesListResponse getUserContactsStories() {
+        Map<String, List<StoryDetailsDto>> contactsStories = new HashMap<>();
+
+        getContactsStories().forEach(story -> {
+            String userId = story.getUserId();
+            StoryDetailsDto dto = storyMapper.toStoryResponse(story);
+
+            contactsStories.computeIfAbsent(userId, k -> new ArrayList<>()).add(dto);
+        });
+
+        return new ContactsStoriesListResponse(contactsStories);
+    }
+
+
+    @Override
     public UserStoriesListResponse getUserStories() {
         List<StoryDetailsDto> storyDetailsList = storyRepository.findStoryByUserId(getUserId())
             .stream().map(storyMapper::toStoryResponse).toList();
@@ -108,6 +129,28 @@ public class StoryServiceImpl implements StoryService {
         List<Story> outdatedStories = storyRepository.findOutdatedStories(LocalDateTime.now().minusDays(1)).stream()
             .peek(story -> story.setDeleted(true)).toList();
         storyRepository.saveAll(outdatedStories);
+    }
+
+    private List<Story> getContactsStories() {
+        String userId = getUserId();
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("owner_id").is(userId)
+                .and("is_blocked").is(false)),
+            Aggregation.lookup("story", "user_id", "user_id", "storyInfo"),
+            Aggregation.unwind("storyInfo"),
+            Aggregation.replaceRoot("storyInfo"),
+            Aggregation.match(Criteria.where("is_deleted").is(false)),
+            Aggregation.sort(Sort.by(
+                Sort.Order.asc("user_id"),
+                Sort.Order.desc("created_at")
+            ))
+        );
+
+        AggregationResults<Story> results = mongoTemplate.aggregate(
+            aggregation, "contact", Story.class
+        );
+
+        return results.getMappedResults();
     }
 
     private String getUserId() {

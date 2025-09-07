@@ -1,7 +1,7 @@
 package com.project.media.controllers;
 
+import com.project.commons.rest.outbound.BooleanResponse;
 import com.project.commons.rest.outbound.dto.ErrorBody;
-import com.project.media.rest.outbound.BooleanResponse;
 import com.project.media.rest.outbound.MediaReferenceListResponse;
 import com.project.media.services.MediaService;
 import io.swagger.v3.oas.annotations.Operation;

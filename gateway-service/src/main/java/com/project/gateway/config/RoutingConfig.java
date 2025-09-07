@@ -12,12 +12,18 @@ public class RoutingConfig {
     RouteLocator generateRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
             .route("core", p -> p
-                .path("/core/api/v1/users/**", "/core/api/v1/messages/**", "/core/api/v1/chats/**",
-                    "/core/**")
+                .path("/core/api/v1/messages/**", "/core/api/v1/chats/**", "/core/**")
                 .filters(f -> f
                     .rewritePath("/core/(?<api>/?.*)", "/${api}")
                 )
                 .uri("lb://CORE")
+            )
+            .route("user", p -> p
+                .path("/user/api/v1/users/**", "/user/**")
+                .filters(f -> f
+                    .rewritePath("/user/(?<api>/?.*)", "/${api}")
+                )
+                .uri("lb://USER-MANAGEMENT")
             )
             .route("story", p -> p
                 .path("/story/api/v1/user-stories/**", "/story/**")

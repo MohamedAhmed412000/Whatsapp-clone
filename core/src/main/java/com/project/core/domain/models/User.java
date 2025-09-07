@@ -12,8 +12,6 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.project.core.constants.Application.LAST_ACTIVE_INTERVAL_IN_MINUTES;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -40,14 +38,6 @@ public class User extends BaseModel {
     @Field(value = "profile_picture_reference")
     private String profilePictureReference;
 
-    public boolean isOnlineUser() {
-        // last seen => 10:05
-        // now (10:09) => active
-        // now (10:12) => offline
-        return lastSeen != null && lastSeen.isAfter(LocalDateTime.now().minusMinutes(
-            LAST_ACTIVE_INTERVAL_IN_MINUTES));
-    }
-    
     public String getFullName() {
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;

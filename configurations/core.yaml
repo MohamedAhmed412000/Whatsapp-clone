@@ -36,22 +36,9 @@ chats:
   page:
     max-messages-size: 20
 
-keycloak:
-  server-url: http://localhost:9090
-  realm: whatsapp-clone
-  client-id: spring-admin-client
-  client-secret: RCwaliDnp2Pyc8I5aA88IoKA7ivrElK4
-
 media:
   service:
     grpc:
       host: localhost
       port: 9092
       enabled: false
-
-story:
-  service:
-    grpc:
-      host: localhost
-      port: 9093
-      enabled: true

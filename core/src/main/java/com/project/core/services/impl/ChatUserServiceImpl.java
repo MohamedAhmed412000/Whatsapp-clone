@@ -6,7 +6,7 @@ import com.project.core.domain.enums.GroupChatModeEnum;
 import com.project.core.domain.models.Chat;
 import com.project.core.domain.models.ChatUser;
 import com.project.core.exceptions.*;
-import com.project.core.mappers.UserMapper;
+import com.project.core.mappers.ChatUserMapper;
 import com.project.core.repositories.ChatRepository;
 import com.project.core.repositories.ChatUserRepository;
 import com.project.core.rest.inbound.ChatUserUpdateResource;
@@ -31,7 +31,7 @@ public class ChatUserServiceImpl implements ChatUserService {
     private final MongoTemplate mongoTemplate;
     private final ChatRepository chatRepository;
     private final ChatUserRepository chatUserRepository;
-    private final UserMapper userMapper;
+    private final ChatUserMapper userMapper;
 
     @Override
     public List<ChatUserResponse> getChatUsers(String chatId) {

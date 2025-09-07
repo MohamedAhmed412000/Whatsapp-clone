@@ -11,12 +11,12 @@ import com.project.core.exceptions.DeleteActionNotAllowedException;
 import com.project.core.exceptions.UpdateActionNotAllowedException;
 import com.project.core.exceptions.UserNotFoundException;
 import com.project.core.repositories.MessageRepository;
+import com.project.core.repositories.UserRepository;
 import com.project.core.rest.inbound.GroupChatUpdateResource;
 import com.project.core.rest.outbound.ChatResponse;
 import com.project.core.mappers.ChatMapper;
 import com.project.core.repositories.ChatRepository;
 import com.project.core.repositories.ChatUserRepository;
-import com.project.core.repositories.UserRepository;
 import com.project.core.services.ChatService;
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;

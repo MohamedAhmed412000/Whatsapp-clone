@@ -1,11 +1,11 @@
 package com.project.core.controllers;
 
 import com.project.commons.rest.outbound.dto.ErrorBody;
+import com.project.commons.rest.outbound.BooleanResponse;
+import com.project.commons.rest.outbound.StringResponse;
 import com.project.core.rest.inbound.GroupChatCreationResource;
 import com.project.core.rest.inbound.GroupChatUpdateResource;
-import com.project.core.rest.outbound.BooleanResponse;
 import com.project.core.rest.outbound.ChatResponse;
-import com.project.core.rest.outbound.StringResponse;
 import com.project.core.services.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
