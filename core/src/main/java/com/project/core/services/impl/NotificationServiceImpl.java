@@ -1,25 +1,28 @@
 package com.project.core.services.impl;
 
+import com.project.core.constants.Application;
 import com.project.core.domain.dto.Notification;
+import com.project.core.services.ChatUserService;
 import com.project.core.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    private final SimpMessagingTemplate messageTemplate;
+    private final ChatUserService chatUserService;
+    private final RabbitMessagingTemplate messageTemplate;
 
+    @Async
     @Override
-    public void sendNotification(List<String> receiverIds, Notification notification) {
-        log.info("Sending ws notification to {} with payload {}", receiverIds, notification);
-        receiverIds.forEach(receiverId ->
-            messageTemplate.convertAndSendToUser(receiverId, "/chat", notification));
+    public void sendNotificationAsync(Notification notification) {
+        notification.setReceiverIds(chatUserService.getChatUserIds(notification.getChatId()));
+        log.info("Sending notification to {} with id {}", notification.getReceiverIds(), notification.getChatId());
+        messageTemplate.convertAndSend(Application.RABBITMQ_NOTIFICATIONS_QUEUE, notification);
     }
 }

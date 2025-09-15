@@ -34,11 +34,11 @@ public class RoutingConfig {
             )
             .route("core-ws-route", p -> p
                 .path("/ws/info**")
-                .uri("ws://CORE")
+                .uri("ws://CORE-WS")
             )
             .route("core-ws", p -> p
                 .path("/ws**")
-                .uri("ws://CORE")
+                .uri("ws://CORE-WS")
             )
             .route("media", p -> p
                 .path("/media/api/v1/media/**", "/media/**")

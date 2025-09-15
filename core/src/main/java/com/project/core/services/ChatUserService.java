@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ChatUserService {
     List<ChatUserResponse> getChatUsers(String chatId);
+    List<String> getChatUserIds(String chatId);
     Boolean updateGroupChatUsers(String chatId, ChatUserUpdateResource resource);
 }

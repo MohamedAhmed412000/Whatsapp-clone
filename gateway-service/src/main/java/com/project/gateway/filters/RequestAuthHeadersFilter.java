@@ -8,6 +8,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -22,15 +23,16 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class RequestAuthHeadersFilter implements GlobalFilter {
-    private static final List<String> PUBLIC_PATHS = List.of("/core", "/media", "/v3/api-docs");
+    private static final List<String> PUBLIC_PATHS = List.of("/v3/api-docs");
     private final ReactiveJwtTokenUtil jwtTokenUtil;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
+        HttpMethod method = exchange.getRequest().getMethod();
         log.debug("Processing request path: {}", path);
         
-        if (PUBLIC_PATHS.contains(path)) {
+        if (PUBLIC_PATHS.contains(path) || checkMediaViewUrl(method, path)) {
             return chain.filter(exchange);
         }
         
@@ -40,7 +42,7 @@ public class RequestAuthHeadersFilter implements GlobalFilter {
                 // Handle authentication errors
                 Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
             )
-            .onErrorResume(IllegalStateException.class, e -> 
+            .onErrorResume(IllegalStateException.class, e ->
                 // Handle missing claims errors
                 Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST))
             );
@@ -95,6 +97,10 @@ public class RequestAuthHeadersFilter implements GlobalFilter {
             .header(HttpHeaders.AUTHORIZATION, authHeaderValue)
             .build();
         return exchange.mutate().request(mutatedRequest).build();
+    }
+
+    private boolean checkMediaViewUrl(HttpMethod method, String path) {
+        return HttpMethod.GET.equals(method) && path.startsWith("/api/v1/media/");
     }
 
 }

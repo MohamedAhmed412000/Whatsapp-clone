@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @OpenAPIDefinition(
     servers = {
-        @Server(url = "http://localhost:8080/core", description = "Core API via Gateway")
+        @Server(url = "http://localhost:8080/story", description = "Story API via Gateway")
     }
 )
 @SecurityScheme(

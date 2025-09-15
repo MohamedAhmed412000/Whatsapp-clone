@@ -108,10 +108,7 @@ public class MessageServiceImpl implements MessageService {
             notification.setNotificationType(NotificationTypeEnum.MEDIA);
             notification.setMediaReferencesList(message.getContent().getMediaReferences());
         }
-        notificationService.sendNotification(
-            chatUserRepository.getOtherChatUserIds(chat.getId(), senderId),
-            notification
-        );
+        notificationService.sendNotificationAsync(notification);
     }
 
     @Override
@@ -207,10 +204,7 @@ public class MessageServiceImpl implements MessageService {
             .senderId(userId)
             .notificationType(NotificationTypeEnum.SEEN)
             .build();
-        notificationService.sendNotification(
-            chatUserRepository.getOtherChatUserIds(chatId, userId),
-            notification
-        );
+        notificationService.sendNotificationAsync(notification);
     }
 
     private String getUserId() {

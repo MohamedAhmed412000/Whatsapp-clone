@@ -1,19 +1,31 @@
 services:
-#  postgres:
-#    container_name: postgres-sql-db
-#    image: postgres
-#    restart: unless-stopped
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#      PGDATA: /var/lib/postgresql/data
-#      POSTGRES_DB: whatsapp_clone
-#    volumes:
-#      - postgres:/data/postgres
-#    ports:
-#      - "5432:5432"
-#    networks:
-#      - whatsapp-clone
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:4.0-management
+    restart: unless-stopped
+    ports:
+      - "5672:5672"      # AMQP
+      - "15672:15672"    # Management UI
+      - "61613:61613"    # STOMP
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    configs:
+      - source: rabbitmq-plugins
+        target: /etc/rabbitmq/enabled_plugins
+      - source: rabbitmq-config
+        target: /etc/rabbitmq/rabbitmq.conf
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - whatsapp-clone
 
   redis-cache:
     container_name: redis-cache
@@ -69,17 +81,37 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DB: dev-file
+      KEYCLOAK_HEALTH_ENABLED: "true"
     volumes:
       - keycloak_data:/opt/keycloak/data
-    networks:
-      - whatsapp-clone
     command:
       - "start-dev"
       - "--import-realm"
+    networks:
+      - whatsapp-clone
+
+configs:
+  rabbitmq-plugins:
+    content: "[rabbitmq_management, rabbitmq_stomp]."
+
+  rabbitmq-config:
+    content: |
+      loopback_users = none
+      listeners.tcp.default = 5672
+      default_pass = admin
+      default_user = admin
+      hipe_compile = false
+      management.listener.port = 15672
+      management.listener.ssl = false
+      stomp.listeners.tcp.1 = 61613
+      stomp.default_user = admin
+      stomp.default_pass = admin
 
 volumes:
-#  postgres:
-#    driver: local
+  rabbitmq-lib:
+    driver: local
+  rabbitmq-log:
+    driver: local
   mongo_data:
     driver: local
   mongo_config:

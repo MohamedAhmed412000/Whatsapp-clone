@@ -28,7 +28,7 @@ public class WebSecurityConfig {
             .authorizeExchange(exchange -> exchange
                 .pathMatchers(getSwaggerPaths()).permitAll()
                 .pathMatchers("/core/actuator/**", "/media/actuator/**").permitAll()
-                .pathMatchers("/ws/**").permitAll()
+                .pathMatchers("/ws/**", "/ws").permitAll()
                 .pathMatchers("/configuration/ui", "/configuration/security").permitAll()
                 .anyExchange().permitAll()
             )

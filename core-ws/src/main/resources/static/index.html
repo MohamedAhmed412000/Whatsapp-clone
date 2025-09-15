@@ -5,8 +5,10 @@
   <title>Hello WS</title>
   <link href="bootstrap.min.css" rel="stylesheet">
   <script src="jquery.min.js"></script>
-  <script src="sockjs.min.js"></script>
-  <script src="stomp.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
   <script src="scripts.js"></script>
 </head>
 <body>
@@ -16,21 +18,13 @@
     <div class="col-md-12">
       <form class="form-inline">
         <div class="form-group">
-          <label for="key-id">Jwt-Token</label>
-          <input type="text" id="key-id" class="form-control" placeholder="Type any value here...">
-        </div>
-        <div class="form-group">
-          <label for="ws-id">WebSocket Id</label>
-          <input type="text" id="ws-id" class="form-control" placeholder="Type any value here...">
+          <label for="user-id">User-Id</label>
+          <input type="text" id="user-id" class="form-control" placeholder="Type the user id here...">
         </div>
         <button id="connect" class="btn btn-default" type="button">Connect</button>
       </form>
 
       <form class="form-inline">
-        <div class="form-group">
-          <label for="user-id">User id</label>
-          <input type="text" id="user-id" class="form-control" placeholder="Enter your id here...">
-        </div>
         <div class="form-group">
           <label for="private-message">Text Message</label>
           <input type="text" id="private-message" class="form-control" placeholder="Enter your message here...">

@@ -14,7 +14,9 @@ public interface ChatUserRepository extends MongoRepository<ChatUser, String> {
     @Query(value = "{ 'chat_id' : ?0, 'user_id' : ?1 }")
     Optional<ChatUser> findByChatIdAndUserId(String chatId, String userId);
 
-    @Query(value = "{ 'chat_id' : ?0, 'user_id' : { '$ne' : ?1 } }", fields = "userId")
-    List<String> getOtherChatUserIds(String chatId, String senderId);
+    @Query(value = "{ 'chat_id' : ?0 }", fields = "{ 'user_id' : 1, '_id' : 0 }")
+    List<ChatUser> getChatAllUserIds(String chatId);
 
+    @Query(value = "{ 'chat_id' : ?0, 'user_id' : { '$ne' : ?1 } }", fields = "{ 'user_id' : 1, '_id' : 0 }")
+    List<ChatUser> getOtherChatUserIds(String chatId, String senderId);
 }

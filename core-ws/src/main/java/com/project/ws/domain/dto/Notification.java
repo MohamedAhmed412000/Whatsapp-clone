@@ -1,7 +1,7 @@
-package com.project.core.domain.dto;
+package com.project.ws.domain.dto;
 
-import com.project.core.domain.enums.MessageTypeEnum;
-import com.project.core.domain.enums.NotificationTypeEnum;
+import com.project.ws.domain.enums.MessageTypeEnum;
+import com.project.ws.domain.enums.NotificationTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -49,7 +50,7 @@ public class MediaController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<MediaReferenceListResponse>> uploadMedia(
         @Schema(description = "The media files")
-        @NotEmpty @RequestPart("files") Flux<FilePart> files,
+        @NotNull @RequestPart("files") Flux<FilePart> files,
         @Schema(description = "The media file path", example = "550e8400-e29b-41d4-a716-446655440000")
         @NotEmpty @RequestPart("filePath") String filePath,
         @Schema(description = "The entity Id related to the media", example = "USR_550e8400-e29b-41d4-a716-446655440000")

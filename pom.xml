@@ -45,6 +45,7 @@
         <module>core-ws</module>
         <module>media-management</module>
         <module>story-management</module>
+        <module>user-management</module>
         <module>gateway-service</module>
     </modules>
 

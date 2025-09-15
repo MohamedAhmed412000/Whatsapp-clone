@@ -13,6 +13,7 @@ import com.project.core.rest.inbound.ChatUserUpdateResource;
 import com.project.core.rest.outbound.ChatUserResponse;
 import com.project.core.services.ChatUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -36,6 +37,13 @@ public class ChatUserServiceImpl implements ChatUserService {
     @Override
     public List<ChatUserResponse> getChatUsers(String chatId) {
         return findUsersByChatId(chatId).stream().map(userMapper::toChatUserResponse).toList();
+    }
+
+    @Override
+    @Cacheable(value = "chatUsers", key = "#chatId")
+    public List<String> getChatUserIds(String chatId) {
+        return chatUserRepository.getChatAllUserIds(chatId).stream()
+            .map(ChatUser::getUserId).toList();
     }
 
     @Transactional
