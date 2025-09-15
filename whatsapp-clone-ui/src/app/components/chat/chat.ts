@@ -1,5 +1,5 @@
 import {Component, input} from '@angular/core';
-import {ChatResponse} from '../../services/models/chat-response';
+import {ChatResponse} from '../../services/core/models/chat-response';
 
 @Component({
   selector: 'app-chat',
@@ -9,5 +9,5 @@ import {ChatResponse} from '../../services/models/chat-response';
 })
 export class Chat {
   chat = input.required<ChatResponse>();
-  
+
 }

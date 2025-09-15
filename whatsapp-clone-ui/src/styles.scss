@@ -94,6 +94,18 @@ fa-icon {
   color: $bg-conversation-color;
 }
 
+.avatar-dark {
+  border-radius: 40px;
+  font-size: 22px;
+  display: block;
+  width: 45px;
+  height: 45px;
+  padding-top: 4px;
+  text-align: center;
+  vertical-align: center;
+  background-color: $body-color;
+  color: $white;
+}
 
 #user-container, .conversation-container {
   :hover {

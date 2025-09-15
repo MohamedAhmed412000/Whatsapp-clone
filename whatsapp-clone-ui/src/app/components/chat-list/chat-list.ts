@@ -1,10 +1,10 @@
 import {Component, input, InputSignal, output} from '@angular/core';
-import {ChatResponse} from '../../services/models/chat-response';
+import {ChatResponse} from '../../services/core/models/chat-response';
 import {DatePipe} from '@angular/common';
-import {UserResponse} from '../../services/models/user-response';
-import {UserControllerService} from '../../services/services/user-controller.service';
-import {ChatControllerService} from '../../services/services/chat-controller.service';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
+import {UserResponse} from '../../services/user/models/user-response';
+import {UsersControllerService} from '../../services/user/services/users-controller.service';
+import {ChatsControllerService} from '../../services/core/services/chats-controller.service';
 
 @Component({
   selector: 'app-chat-list',
@@ -21,8 +21,8 @@ export class ChatList {
   chatSelected = output<ChatResponse>();
 
   constructor(
-    private userService: UserControllerService,
-    private chatService: ChatControllerService,
+    private userService: UsersControllerService,
+    private chatService: ChatsControllerService,
     private keycloakService: KeycloakService
   ) {}
 
@@ -52,12 +52,11 @@ export class ChatList {
 
   selectContact(contact: UserResponse) {
     this.chatService.createChat({
-      'sender-id': this.keycloakService.userId as string,
       'receiver-id': contact.id as string
     }).subscribe({
       next: (res) => {
         const chat: ChatResponse = {
-          id: res.message,
+          id: res.body?.content,
           name: contact.firstName + ' ' + contact.lastName,
           senderId: this.keycloakService.userId as string,
           receiversId: [contact.id as string],

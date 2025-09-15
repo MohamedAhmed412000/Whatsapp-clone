@@ -1,0 +1,49 @@
+<div id="content">
+  <div class="py-4 pb-2 d-flex flex-column justify-content-end" id="header">
+    <div class="d-flex justify-content-start align-items-center mb-1">
+      <fa-icon icon="arrow-left" (click)="onCloseNav()" class="mx-4" id="close"></fa-icon>
+      <div class="title">New group</div>
+    </div>
+  </div>
+  <div id="main" class="d-flex flex-column align-items-center">
+    <input [ngModel]="query" (ngModelChange)="onQueryChange($event)"
+      class="form-control w-75 my-4" type="text" placeholder="Search name">
+    @if (selectedUserIds.length > 0) {
+      <div class="d-flex w-100 px-3 gap-2 mb-3">
+        <button class="btn btn-success w-50 rounded-1"
+          (click)="openCreateGroupChat()"
+        >Next</button>
+        <button class="btn btn-secondary w-50 rounded-1"
+          (click)="onCloseNav()"
+        >
+          Cancel
+        </button>
+      </div>
+    }
+    <span class="align-self-start ms-4 mt-1 subtitle">All contacts</span>
+    <div class="d-flex flex-column w-100 pt-2 overflow-y-auto">
+      @for (user of usersResponse; track user.id) {
+        <app-contact-selector
+          [title]="user.firstName + ' ' + user.lastName"
+          [subtitle]="'Hi I\'m using Whatsapp clone'"
+          [pictureReference]="user.profilePictureReference!"
+          (selectionChange)="onUserSelectionChange(user.id!, $event.checked)"
+        ></app-contact-selector>
+      }
+    </div>
+    @if (usersResponse.length === 0 && !loadingSearch) {
+      <div class="d-flex flex-column vh-100 align-items-center justify-content-center">
+        <div class="fs-3">
+            No result found
+        </div>
+      </div>
+    }
+    @if (loadingSearch) {
+      <div class="d-flex flex-column vh-100 align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

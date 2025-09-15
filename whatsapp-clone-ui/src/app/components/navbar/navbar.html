@@ -1,9 +1,9 @@
 <div class="w-100 wac-navbar">
   <div class="p-3 d-flex justify-content-between align-items-center">
     @if (keycloakService.isAuthenticated) {
-      @if (keycloakService.profilePictureUrl != null) {
-        <img src="{{ keycloakService.profilePictureUrl }}" alt="user-avatar"
-             class="avatar-unknown" width="60px">
+      @if (keycloakService.profilePictureReference != null) {
+        <img [src]="mediaBaseUrl + keycloakService.profilePictureReference" alt="user-avatar"
+             class="avatar-unknown" width="60px" height="60px">
       } @else {
         <fa-icon icon="user" class="avatar-unknown"></fa-icon>
       }
@@ -12,7 +12,10 @@
     }
     <div class="d-flex justify-content-center align-items-center">
       <div id="add" class="me-3 btn-menu-fs">
-        <fa-icon icon="add" (click)="openNewConversations()"></fa-icon>
+        <fa-icon icon="pen-to-square" (click)="openNewConversations()"></fa-icon>
+      </div>
+      <div id="filter" class="mx-1 btn-menu-fs">
+        <fa-icon icon="filter" (click)="console.log('hello')"></fa-icon>
       </div>
       <div ngbDropdown class="d-inline-block" #menu="ngbDropdown"
         [class.btn-menu-active]="menu._open">

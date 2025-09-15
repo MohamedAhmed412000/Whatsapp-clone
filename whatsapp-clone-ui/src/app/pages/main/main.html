@@ -51,9 +51,9 @@
                     <div class="d-flex flex-column">
                       @if (message.type === "TEXT") {
                         <span>{{ message.content }}</span>
-                      } @else if (message.mediaList) {
-                        @for (media of message.mediaList; track media) {
-                          <img width="200" class="cursor-pointer" [src]="'data:image/jpg:base64,' + media.data" alt="">
+                      } @else if (message.mediaListReferences) {
+                        @for (media of message.mediaListReferences; track media) {
+                          <img width="200" class="cursor-pointer" [src]="mediaBaseUrl + media" alt="">
                         }
                       }
                       <small class="text-black-50">
@@ -76,9 +76,9 @@
                     <div class="d-flex flex-column align-items-end">
                       @if (message.type === "TEXT") {
                         <span>{{ message.content }}</span>
-                      } @else if (message.mediaList) {
-                        @for (media of message.mediaList; track media) {
-                          <img width="200" class="cursor-pointer" [src]="'data:image/jpg:base64,' + media.data" alt="">
+                      } @else if (message.mediaListReferences) {
+                        @for (media of message.mediaListReferences; track media) {
+                          <img width="200" class="cursor-pointer" [src]="mediaBaseUrl + media" alt="">
                         }
                       }
                       <small class="text-black-50">

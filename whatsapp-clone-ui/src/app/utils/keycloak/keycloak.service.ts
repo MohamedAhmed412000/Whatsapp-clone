@@ -1,11 +1,13 @@
 import {inject, Injectable} from '@angular/core';
 import Keycloak from 'keycloak-js';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {interval, switchMap} from 'rxjs';
+import {interval, Observable, switchMap} from 'rxjs';
 import {fromPromise} from 'rxjs/internal/observable/innerFrom';
 import {AuthModal} from '../../components/auth-modal/auth-modal';
 import {environment} from '../../../environments/environment';
-import {UserResponse} from '../../services/models/user-response';
+import {UserResponse} from '../../services/user/models/user-response';
+import {UsersControllerService} from '../../services/user/services';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,9 @@ export class KeycloakService {
   private authModalRef: NgbModalRef | undefined;
   private MIN_TOKEN_VALIDITY_MILLISECONDS = 10000;
 
-  constructor() { }
+  constructor(
+    private userService: UsersControllerService
+  ) { }
 
   get keycloak() {
     if (!this._keycloak) {
@@ -71,27 +75,25 @@ export class KeycloakService {
     return this.keycloak?.authenticated === true;
   }
 
-  get isTokenValid(): boolean {
-    return this.keycloak?.isTokenExpired();
+  get me(): Observable<UserResponse> {
+    return this.userService.getUser().pipe(
+      map(res => res.body as UserResponse)
+    );
   }
 
-  get fullname(): string {
-    return this.keycloak?.tokenParsed?.['name'] as string;
-  }
-
-  get me(): UserResponse {
+  get keycloakMe(): UserResponse {
     let claims = this.keycloak.tokenParsed!;
     return {
       userId: this.userId,
       email: claims['email'],
       firstName: claims['given_name'],
-      lastName: claims['last_name'],
+      lastName: claims['family_name'],
       online: true,
-      profilePictureUrl: this.profilePictureUrl,
+      profilePictureReference: claims['image_url'],
     } as UserResponse;
   }
 
-  get profilePictureUrl(): string | null {
+  get profilePictureReference(): string | null {
      if (this.keycloak?.tokenParsed?.['image_url']) {
         return this.keycloak?.tokenParsed?.['image_url'] as string;
      } else {

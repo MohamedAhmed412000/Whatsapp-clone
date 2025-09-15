@@ -1,31 +1,41 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {UserControllerService} from '../../../services/services/user-controller.service';
-import {NgbActiveOffcanvas} from '@ng-bootstrap/ng-bootstrap';
-import {Toast} from '../../../shared/toast/toast';
-import {UserResponse} from '../../../services/models/user-response';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {FormsModule} from '@angular/forms';
-import {query} from '@angular/animations';
 import {ConversationSelector} from './conversation-selector/conversation-selector';
+import {UsersControllerService} from '../../../services/user/services';
+import {UserResponse} from '../../../services/user/models/user-response';
+import {KeycloakService} from '../../../utils/keycloak/keycloak.service';
+import {ActionCreator} from './action-creator/action-creator';
+import {NewGroupChat} from './new-group-chat/new-group-chat';
+import {NewContactModal} from './new-contact-modal/new-contact-modal';
+import {NgbActiveOffcanvas, NgbModal, NgbOffcanvas} from '@ng-bootstrap/ng-bootstrap';
+import {OffcanvasTrackerService} from '../../../utils/offCanvasStack/offcanvas-tracker.service';
+import {Toast} from '../../../shared/toast/toast';
 
 @Component({
   selector: 'app-new-conversation',
   imports: [
     FaIconComponent,
     FormsModule,
-    ConversationSelector
+    ConversationSelector,
+    ActionCreator
   ],
   templateUrl: './new-conversation.html',
   styleUrl: './new-conversation.scss'
 })
 export class NewConversation implements OnInit, OnDestroy {
 
-  private userSearchService = inject(UserControllerService);
   private toastService = inject(Toast);
+  private userSearchService = inject(UsersControllerService);
   private activeOffCanvas = inject(NgbActiveOffcanvas);
+  private offcanvasTracker = inject(OffcanvasTrackerService);
+  private offCanvasService = inject(NgbOffcanvas);
+  private keycloakService = inject(KeycloakService);
+  private modalService = inject(NgbModal);
 
   protected loadingSearch = true;
   protected query = null;
+  protected meUser: UserResponse | undefined;
 
   public usersResponse: Array<UserResponse> = [];
 
@@ -34,20 +44,24 @@ export class NewConversation implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.onQueryChange("");
+    this.meUser = this.keycloakService.keycloakMe;
+    // this.keycloakService.me.subscribe(user => {
+    //   this.meUser = user;
+    // });
+    this.onQueryChange("");
   }
 
   onQueryChange(query: any): void {
     this.loadingSearch = true;
-    if (query == null || query == "") {
-      this.usersResponse = [];
-      return;
-    }
+    // if (query == null || query == "") {
+    //   this.usersResponse = [];
+    //   return;
+    // }
     this.userSearchService.getUsers({
       q: query
     }).subscribe({
       next: response => {
-        this.usersResponse = response;
+        this.usersResponse = response.body ?? [];
         this.loadingSearch = false;
       },
       error: error => {
@@ -62,7 +76,26 @@ export class NewConversation implements OnInit, OnDestroy {
     this.activeOffCanvas.close();
   }
 
-  handleConversation(userId: String): void {
-    this.activeOffCanvas.close();
+  handleConversation(userId: String | undefined): void {
+    if (!userId) {
+      this.offcanvasTracker.closeAll();
+    }
+  }
+
+  openNewGroupChat= () => {
+    const ref = this.offCanvasService.open(NewGroupChat, {
+      position: "start",
+      container: "#main",
+      panelClass: "offcanvas",
+    });
+
+    this.offcanvasTracker.register(ref);
+  };
+
+  openNewContactModal(): void {
+    this.offcanvasTracker.closeAll();
+    this.modalService.open(NewContactModal, {
+      centered: true
+    });
   }
 }

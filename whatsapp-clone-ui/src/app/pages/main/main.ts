@@ -1,19 +1,19 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ChatList} from '../../components/chat-list/chat-list';
-import {ChatResponse} from '../../services/models/chat-response';
-import {ChatControllerService} from '../../services/services/chat-controller.service';
+import {ChatResponse} from '../../services/core/models/chat-response';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
-import {MessageControllerService} from '../../services/services/message-controller.service';
-import {MessageResponse} from '../../services/models/message-response';
 import {DatePipe} from '@angular/common';
 import {PickerComponent} from '@ctrl/ngx-emoji-mart';
 import {FormsModule} from '@angular/forms';
 import {EmojiData} from '@ctrl/ngx-emoji-mart/ngx-emoji';
-import {MessageResource} from '../../services/models/message-resource';
 import SockJS from 'sockjs-client';
 import { Client, Message } from '@stomp/stompjs';
 import {Notification} from './notification';
-import {MediaContentResponse} from '../../services/models/media-content-response';
+import {ChatsControllerService} from '../../services/core/services/chats-controller.service';
+import {MessageResponse} from '../../services/core/models/message-response';
+import {MessagesControllerService} from '../../services/core/services/messages-controller.service';
+import {MessageCreationResource} from '../../services/core/models/message-creation-resource';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -28,18 +28,19 @@ import {MediaContentResponse} from '../../services/models/media-content-response
 })
 export class Main implements OnInit, OnDestroy {
 
-  chats: Array<ChatResponse> = [];
+  chats: ChatResponse[] = [];
   selectedChat: ChatResponse = {};
   chatMessages: MessageResponse[] = [];
+  mediaBaseUrl: string = environment.MEDIA_URL;
   showEmojis: any = false;
   messageContent: any = '';
   socketClient: any = null;
   private notificationSubscription: any;
 
   constructor(
-    private chatService: ChatControllerService,
+    private chatService: ChatsControllerService,
     private keycloakService: KeycloakService,
-    private messageService: MessageControllerService
+    private messageService: MessagesControllerService
   ) {}
 
   ngOnDestroy(): void {
@@ -58,7 +59,7 @@ export class Main implements OnInit, OnDestroy {
   private getAllChats() {
     this.chatService.getChatsByUser()
     .subscribe(res => {
-      this.chats = res;
+      this.chats = res.body ?? [];
     })
   }
 
@@ -82,8 +83,8 @@ export class Main implements OnInit, OnDestroy {
       chatId: chatId,
       page: 0
     }).subscribe({
-      next: (messages) => {
-        this.chatMessages = messages;
+      next: (res) => {
+        this.chatMessages = res.body ?? [];
       }
     });
   }
@@ -130,9 +131,8 @@ export class Main implements OnInit, OnDestroy {
 
   sendMessage() {
     if (this.messageContent) {
-      const messageRequest: MessageResource = {
-        chatId: this.selectedChat.id,
-        senderId: this.keycloakService.userId as string,
+      const messageRequest: MessageCreationResource = {
+        chatId: this.selectedChat.id as string,
         content: this.messageContent,
         messageType: "TEXT"
       };
@@ -158,7 +158,7 @@ export class Main implements OnInit, OnDestroy {
 
   private initWebSocket() {
     if (this.keycloakService.keycloak.tokenParsed?.sub) {
-      const ws = new SockJS('http://localhost:8080/ws');
+      const ws = new SockJS('http://localhost:8095/ws');
       this.socketClient = new Client({
         webSocketFactory: () => ws,
         connectHeaders: {
@@ -199,11 +199,7 @@ export class Main implements OnInit, OnDestroy {
             senderId: notification.senderId,
             content: notification.content,
             type: notification.messageType,
-            mediaList: notification.media?.map(mediaString => ({
-              data: mediaString,
-              name: 'Unnamed',
-              size: 0
-            } as MediaContentResponse)),
+            mediaListReferences: notification.media,
             createdAt: new Date().toISOString()
           };
           console.log('Received Message:', message);

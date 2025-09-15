@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "api-gen": "ng-openapi-gen --input src/openapi/openapi.json --output ./src/app/services"
+    "api-gen-core": "ng-openapi-gen --input src/openapi/core.json --output ./src/app/services/core",
+    "api-gen-media": "ng-openapi-gen --input src/openapi/media.json --output ./src/app/services/media",
+    "api-gen-story": "ng-openapi-gen --input src/openapi/story.json --output ./src/app/services/story",
+    "api-gen-user": "ng-openapi-gen --input src/openapi/user.json --output ./src/app/services/user"
   },
   "private": true,
   "dependencies": {

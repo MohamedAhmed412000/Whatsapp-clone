@@ -1,21 +1,28 @@
-import { IconDefinition } from '@fortawesome/free-regular-svg-icons';
+import {IconDefinition} from '@fortawesome/free-regular-svg-icons';
 import {
   faAdd,
-  faArrowLeft,
+  faArrowLeft, faCamera,
   faCheck,
   faEllipsisVertical,
   faFaceLaugh,
-  faFileImport,
+  faFileImport, faFilter,
   faHeadphones,
   faImage,
-  faPaperPlane,
+  faPaperPlane, faPenToSquare,
   faSearch,
   faUser,
+  faUserGroup,
   faVideo
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUser as farUser,
+  faFaceSmile as farFaceSmile,
+} from '@fortawesome/free-regular-svg-icons';
 
 export const fontAwesomeIcons: IconDefinition[] = [
   faAdd,
+  faFilter,
+  faPenToSquare,
   faArrowLeft,
   faCheck,
   faEllipsisVertical,
@@ -25,6 +32,10 @@ export const fontAwesomeIcons: IconDefinition[] = [
   faImage,
   faPaperPlane,
   faSearch,
+  farUser,
   faUser,
-  faVideo
+  faVideo,
+  faUserGroup,
+  faCamera,
+  farFaceSmile
 ]

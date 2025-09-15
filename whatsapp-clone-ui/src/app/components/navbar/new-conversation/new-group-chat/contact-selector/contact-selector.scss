@@ -1,0 +1,19 @@
+@import "../../../../../../assets/scss/bootstrap-variables";
+
+.form-check-input {
+  pointer-events: none;
+}
+
+.form-check-input:checked {
+  background-color: $primary !important;
+  border-color: $primary !important;
+}
+
+.big-checkbox {
+  transform: scale(1.25);
+  margin: 8px;
+}
+
+.contact-item {
+  user-select: none;
+}
