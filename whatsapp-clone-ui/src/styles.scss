@@ -87,11 +87,11 @@ fa-icon {
   display: block;
   width: 45px;
   height: 45px;
-  padding-top: 4px;
   text-align: center;
-  vertical-align: center;
+  align-content: center;
   background-color: $white;
   color: $bg-conversation-color;
+  object-fit: cover;
 }
 
 .avatar-dark {

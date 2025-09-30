@@ -24,7 +24,10 @@ $offcanvas-title-color: #D9DEE0;
 $subtitle-color: #4F5D65;
 $send-color: #8B9CA5;
 $message-state: #98BEB7;
+$message-sent-state: #53bdeb;
 $message-bg-color: #015C4B;
+$reply-message-bg-color: #1b6b5d;
+$badge-primary-color: #25d366;
 
 $link-color-dark: $secondary;
 $link-decoration: none;
@@ -72,5 +75,5 @@ $btn-menu-active-color: #374249;
 // Layout
 $main-margin: 24px;
 $header-height: 77px;
-$send-height: 70.39px;
+$send-height: 60.39px;
 $layout-border-color: #313E46;

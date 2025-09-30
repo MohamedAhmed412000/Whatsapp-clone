@@ -1,3 +1,5 @@
+@import "../../../assets/scss/bootstrap-variables";
+
 .main {
   display: flex;
   justify-content: center;
@@ -24,7 +26,7 @@
 }
 
 .title {
-  min-height: 61px;
+  color: $offcanvas-title-color;
 }
 
 .online-status {
@@ -54,10 +56,19 @@
 }
 
 .bg-chat {
-  background-color: #efeae2;
-  //background-color: #000;
-  background-image: url('/wa_bg.png');
+  position: relative;
+  background-color: #000;
+  background-image: url('/assets/images/wa_bg.png');
   background-size: contain;
+  z-index: 0;
+}
+
+.bg-chat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: -1;
 }
 
 .message-box {

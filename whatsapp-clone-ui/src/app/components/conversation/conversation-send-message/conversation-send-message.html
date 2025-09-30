@@ -1,0 +1,100 @@
+@if (selectedChat()) {
+  <div class="wac-footer d-flex flex-column align-items-center py-1 px-2 border-0">
+    @if (isReplyMessage) {
+      <div class="reply-box d-flex align-items-center w-100 p-2 mb-1">
+        <div class="flex-grow-1">
+          <div class="reply-title">Replying to {{ replyMessage?.senderName }}</div>
+          <div class="reply-content text-truncate">
+            @if (replyMessage?.type == "TEXT") {
+              {{ replyMessage?.content }}
+            } @else {
+              Attachment
+            }
+          </div>
+        </div>
+        <button class="btn btn-sm btn-transparent ms-2" (click)="cancelReply()">
+          <fa-icon [icon]="['far', 'times-circle']" class="fs-2"></fa-icon>
+        </button>
+      </div>
+    }
+    <div class="d-flex w-100 p-0 align-items-center">
+      <button class="btn btn-transparent rounded-1 px-3"
+              (click)="toggleEmojiPanel($event)">
+        <fa-icon icon="face-laugh" class="fs-3"></fa-icon>
+      </button>
+      @if (showEmojis) {
+        <div class="emojis-panel" #emojiPanel>
+          <emoji-mart [set]="'google'"
+                      title="Pick your emoji..."
+                      emoji="smile"
+                      (emojiClick)="onSelectEmojis($event)"
+          ></emoji-mart>
+        </div>
+      }
+
+      <div ngbDropdown #attachment="ngbDropdown"
+           [class.btn-menu-active]="attachment._open">
+        <button class="btn btn-transparent rounded-1 px-3" ngbDropdownToggle>
+          <fa-icon icon="paperclip" class="fs-3"></fa-icon>
+        </button>
+
+        <div ngbDropdownMenu class="align-items-center py-0">
+          <button ngbDropdownItem class="p-1 px-3" (click)="mediaFile.click()">
+            <fa-icon icon="image" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Photos & videos
+          </button>
+          <input #mediaFile
+                 type="file"
+                 [hidden]="true"
+                 accept=".jpg, .jpeg, .png, .pdf, .svg, .mp4, .mov, .mp3"
+                 multiple="multiple"
+                 (change)="uploadMedia($event)"
+          >
+
+          <button ngbDropdownItem class="p-1 px-3">
+            <fa-icon icon="camera" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Camera
+          </button>
+          <button ngbDropdownItem class="p-1 px-3" (click)="documentFile.click()">
+            <fa-icon icon="file" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Document
+          </button>
+          <input #documentFile
+                 type="file"
+                 [hidden]="true"
+                 accept="*"
+                 multiple="multiple"
+                 (change)="uploadMedia($event)"
+          >
+
+          <button ngbDropdownItem class="p-1 px-3">
+            <fa-icon icon="user" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Contact
+          </button>
+          <button ngbDropdownItem class="p-1 px-3">
+            <fa-icon icon="poll-h" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Poll
+          </button>
+          <button ngbDropdownItem class="p-1 px-3">
+            <fa-icon icon="calendar" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Event
+          </button>
+          <button ngbDropdownItem class="p-1 px-3">
+            <fa-icon icon="paint-brush" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Drawing
+          </button>
+        </div>
+      </div>
+
+      <textarea #messageTextBox
+                rows="1"
+                class="chat-textarea flex-grow-1 mx-2 fs-5"
+                placeholder="Type a message"
+                [(ngModel)]="messageContent"
+                (keydown)="keyDown($event)"
+                (click)="onClick()"
+                (input)="autoResize($event)"></textarea>
+
+      <button class="btn btn-transparent rounded-1 px-3">
+        @if (messageContent) {
+          <fa-icon icon="paper-plane" class="fs-3" (click)="sendMessage()"></fa-icon>
+        } @else {
+          <fa-icon icon="microphone" class="fs-3"></fa-icon>
+        }
+      </button>
+    </div>
+  </div>
+}

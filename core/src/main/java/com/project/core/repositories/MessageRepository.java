@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends MongoRepository<Message, Long> {
 
-    @Query(value = "{ 'chatId' : ?0 }", sort = "{ 'createdAt' : 1 }")
+    @Query(value = "{ 'chatId' : ?0 }", sort = "{ 'createdAt' : -1 }")
     List<Message> findMessagesByChatId(String chatId, Pageable pageable);
 
     @Query(value = "{ 'chatId' : ?0, 'createdAt' : { '$gt' : ?1 } }", count = true)

@@ -1,0 +1,53 @@
+@import "../../../../assets/scss/bootstrap-variables";
+
+.wac-footer {
+  background-color: $menu-bg-color;
+  min-height: $send-height;
+}
+
+.dropdown-toggle::after {
+  content: none;
+}
+
+.btn-transparent:hover {
+  background-color: $btn-menu-active-color;
+}
+
+.chat-textarea {
+  resize: none;
+  overflow-y: auto;
+  max-height: calc(1.5em * 5);
+  line-height: 1.5em;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  padding: 8px 12px;
+}
+
+.emojis-panel {
+  position: absolute;
+  left: 350px;
+  bottom: 80px;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.reply-box {
+  background: #2a2f32;
+  border-left: 3px solid #00a884;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.reply-title {
+  font-weight: 600;
+  color: #00a884;
+}
+
+.reply-content {
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

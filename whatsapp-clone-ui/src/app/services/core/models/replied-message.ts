@@ -19,4 +19,9 @@ export interface RepliedMessage {
    * The message content type
    */
   messageType?: 'TEXT' | 'MEDIA' | 'AUDIO';
+
+  /**
+   * The creator user id
+   */
+  senderId?: string;
 }

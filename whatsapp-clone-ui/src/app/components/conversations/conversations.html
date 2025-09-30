@@ -1,1 +1,36 @@
-<p>conversations works!</p>
+<div class="chat-container rounded-1">
+  <div class="d-flex flex-column align-items-center pt-4 h-100">
+    <div class="input-group search-input pb-3 px-4">
+      <span class="input-group-text">
+        <fa-icon [icon]="'search'"></fa-icon>
+      </span>
+      <input
+        type="text"
+        class="form-control form-control-md fs-6 search-box"
+        placeholder="Search or start a new chat"
+        aria-label="Search"
+      />
+    </div>
+
+    <div class="d-flex flex-column w-100 chat-list-container">
+      @for (conversation of conversations; track conversation.id) {
+        <div class="chat-item">
+          <app-conversation-compact-info
+            [conversation]="conversation"
+            [isSelected]="selectedChatId == conversation.id"
+            (click)="selectChat(conversation)"
+          ></app-conversation-compact-info>
+        </div>
+      }
+<!--      @for (conversation of conversations; track conversation.id) {-->
+<!--        <div class="chat-item">-->
+<!--          <app-conversation-compact-info-->
+<!--            [conversation]="conversation"-->
+<!--            [isSelected]="selectedChatId == conversation.id"-->
+<!--            (click)="selectChat(conversation)"-->
+<!--          ></app-conversation-compact-info>-->
+<!--        </div>-->
+<!--      }-->
+    </div>
+  </div>
+</div>

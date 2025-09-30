@@ -24,6 +24,9 @@ spring:
     port: 5672
     username: admin
     password: admin
+  servlet:
+    multipart:
+      max-file-size: 100MB
 
 server:
   port: 8091

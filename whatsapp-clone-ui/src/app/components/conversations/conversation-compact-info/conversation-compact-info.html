@@ -1,0 +1,35 @@
+<div class="separator"></div>
+<div [class]="['conversation-item', 'd-flex', 'align-items-center', 'px-3', 'py-2', isSelected()? 'selected': '']">
+  <div class="avatar">
+    @if (conversation().chatImageReference != null) {
+      <img [src]="conversation().chatImageReference! | mediaUrl" alt="user-avatar"
+        class="rounded-circle" style="width: 50px; height: 50px"/>
+    } @else {
+      <div>
+        <fa-icon [icon]="conversation().isGroupChat ? 'user-group' : 'user'"
+          class="avatar-unknown"></fa-icon>
+      </div>
+    }
+  </div>
+
+  <div class="flex-grow-1 ms-3 overflow-hidden">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="conversation-title text-truncate fs-4">
+        {{ conversation().name }}
+      </div>
+      <div class="conversation-time ms-2 fs-6">
+        {{ conversation().lastMessageTime | relativeDate }}
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="conversation-last-message text-truncate subtitle">
+        {{ conversation().lastMessage }}
+      </div>
+      @if (conversation().unreadCount! > 0 && !isSelected()) {
+        <div class="unread-badge ms-2">
+          {{ conversation().unreadCount }}
+        </div>
+      }
+    </div>
+  </div>
+</div>

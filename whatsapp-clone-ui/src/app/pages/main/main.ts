@@ -18,7 +18,6 @@ import {environment} from '../../../environments/environment';
 @Component({
   selector: 'app-main',
   imports: [
-    ChatList,
     DatePipe,
     PickerComponent,
     FormsModule
@@ -44,11 +43,11 @@ export class Main implements OnInit, OnDestroy {
   ) {}
 
   ngOnDestroy(): void {
-    if (this.socketClient !== null) {
-      this.socketClient.disconnect();
-      this.notificationSubscription.unsubscribe();
-      this.socketClient = null;
-    }
+    // if (this.socketClient !== null) {
+    //   this.socketClient.disconnect();
+    //   this.notificationSubscription.unsubscribe();
+    //   this.socketClient = null;
+    // }
   }
 
   ngOnInit(): void {
@@ -58,9 +57,9 @@ export class Main implements OnInit, OnDestroy {
 
   private getAllChats() {
     this.chatService.getChatsByUser()
-    .subscribe(res => {
-      this.chats = res.body ?? [];
-    })
+      .subscribe(res => {
+        this.chats = res.body ?? [];
+      })
   }
 
   logout() {
@@ -84,7 +83,7 @@ export class Main implements OnInit, OnDestroy {
       page: 0
     }).subscribe({
       next: (res) => {
-        this.chatMessages = res.body ?? [];
+        // this.chatMessages = res.body ?? [];
       }
     });
   }

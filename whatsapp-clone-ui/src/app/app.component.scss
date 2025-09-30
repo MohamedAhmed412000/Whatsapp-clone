@@ -1,5 +1,11 @@
 @use "../assets/scss/bootstrap-variables" as *;
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+}
+
 .main-background {
   background-color: $bg-conversation-color;
   height: calc(100vh - $main-margin * 2);
@@ -17,6 +23,18 @@
   grid-template-columns: 0.4fr 1fr;
 }
 
+.main-grid.no-chat {
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "navbar chat"
+    "conversations chat";
+}
+
+.main-grid.no-chat .header,
+.main-grid.no-chat .send-message {
+  display: none;
+}
+
 .wac-navbar {
   grid-area: navbar;
 }
@@ -27,10 +45,35 @@
 
 .conversations {
   grid-area: conversations;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .chat {
   grid-area: chat;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.chat.default {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: $secondary transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    color: $secondary;
+  }
 }
 
 .send-message {

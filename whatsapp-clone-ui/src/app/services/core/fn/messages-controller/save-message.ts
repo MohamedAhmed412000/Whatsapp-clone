@@ -9,23 +9,52 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { MessageCreationResource } from '../../models/message-creation-resource';
+import { MessageCreationResponse } from '../../models/message-creation-response';
 
 export interface SaveMessage$Params {
       body?: MessageCreationResource
 }
 
-export function saveMessage(http: HttpClient, rootUrl: string, params?: SaveMessage$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+export function saveMessage(http: HttpClient, rootUrl: string, params?: SaveMessage$Params, context?: HttpContext): Observable<StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: MessageCreationResponse;
+}>> {
   const rb = new RequestBuilder(rootUrl, saveMessage.PATH, 'post');
   if (params) {
     rb.body(params.body, 'multipart/form-data');
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<{
+      'headers'?: {
+      
+      /**
+       * Unique request identifier
+       */
+      'requestId'?: string;
+      
+      /**
+       * Status code of the response
+       */
+      'statusCode'?: string;
+      };
+      'body'?: MessageCreationResponse;
+      }>;
     })
   );
 }

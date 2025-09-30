@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ChatService {
+    ChatResponse getChatDetails(String chatId);
     List<ChatResponse> getChatsByReceiverId();
     String createOneToOneChat(String receiverId);
     String createGroupChat(String chatName, String description, MultipartFile groupChatProfileFile,

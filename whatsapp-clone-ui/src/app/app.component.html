@@ -12,20 +12,37 @@
 </div>
 
 <!--<router-outlet />-->
-<div class="m-4 main-background main-grid" id="main">
+<div [class]="['m-4', 'main-background', 'main-grid', !this.isChatSelected ? 'no-chat' : '']" id="main">
   <div class="wac-navbar" id="navbar">
     <app-navbar></app-navbar>
   </div>
   <div class="header" id="header">
-    header
+    <app-conversation-bar
+      [chat]="selectedChat!"
+      [chatUsers]="chatUsersString!"
+    ></app-conversation-bar>
   </div>
   <div class="conversations" id="conversations">
-    conversations
+    <app-conversations
+      #conversationsList
+      [messageCreated]="messageCreated()"
+      (chatSelected)="onChatSelected($event)"
+    ></app-conversations>
   </div>
-  <div class="chat" id="chat">
-    chat
+  <div [class]="['chat', this.isChatSelected ? 'default' : '']" id="chat">
+    <app-conversation-messages
+      [chat]="selectedChat!"
+      [chatMessages]="chatMessages!"
+      [chatUsers]="chatUsers!"
+      (repliedMessageEvent)="onMessageReplied($event)"
+    ></app-conversation-messages>
   </div>
   <div class="send-message" id="send-message">
-    send-message
+    <app-conversation-send-message
+      [selectedChat]="selectedChat!"
+      [(repliedMessage)]="repliedMessage!"
+      [chatUsers]="chatUsers!"
+      (messageCreated)="onMessageCreated($event)"
+    ></app-conversation-send-message>
   </div>
 </div>

@@ -10,12 +10,14 @@ import com.project.core.domain.models.*;
 import com.project.core.exceptions.ChatNotFoundException;
 import com.project.core.exceptions.DeleteActionNotAllowedException;
 import com.project.core.exceptions.UpdateActionNotAllowedException;
+import com.project.core.exceptions.UserNotExistInChatException;
 import com.project.core.mappers.MessageMapper;
 import com.project.core.repositories.ChatRepository;
 import com.project.core.repositories.ChatUserRepository;
 import com.project.core.repositories.MessageRepository;
 import com.project.core.rest.inbound.MessageResource;
 import com.project.core.rest.inbound.MessageUpdateResource;
+import com.project.core.rest.outbound.MessageCreationResponse;
 import com.project.core.rest.outbound.MessageResponse;
 import com.project.core.services.MessageService;
 import com.project.core.services.NotificationService;
@@ -48,12 +50,13 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
     private final NotificationService notificationService;
     private final MongoTemplate mongoTemplate;
+    private final CacheManagerImpl cacheManagerImpl;
 
     @Value("${chats.page.max-messages-size:20}")
     private Integer chatMaxMessagesSize;
 
     @Override
-    public void saveMessage(MessageResource request) {
+    public MessageCreationResponse saveMessage(MessageResource request) {
         String senderId = getUserId();
         Message message = Message.builder()
             .id(System.currentTimeMillis())
@@ -95,6 +98,13 @@ public class MessageServiceImpl implements MessageService {
         chat.setLastMessage(message);
         chatRepository.save(chat);
 
+        ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(request.getChatId(), senderId)
+            .orElseThrow(() -> new UserNotExistInChatException("The user doesn't exist in the chat"));
+        chatUser.setLastSeenMessageAt(LocalDateTime.now());
+        chatUserRepository.save(chatUser);
+
+        cacheManagerImpl.evictCachedChatMessages(request.getChatId());
+
         Notification notification = Notification.builder()
             .chatId(chat.getId())
             .chatName(chat.getChatName(senderId))
@@ -109,6 +119,11 @@ public class MessageServiceImpl implements MessageService {
             notification.setMediaReferencesList(message.getContent().getMediaReferences());
         }
         notificationService.sendNotificationAsync(notification);
+
+        return MessageCreationResponse.builder()
+            .id(message.getId())
+            .mediaListReferences(message.getContent().getMediaReferences())
+            .build();
     }
 
     @Override

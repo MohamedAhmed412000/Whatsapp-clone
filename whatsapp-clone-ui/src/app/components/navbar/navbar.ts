@@ -9,8 +9,8 @@ import {
   NgbOffcanvas
 } from '@ng-bootstrap/ng-bootstrap';
 import {NewConversation} from './new-conversation/new-conversation';
-import {environment} from '../../../environments/environment';
 import {OffcanvasTrackerService} from '../../utils/offCanvasStack/offcanvas-tracker.service';
+import {MediaUrlPipe} from '../../utils/media-url.pipe';
 
 @Component({
   selector: 'app-navbar',
@@ -19,7 +19,8 @@ import {OffcanvasTrackerService} from '../../utils/offCanvasStack/offcanvas-trac
     NgbDropdown,
     NgbDropdownToggle,
     NgbDropdownMenu,
-    NgbDropdownItem
+    NgbDropdownItem,
+    MediaUrlPipe
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
@@ -28,7 +29,6 @@ export class Navbar {
 
   offCanvasService = inject(NgbOffcanvas);
   offcanvasTracker = inject(OffcanvasTrackerService);
-  protected mediaBaseUrl: string = environment.MEDIA_URL;
 
   constructor(
     protected keycloakService: KeycloakService

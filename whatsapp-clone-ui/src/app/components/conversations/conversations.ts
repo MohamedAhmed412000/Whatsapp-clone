@@ -1,39 +1,68 @@
-import {Component, effect, EventEmitter, inject, input, Output} from '@angular/core';
+import {Component, effect, EventEmitter, input, Output} from '@angular/core';
 import {UserResponse} from '../../services/user/models/user-response';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
-import {MessagesControllerService} from '../../services/core/services';
+import {ChatsControllerService} from '../../services/core/services';
+import {FaIconComponent} from '@fortawesome/angular-fontawesome';
+import {ConversationCompactInfo} from './conversation-compact-info/conversation-compact-info';
+import {ChatResponse} from '../../services/core/models/chat-response';
+import {MessageResponse} from '../../services/core/models/message-response';
+import {ChatTrigger} from '../conversation/conversation-messages/ChatTrigger';
 
 @Component({
   selector: 'app-conversations',
-  imports: [],
+  imports: [
+    FaIconComponent,
+    ConversationCompactInfo
+  ],
   templateUrl: './conversations.html',
   styleUrl: './conversations.scss'
 })
 export class Conversations {
+  @Output() chatSelected = new EventEmitter<ChatResponse>();
+  messageCreated = input<ChatTrigger | null>();
 
-  conversation = input.required();
-  connectedUser = input.required<UserResponse>();
-
-  messageService = inject(MessagesControllerService);
-  keycloakService = inject(KeycloakService);
-
-  @Output() select = new EventEmitter();
-  @Output() delete = new EventEmitter();
-
-  protected showMenu = false;
-  nbOfUnReadMessage = 0;
+  selectedChatId: string | undefined;
+  conversations: Array<ChatResponse> | undefined;
   contact: UserResponse | undefined;
 
-  showConversation() {
-    this.select.emit(this.conversation());
-  }
-
-  constructor() {
+  constructor(
+    private chatService: ChatsControllerService,
+    private keycloakService: KeycloakService,
+  ) {
+    this.contact = this.keycloakService.me;
+    this.chatService.getChatsByUser().subscribe(res => {
+      this.conversations = res.body;
+    });
     effect(() => {
-      this.keycloakService.me.subscribe(user => {
-        this.contact = user;
-      });
+      if (this.messageCreated()) this.onMessageCreated(this.messageCreated()!);
     });
   }
 
+  selectChat(conversation: ChatResponse) {
+    this.selectedChatId = conversation.id;
+    this.chatService.getChatDetails({
+      'chat-id': conversation.id as string,
+    }).subscribe(res => {
+      res.body!.unreadCount = 0;
+      this.chatSelected.emit(res.body!);
+      this.conversations = this.conversations?.map(chat =>
+        chat.id === this.selectedChatId ? res.body! : chat
+      );
+    })
+  }
+
+  updateSelectedChat(message: MessageResponse) {
+    this.conversations?.filter(c => c.id === this.selectedChatId)
+      ?.forEach(chat => {
+        chat.lastMessage = message.content;
+        chat.lastMessageTime = message.createdAt;
+      })
+  }
+
+  onMessageCreated(chatTrigger: ChatTrigger) {
+    const chatIndex = this.conversations?.findIndex(c => c.id === chatTrigger.chat.id)!;
+    if (chatIndex >= 0) this.conversations?.splice(chatIndex, 1);
+    this.conversations?.unshift(chatTrigger.chat);
+    this.conversations = [...this.conversations!];
+  }
 }

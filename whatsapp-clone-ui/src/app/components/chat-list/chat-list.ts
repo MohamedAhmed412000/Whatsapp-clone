@@ -1,10 +1,12 @@
-import {Component, input, InputSignal, output} from '@angular/core';
-import {ChatResponse} from '../../services/core/models/chat-response';
+import {Component, output} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
 import {UserResponse} from '../../services/user/models/user-response';
 import {UsersControllerService} from '../../services/user/services/users-controller.service';
 import {ChatsControllerService} from '../../services/core/services/chats-controller.service';
+import {MessageResponse} from '../../services/core/models/message-response';
+import {ChatResponse} from '../../services/core/models/chat-response';
+import {MessagesControllerService} from '../../services/core/services/messages-controller.service';
 
 @Component({
   selector: 'app-chat-list',
@@ -15,16 +17,45 @@ import {ChatsControllerService} from '../../services/core/services/chats-control
   styleUrl: './chat-list.scss'
 })
 export class ChatList {
-  chats: InputSignal<ChatResponse[]> = input<ChatResponse[]>([]);
+  chats = Array<ChatResponse>();
   searchNewContact = false;
   contacts: Array<UserResponse> = [];
-  chatSelected = output<ChatResponse>();
+  chatMessages: MessageResponse[] = [];
+  selectedChat: ChatResponse = {};
 
   constructor(
     private userService: UsersControllerService,
     private chatService: ChatsControllerService,
-    private keycloakService: KeycloakService
-  ) {}
+    private keycloakService: KeycloakService,
+    private messageService: MessagesControllerService
+  ) {
+    this.getAllChats();
+  }
+
+  getAllChats() {
+    // this.chatService.getChatsByUser()
+    //   .subscribe(res => {
+    //     // this.chats = res.body ?? [];
+    //   })
+  }
+
+  chatSelected(chatResponse: ChatResponse) {
+    this.selectedChat = chatResponse;
+    // this.getAllChatMessages(chatResponse.id as string);
+    // this.setMessagesToSeen();
+    this.selectedChat.unreadCount = 0;
+  }
+
+  private getAllChatMessages(chatId: string) {
+    // this.messageService.getChatMessages({
+    //   chatId: chatId,
+    //   page: 0
+    // }).subscribe({
+    //   next: (res) => {
+    //     // this.chatMessages = res.body ?? [];
+    //   }
+    // });
+  }
 
   searchContact() {
     this.userService.getUsers()
@@ -40,7 +71,7 @@ export class ChatList {
   }
 
   chatClicked(chat: ChatResponse) {
-    this.chatSelected.emit(chat);
+    // this.chatSelected.emit(chat);
   }
 
   wrapMessage(lastMessage: String | undefined) {
@@ -51,24 +82,24 @@ export class ChatList {
   }
 
   selectContact(contact: UserResponse) {
-    this.chatService.createChat({
-      'receiver-id': contact.id as string
-    }).subscribe({
-      next: (res) => {
-        const chat: ChatResponse = {
-          id: res.body?.content,
-          name: contact.firstName + ' ' + contact.lastName,
-          senderId: this.keycloakService.userId as string,
-          receiversId: [contact.id as string],
-          isRecipientOnline: contact.online,
-          unreadCount: 0,
-          lastMessage: 'Chat created',
-          lastMessageTime: new Date().toISOString()
-        };
-        this.chats().unshift(chat);
-        this.searchNewContact = false;
-        this.chatSelected.emit(chat);
-      }
-    });
+    // this.chatService.createChat({
+    //   'receiver-id': contact.id as string
+    // }).subscribe({
+    //   next: (res) => {
+    //     const chat: ChatResponse = {
+    //       // id: res.body?.content,
+    //       // name: contact.firstName + ' ' + contact.lastName,
+    //       // senderId: this.keycloakService.userId as string,
+    //       // receiversId: [contact.id as string],
+    //       // isRecipientOnline: contact.online,
+    //       // unreadCount: 0,
+    //       // lastMessage: 'Chat created',
+    //       // lastMessageTime: new Date().toISOString()
+    //     };
+    //     this.chats.unshift(chat);
+    //     this.searchNewContact = false;
+    //     // this.chatSelected.emit(chat);
+    //   }
+    // });
   }
 }

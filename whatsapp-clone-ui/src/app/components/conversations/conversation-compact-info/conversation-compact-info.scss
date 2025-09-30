@@ -1,0 +1,62 @@
+@import "../../../../assets/scss/bootstrap-variables";
+
+.avatar-unknown {
+  align-content: center;
+  border-radius: 50px;
+  font-size: 18px;
+  display: block;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: center;
+  background-color: #6A7176;
+  color: #CFD4D7;
+}
+
+.conversation-item {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .avatar img {
+    object-fit: cover;
+  }
+
+  .conversation-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: white;
+  }
+
+  .conversation-time {
+    font-size: 0.8rem;
+    color: #999;
+    white-space: nowrap;
+  }
+
+  .conversation-last-message {
+    font-size: 0.9rem;
+    color: $input-color;
+  }
+
+  .unread-badge {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 50%;
+    background-color: $badge-primary-color;
+    color: $white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: justify;
+    line-height: 20px;
+  }
+}
+
+.conversation-item.selected {
+  background-color: rgba(255, 255, 255, 0.25);
+}

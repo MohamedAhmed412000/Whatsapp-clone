@@ -1,18 +1,20 @@
-import {IconDefinition} from '@fortawesome/free-regular-svg-icons';
+import {faCheckSquare, faCopy, faStar, faTimesCircle, IconDefinition} from '@fortawesome/free-regular-svg-icons';
 import {
   faAdd,
   faArrowLeft, faCamera,
   faCheck,
   faEllipsisVertical,
   faFaceLaugh,
-  faFileImport, faFilter,
+  faFilter,
   faHeadphones,
   faImage,
   faPaperPlane, faPenToSquare,
   faSearch,
   faUser,
   faUserGroup,
-  faVideo
+  faVideo,
+  faPhone, faPaperclip, faMicrophone, faFile, faPollH, faCalendar, faPaintbrush, faReply, faShare, faThumbTack, faTrash,
+  faShareSquare, faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faUser as farUser,
@@ -27,15 +29,31 @@ export const fontAwesomeIcons: IconDefinition[] = [
   faCheck,
   faEllipsisVertical,
   faFaceLaugh,
-  faFileImport,
+  faPaperclip,
   faHeadphones,
   faImage,
   faPaperPlane,
   faSearch,
   farUser,
   faUser,
+  faUserGroup,
   faVideo,
   faUserGroup,
   faCamera,
-  farFaceSmile
+  farFaceSmile,
+  faPhone,
+  faMicrophone,
+  faFile,
+  faPollH,
+  faCalendar,
+  faPaintbrush,
+  faReply,
+  faCopy,
+  faShare,
+  faStar,
+  faThumbTack,
+  faTrash,
+  faShareSquare,
+  faCheckSquare,
+  faTimesCircle
 ]

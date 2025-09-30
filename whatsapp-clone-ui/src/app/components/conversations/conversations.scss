@@ -1,0 +1,60 @@
+@import "../../../assets/scss/bootstrap-variables";
+
+.search-input {
+  .search-box,
+  .input-group-text {
+    border: none;
+    border-bottom: 2px solid $secondary;
+    color: white;
+  }
+
+  .input-group-text {
+    color: $subtitle-color;
+  }
+
+  &:focus-within {
+    .search-box,
+    .input-group-text {
+      box-shadow: none;
+      border-bottom-color: $primary;
+    }
+  }
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-right: 2px solid $bg-conversation-color;
+}
+
+.chat-list-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+
+  scrollbar-width: thin;
+  scrollbar-color: $secondary transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    color: $secondary;
+  }
+}
+
+.chat-item {
+  cursor: pointer;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}

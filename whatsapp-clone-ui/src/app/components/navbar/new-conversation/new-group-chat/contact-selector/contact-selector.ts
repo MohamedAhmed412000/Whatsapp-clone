@@ -1,11 +1,12 @@
 import {Component, EventEmitter, input, Output} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
-import {environment} from '../../../../../../environments/environment';
+import {MediaUrlPipe} from '../../../../../utils/media-url.pipe';
 
 @Component({
   selector: 'app-contact-selector',
   imports: [
-    FaIconComponent
+    FaIconComponent,
+    MediaUrlPipe
   ],
   templateUrl: './contact-selector.html',
   styleUrl: './contact-selector.scss'
@@ -17,7 +18,6 @@ export class ContactSelector {
   protected user = {
     checked: false,
   };
-  protected mediaBaseUrl: string = environment.MEDIA_URL;
 
   @Output() selectionChange = new EventEmitter<{ checked: boolean }>();
 

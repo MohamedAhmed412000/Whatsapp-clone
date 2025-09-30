@@ -8,7 +8,7 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { MessageResponse } from '../../models/message-response';
+import { ChatMessageResponse } from '../../models/chat-message-response';
 
 export interface GetChatMessages$Params {
 
@@ -32,7 +32,7 @@ export function getChatMessages(http: HttpClient, rootUrl: string, params: GetCh
  */
 'statusCode'?: string;
 };
-'body'?: Array<MessageResponse>;
+'body'?: ChatMessageResponse;
 }>> {
   const rb = new RequestBuilder(rootUrl, getChatMessages.PATH, 'get');
   if (params) {
@@ -58,7 +58,7 @@ export function getChatMessages(http: HttpClient, rootUrl: string, params: GetCh
        */
       'statusCode'?: string;
       };
-      'body'?: Array<MessageResponse>;
+      'body'?: ChatMessageResponse;
       }>;
     })
   );

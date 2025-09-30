@@ -19,6 +19,8 @@ import { createGroupChat } from '../fn/chats-controller/create-group-chat';
 import { CreateGroupChat$Params } from '../fn/chats-controller/create-group-chat';
 import { deleteGroupChat } from '../fn/chats-controller/delete-group-chat';
 import { DeleteGroupChat$Params } from '../fn/chats-controller/delete-group-chat';
+import { getChatDetails } from '../fn/chats-controller/get-chat-details';
+import { GetChatDetails$Params } from '../fn/chats-controller/get-chat-details';
 import { getChatsByUser } from '../fn/chats-controller/get-chats-by-user';
 import { GetChatsByUser$Params } from '../fn/chats-controller/get-chats-by-user';
 import { StringResponse } from '../models/string-response';
@@ -387,6 +389,95 @@ export class ChatsControllerService extends BaseService {
 'statusCode'?: string;
 };
 'body'?: BooleanResponse;
+} => r.body)
+    );
+  }
+
+  /** Path part for operation `getChatDetails()` */
+  static readonly GetChatDetailsPath = '/api/v1/chats/{chat-id}';
+
+  /**
+   * Retrieve chat details by chatId.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getChatDetails()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getChatDetails$Response(params: GetChatDetails$Params, context?: HttpContext): Observable<StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: ChatResponse;
+}>> {
+    return getChatDetails(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Retrieve chat details by chatId.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getChatDetails$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getChatDetails(params: GetChatDetails$Params, context?: HttpContext): Observable<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: ChatResponse;
+}> {
+    return this.getChatDetails$Response(params, context).pipe(
+      map((r: StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: ChatResponse;
+}>): {
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: ChatResponse;
 } => r.body)
     );
   }

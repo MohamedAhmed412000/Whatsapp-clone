@@ -1,0 +1,105 @@
+<div class="bg-chat h-100 w-100">
+@if (chat()!) {
+  <div #scrollableDiv class="scroll-messages">
+    @for (date of getSortedDates(); track $index) {
+      @for (message of getSortedMessagesForDate(date); track message.id) {
+        <div
+          [class]="['message-box', isSelfMessage(message)? 'self': 'other']"
+          (contextmenu)="onRightClick($event, message)"
+        >
+          @if (chat()!.isGroupChat && !isSelfMessage(message)) {
+            <span class="message-sender">{{ getChatUserFullName(message.senderId!) }}</span>
+          }
+          @if (message.repliedMessage !== undefined) {
+            <div class="reply-box d-flex align-items-center p-2 mb-1">
+              <div class="flex-grow-1">
+                <div class="reply-title">{{ getChatUserFullName(message?.repliedMessage?.senderId!) }}</div>
+                <div class="reply-content text-truncate">
+                  @if (message?.repliedMessage?.messageType == "TEXT") {
+                    {{ message?.repliedMessage?.content?.content }}
+                  } @else {
+                    Attachment
+                  }
+                </div>
+              </div>
+            </div>
+          }
+          @if (message.type === "TEXT") {
+            <div class="message-text d-flex flex-row justify-content-between">
+              <span class="fs-6" style="padding-right: 4.5rem">
+                {{ message.content }}
+              </span>
+              <small class="message-date">
+                {{ message.createdAt | date:'hh:mm a': 'local' }}
+                @if (isSelfMessage(message)) {
+                  @if (message.state === 'SENT') {
+                    <span>
+                      <fa-icon icon="check"></fa-icon>
+                    </span>
+                  } @else {
+                    <span>
+                      <fa-icon icon="check" class="seen"></fa-icon>
+                      <fa-icon icon="check" class="seen ml-neg"></fa-icon>
+                    </span>
+                  }
+                }
+              </small>
+            </div>
+          } @else {
+            @for (mediaRef of message.mediaListReferences; track mediaRef) {
+              <div class="message-media">
+                <img width="200" class="cursor-pointer" [src]="mediaRef | mediaUrl" alt="">
+                <div class="shadow-overlay cursor-pointer"></div>
+                <small class="message-date cursor-pointer">
+                  {{ message.createdAt | date:'hh:mm a': 'local' }}
+                  @if (isSelfMessage(message)) {
+                    @if (message.state === 'SENT') {
+                      <span>
+                        <fa-icon icon="check" class=""></fa-icon>
+                      </span>
+                    } @else {
+                      <span>
+                        <fa-icon icon="check" class="seen"></fa-icon>
+                        <fa-icon icon="check" class="seen ml-neg"></fa-icon>
+                      </span>
+                    }
+                  }
+                </small>
+              </div>
+            }
+          }
+        </div>
+      }
+      <div class="chat-date">{{ date | relativeMessagesDate }}</div>
+    }
+  </div>
+  @if (showContextMenu()) {
+    <div class="context-menu"
+         [ngStyle]="{ top: contextMenuPosition().y, left: contextMenuPosition().x }"
+    >
+      <ul>
+        <li (click)="replyMessage()">
+          <fa-icon icon="reply"></fa-icon>&nbsp;&nbsp;Reply
+        </li>
+        <li><fa-icon [icon]="['far', 'copy']"></fa-icon>&nbsp;&nbsp;Copy</li>
+        <div class="separator"></div>
+        <li><fa-icon icon="share"></fa-icon>&nbsp;&nbsp;Forward</li>
+        <li><fa-icon [icon]="['far', 'star']"></fa-icon>&nbsp;&nbsp;Star</li>
+        <li><fa-icon icon="thumbtack"></fa-icon>&nbsp;&nbsp;Pin</li>
+        <li><fa-icon icon="trash"></fa-icon>&nbsp;&nbsp;Delete for me</li>
+        <div class="separator"></div>
+        <li><fa-icon [icon]="['far', 'check-square']"></fa-icon>&nbsp;&nbsp;Select</li>
+        <li><fa-icon icon="share-square"></fa-icon>&nbsp;&nbsp;Share</li>
+      </ul>
+    </div>
+  }
+} @else {
+  <div class="d-flex h-100 w-100">
+    <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
+      <img src="/assets/images/wa_banner.png" alt="whatsapp-clone-icon" width="350px">
+      <h2 class="pt-3 title">WhatsApp Clone Application</h2>
+      <p class="title">...</p>
+    </div>
+  </div>
+}
+</div>

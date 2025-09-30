@@ -42,12 +42,12 @@ export function createGroupChat(http: HttpClient, rootUrl: string, params?: Crea
     map((r: HttpResponse<any>) => {
       return r as StrictHttpResponse<{
       'headers'?: {
-
+      
       /**
        * Unique request identifier
        */
       'requestId'?: string;
-
+      
       /**
        * Status code of the response
        */

@@ -98,6 +98,23 @@ public class ChatController {
     }
 
     @Operation(
+        summary = "Retrieve chat details by chatId",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Get chat details by chatId",
+                content = @Content(schema = @Schema(implementation = ChatResponse.class))
+            )
+        }
+    )
+    @GetMapping(value = "/{chat-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ChatResponse> getChatDetails(
+        @PathVariable("chat-id") String chatId
+    ) {
+        return ResponseEntity.ok(chatService.getChatDetails(chatId));
+    }
+
+    @Operation(
         summary = "Update an existing chat",
         responses = {
             @ApiResponse(

@@ -4,10 +4,11 @@ import com.project.commons.rest.outbound.dto.ErrorBody;
 import com.project.core.rest.inbound.MessageResource;
 import com.project.core.rest.inbound.MessageUpdateResource;
 import com.project.commons.rest.outbound.BooleanResponse;
+import com.project.core.rest.outbound.ChatMessageResponse;
+import com.project.core.rest.outbound.MessageCreationResponse;
 import com.project.core.rest.outbound.MessageResponse;
 import com.project.core.services.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,9 +51,8 @@ public class MessageController {
         }
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void saveMessage(@Valid @ModelAttribute MessageResource resource) {
-        messageService.saveMessage(resource);
+    public ResponseEntity<MessageCreationResponse> saveMessage(@Valid @ModelAttribute MessageResource resource) {
+        return ResponseEntity.ok(messageService.saveMessage(resource));
     }
 
     @Operation(
@@ -61,7 +61,7 @@ public class MessageController {
             @ApiResponse(
                 responseCode = "200",
                 description = "Get paginated chat messages list",
-                content = @Content(array = @ArraySchema(schema = @Schema(implementation = MessageResponse.class)))
+                content = @Content(schema = @Schema(implementation = ChatMessageResponse.class))
             )
         }
     )

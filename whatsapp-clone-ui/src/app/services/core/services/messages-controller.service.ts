@@ -12,13 +12,14 @@ import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
 import { BooleanResponse } from '../models/boolean-response';
+import { ChatMessageResponse } from '../models/chat-message-response';
 import { deleteMessage } from '../fn/messages-controller/delete-message';
 import { DeleteMessage$Params } from '../fn/messages-controller/delete-message';
 import { editMessage } from '../fn/messages-controller/edit-message';
 import { EditMessage$Params } from '../fn/messages-controller/edit-message';
 import { getChatMessages } from '../fn/messages-controller/get-chat-messages';
 import { GetChatMessages$Params } from '../fn/messages-controller/get-chat-messages';
-import { MessageResponse } from '../models/message-response';
+import { MessageCreationResponse } from '../models/message-creation-response';
 import { saveMessage } from '../fn/messages-controller/save-message';
 import { SaveMessage$Params } from '../fn/messages-controller/save-message';
 
@@ -45,7 +46,21 @@ export class MessagesControllerService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  saveMessage$Response(params?: SaveMessage$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  saveMessage$Response(params?: SaveMessage$Params, context?: HttpContext): Observable<StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: MessageCreationResponse;
+}>> {
     return saveMessage(this.http, this.rootUrl, params, context);
   }
 
@@ -59,9 +74,51 @@ export class MessagesControllerService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  saveMessage(params?: SaveMessage$Params, context?: HttpContext): Observable<void> {
+  saveMessage(params?: SaveMessage$Params, context?: HttpContext): Observable<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: MessageCreationResponse;
+}> {
     return this.saveMessage$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: MessageCreationResponse;
+}>): {
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: MessageCreationResponse;
+} => r.body)
     );
   }
 
@@ -269,7 +326,7 @@ export class MessagesControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: Array<MessageResponse>;
+'body'?: ChatMessageResponse;
 }>> {
     return getChatMessages(this.http, this.rootUrl, params, context);
   }
@@ -297,7 +354,7 @@ export class MessagesControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: Array<MessageResponse>;
+'body'?: ChatMessageResponse;
 }> {
     return this.getChatMessages$Response(params, context).pipe(
       map((r: StrictHttpResponse<{
@@ -313,7 +370,7 @@ export class MessagesControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: Array<MessageResponse>;
+'body'?: ChatMessageResponse;
 }>): {
 'headers'?: {
 
@@ -327,7 +384,7 @@ export class MessagesControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: Array<MessageResponse>;
+'body'?: ChatMessageResponse;
 } => r.body)
     );
   }

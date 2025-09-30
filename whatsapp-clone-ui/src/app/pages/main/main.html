@@ -1,23 +1,23 @@
-<div class="main">
-  <div class="background-green"></div>
+<!--<div class="main">-->
+<!--  <div class="background-green"></div>-->
 
-  <div class="main-container d-flex">
-    <div class="d-flex flex-column justify-content-between align-items-center p-3 gray-bg">
-      <div>
-        <i class="fa-solid fa-message cursor-pointer"></i>
-      </div>
-      <div class="d-flex flex-column align-items-center gap-2">
-        <i class="fa-solid fa-user cursor-pointer" (click)="userProfile()"></i>
-        <i class="fa-solid fa-door-open cursor-pointer" (click)="logout()"></i>
-      </div>
-    </div>
-    <div class="d-flex w-100">
-      <div class="col-3">
-        <app-chat-list
-          [chats]="chats"
-          (chatSelected)="chatSelected($event)"
-        ></app-chat-list>
-      </div>
+<!--  <div class="main-container d-flex">-->
+<!--    <div class="d-flex flex-column justify-content-between align-items-center p-3 gray-bg">-->
+<!--      <div>-->
+<!--        <i class="fa-solid fa-message cursor-pointer"></i>-->
+<!--      </div>-->
+<!--      <div class="d-flex flex-column align-items-center gap-2">-->
+<!--        <i class="fa-solid fa-user cursor-pointer" (click)="userProfile()"></i>-->
+<!--        <i class="fa-solid fa-door-open cursor-pointer" (click)="logout()"></i>-->
+<!--      </div>-->
+<!--    </div>-->
+    <div class="d-flex h-100 w-100">
+<!--      <div class="col-3">-->
+<!--        <app-chat-list-->
+<!--          [chats]="chats"-->
+<!--          (chatSelected)="chatSelected($event)"-->
+<!--        ></app-chat-list>-->
+<!--      </div>-->
       @if (selectedChat.id) {
         <div class="col-9">
           <div class="d-flex flex-column justify-content-between h-100">
@@ -131,11 +131,11 @@
         </div>
       } @else {
         <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 bg-chat">
-          <img src="wa_banner.png" alt="" width="300">
-          <h2 class="text-black-50">WhatsApp Clone Application</h2>
-          <p class="text-black-50">...</p>
+          <img src="assets/images/wa_banner.png" alt="" width="350px">
+          <h2 class="pt-3 title">WhatsApp Clone Application</h2>
+          <p class="title">...</p>
         </div>
       }
     </div>
-  </div>
-</div>
+<!--  </div>-->
+<!--</div>-->

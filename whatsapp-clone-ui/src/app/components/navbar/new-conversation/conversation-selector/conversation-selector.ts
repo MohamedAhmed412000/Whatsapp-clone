@@ -1,11 +1,12 @@
 import {Component, EventEmitter, input, Output} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
-import {environment} from '../../../../../environments/environment';
+import {MediaUrlPipe} from '../../../../utils/media-url.pipe';
 
 @Component({
   selector: 'app-conversation-selector',
   imports: [
-    FaIconComponent
+    FaIconComponent,
+    MediaUrlPipe
   ],
   templateUrl: './conversation-selector.html',
   styleUrl: './conversation-selector.scss'
@@ -14,7 +15,6 @@ export class ConversationSelector {
   title = input.required<string>();
   subtitle = input.required<string>();
   pictureReference = input.required<string>();
-  protected mediaBaseUrl: string = environment.MEDIA_URL;
 
   @Output() select = new EventEmitter<void>();
 

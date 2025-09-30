@@ -21,10 +21,10 @@ import com.project.core.services.ChatService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,18 +45,30 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
     private final ChatMapper chatMapper;
     private final MessageRepository messageRepository;
-    private final  MediaServiceImpl mediaServiceImpl;
+    private final MediaServiceImpl mediaServiceImpl;
+
+    @Override
+//    @Cacheable(value = "chatDetails", key = "#chatId")
+    public ChatResponse getChatDetails(String chatId) {
+        String myUserId = getUserId();
+        return findChatsBySenderId(myUserId, chatId).stream()
+            .map(chatWithUser -> {
+                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), myUserId);
+                return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
+                    unreadMessageCount, chatWithUser.getLastSeen().atStartOfDay());
+            })
+            .toList().get(0);
+    }
 
     @Override
     @Cacheable(value = "chats", key = "#root.target.getUserId()")
     public List<ChatResponse> getChatsByReceiverId() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String receiverId = securityContext.getAuthentication().getPrincipal().toString();
-        return findChatsBySenderId(receiverId).stream()
+        String myUserId = getUserId();
+        return findChatsBySenderId(myUserId, null).stream()
             .map(chatWithUser -> {
-                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), receiverId);
-                return chatMapper.toChatResponse(chatWithUser.getChat(), receiverId,
-                    unreadMessageCount, chatWithUser.getLastSeen());
+                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), myUserId);
+                return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
+                    unreadMessageCount, chatWithUser.getLastSeen().atStartOfDay());
             })
             .toList();
     }
@@ -170,12 +182,15 @@ public class ChatServiceImpl implements ChatService {
             .getPrincipal().toString();
     }
 
-    private List<ChatWithUser> findChatsBySenderId(String senderId) {
+    private List<ChatWithUser> findChatsBySenderId(String senderId, String chatId) {
         Aggregation aggregation = Aggregation.newAggregation(
             Aggregation.match(Criteria.where("user_id").is(senderId)),
+            Aggregation.match(chatId != null ? Criteria.where("chat_id").is(chatId) :
+                Criteria.where("_id").exists(true)),
 
             Aggregation.lookup("chat", "chat_id", "_id", "chatInfo"),
             Aggregation.unwind("chatInfo"),
+            Aggregation.sort(Sort.by(Sort.Direction.DESC, "chatInfo.last_message.created_at")),
 
             Aggregation.addFields()
                 .addField("otherUserId")
@@ -212,7 +227,6 @@ public class ChatServiceImpl implements ChatService {
         AggregationResults<ChatWithUser> results = mongoTemplate.aggregate(
             aggregation, "chat_user", ChatWithUser.class
         );
-
         return results.getMappedResults();
     }
 

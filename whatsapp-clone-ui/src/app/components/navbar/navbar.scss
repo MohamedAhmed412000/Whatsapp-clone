@@ -7,6 +7,7 @@
 .wac-navbar {
   background-color: $menu-bg-color;
   height: $header-height;
+  border-right: 2px solid $bg-conversation-color;
 }
 
 #add, #filter {

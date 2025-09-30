@@ -1,0 +1,53 @@
+@if (chat() != null) {
+  <div class="wac-navbar d-flex flex-row justify-content-between w-100 px-4">
+    <div class="d-flex align-items-center">
+      <div class="avatar">
+        @if (chat()?.chatImageReference != null) {
+          <img [src]="chat()?.chatImageReference! | mediaUrl" alt="chat-avatar"
+               class="avatar-unknown" width="60px" height="60px" style="object-fit: cover">
+        } @else {
+          @if (chat()?.isGroupChat) {
+            <fa-icon icon="user-group" class="avatar-unknown"></fa-icon>
+          } @else {
+            <fa-icon icon="user" class="avatar-unknown"></fa-icon>
+          }
+        }
+      </div>
+      <div class="d-flex flex-column">
+        <div class="ms-3 text-truncate fs-4">
+          {{ chat()?.name }}
+        </div>
+        <div class="subtitle text-truncate ms-3 fs-6">
+          @if (chat()?.isGroupChat) {
+            {{ chatUsers() }}
+          } @else {
+            <div class="d-flex gap-1 align-items-center">
+              @if (chat()?.isRecipientOnline) {
+                <small class="online-status"></small>
+                <small class="fs-6">Online</small>
+              } @else {
+                <small class="offline-status"></small>
+                <small class="fs-6">Offline</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center">
+      <div class="btn-group me-2" role="group" aria-label="Second group">
+        <button type="button" class="btn btn-secondary rounded-start-1 px-3">
+          <fa-icon icon="video" class="fs-3"></fa-icon>
+        </button>
+        <button type="button" class="btn btn-secondary rounded-end-1 px-3">
+          <fa-icon icon="phone" class="fs-3"></fa-icon>
+        </button>
+      </div>
+
+      <button type="button" class="btn btn-transparent rounded-1 px-3">
+        <fa-icon icon="search" class="fs-3"></fa-icon>
+      </button>
+    </div>
+  </div>
+}

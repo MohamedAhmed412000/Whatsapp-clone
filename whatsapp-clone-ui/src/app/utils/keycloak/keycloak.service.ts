@@ -18,11 +18,14 @@ export class KeycloakService {
 
   private _keycloak: Keycloak | undefined;
   private authModalRef: NgbModalRef | undefined;
+  private user: UserResponse | undefined;
   private MIN_TOKEN_VALIDITY_MILLISECONDS = 10000;
 
   constructor(
     private userService: UsersControllerService
-  ) { }
+  ) {
+    this.getMe();
+  }
 
   get keycloak() {
     if (!this._keycloak) {
@@ -75,10 +78,16 @@ export class KeycloakService {
     return this.keycloak?.authenticated === true;
   }
 
-  get me(): Observable<UserResponse> {
-    return this.userService.getUser().pipe(
-      map(res => res.body as UserResponse)
-    );
+  getMe(): void {
+    this.userService.getUser().pipe(
+      map(res => {
+        this.user = res.body;
+      })
+    )
+  }
+
+  get me(): UserResponse {
+    return this.user!;
   }
 
   get keycloakMe(): UserResponse {
