@@ -9,4 +9,5 @@ public interface UserService {
     List<UserResponse> getUsers(String query);
     UserResponse getMyUserDetails();
     boolean updateUserDetails(UserUpdateResource resource);
+    boolean syncUserDetails();
 }

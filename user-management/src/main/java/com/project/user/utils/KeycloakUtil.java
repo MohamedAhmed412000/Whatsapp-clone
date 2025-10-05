@@ -1,5 +1,6 @@
 package com.project.user.utils;
 
+import com.project.user.domain.models.User;
 import com.project.user.exceptions.UserNotFoundException;
 import lombok.Data;
 import org.keycloak.OAuth2Constants;
@@ -10,6 +11,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +39,32 @@ public class KeycloakUtil {
             .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
             .clientId(clientId)
             .clientSecret(clientSecret)
+            .build();
+    }
+
+    public User getUserProfile(String userId) {
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
+        if (userResource == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        UserRepresentation user = userResource.toRepresentation();
+
+        String profilePictureReference = null;
+        if (user.getAttributes() != null) {
+            List<String> imageUrls = user.getAttributes().get("imageUrl");
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                profilePictureReference = imageUrls.get(0);
+            }
+        }
+
+        return User.builder()
+            .id(userId)
+            .email(user.getEmail())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .lastSeen(LocalDateTime.now(Clock.systemUTC()))
+            .profilePictureReference(profilePictureReference)
             .build();
     }
 

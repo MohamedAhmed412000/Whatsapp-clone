@@ -6,8 +6,8 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { UserContactsControllerService } from './services/user-contacts-controller.service';
 import { UsersControllerService } from './services/users-controller.service';
+import { UserContactsControllerService } from './services/user-contacts-controller.service';
 
 /**
  * Module that provides all services and configuration.
@@ -17,8 +17,8 @@ import { UsersControllerService } from './services/users-controller.service';
   exports: [],
   declarations: [],
   providers: [
-    UserContactsControllerService,
     UsersControllerService,
+    UserContactsControllerService,
     ApiConfiguration
   ],
 })

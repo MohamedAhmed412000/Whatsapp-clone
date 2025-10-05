@@ -35,7 +35,7 @@ export class NewConversation implements OnInit, OnDestroy {
 
   protected loadingSearch = true;
   protected query = null;
-  protected meUser: UserResponse | undefined;
+  protected meUser: UserResponse = this.keycloakService.keycloakMe;
 
   public usersResponses: Array<UserResponse> = [];
 
@@ -46,10 +46,6 @@ export class NewConversation implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.meUser = this.keycloakService.keycloakMe;
-    // this.keycloakService.me.subscribe(user => {
-    //   this.meUser = user;
-    // });
     this.onQueryChange("");
   }
 

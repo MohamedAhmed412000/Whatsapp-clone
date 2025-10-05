@@ -477,30 +477,7 @@
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
   "webAuthnPolicyPasswordlessExtraOrigins": [],
-  "users": [
-    {
-      "id": "67bb1740-e9ff-43b6-8182-eee2f47a074e",
-      "username": "service-account-spring-admin-client",
-      "emailVerified": false,
-      "createdTimestamp": 1754190434322,
-      "enabled": true,
-      "totp": false,
-      "serviceAccountClientId": "spring-admin-client",
-      "disableableCredentialTypes": [],
-      "requiredActions": [],
-      "realmRoles": [
-        "default-roles-whatsapp-clone"
-      ],
-      "clientRoles": {
-        "realm-management": [
-          "view-users",
-          "manage-users"
-        ]
-      },
-      "notBefore": 0,
-      "groups": []
-    }
-  ],
+  "users": [],
   "scopeMappings": [
     {
       "clientScope": "offline_access",

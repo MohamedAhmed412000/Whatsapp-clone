@@ -36,3 +36,14 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: "http://localhost:8090/eureka/"
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

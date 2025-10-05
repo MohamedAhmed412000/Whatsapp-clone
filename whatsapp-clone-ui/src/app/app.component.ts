@@ -45,7 +45,9 @@ export class AppComponent implements OnInit {
     private chatUserService: ChatUsersControllerService,
     private messageService: MessagesControllerService,
     private chatService: ChatsControllerService
-  ) {}
+  ) {
+    this.keycloakService.getMe();
+  }
 
   ngOnInit() {
     this.initFontAwesome();

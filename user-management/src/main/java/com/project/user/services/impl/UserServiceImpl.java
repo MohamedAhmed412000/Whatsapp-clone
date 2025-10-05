@@ -94,6 +94,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public boolean syncUserDetails() {
+        String userId = getUserId();
+        try {
+            User user = keycloakUtil.getUserProfile(userId);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
     public String getUserId() {
         return SecurityContextHolder.getContext()
             .getAuthentication()

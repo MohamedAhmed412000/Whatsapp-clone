@@ -138,6 +138,10 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
     return message.senderId === this.keycloakService.userId;
   }
 
+  isSelfChat() {
+    return this.chat()?.receiversId!.every(userId => userId === this.keycloakService.userId);
+  }
+
   replyMessage() {
     this.repliedMessageEvent.emit(this.repliedMessage);
   }

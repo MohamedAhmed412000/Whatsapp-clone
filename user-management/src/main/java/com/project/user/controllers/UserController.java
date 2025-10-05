@@ -103,4 +103,20 @@ public class UserController {
         boolean isUpdated = userService.updateUserDetails(resource);
         return ResponseEntity.ok(new BooleanResponse(isUpdated));
     }
+
+    @Operation(
+        summary = "Sync my user details",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "My user details synced successfully",
+                content = @Content(schema = @Schema(implementation = BooleanResponse.class))
+            )
+        }
+    )
+    @PostMapping(value = "/sync", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BooleanResponse> syncMyUser() {
+        boolean isSynced = userService.syncUserDetails();
+        return ResponseEntity.ok(new BooleanResponse(isSynced));
+    }
 }

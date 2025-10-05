@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,7 +59,7 @@ public class ChatServiceImpl implements ChatService {
         String myUserId = getUserId();
         return findChatsBySenderId(myUserId, chatId).stream()
             .map(chatWithUser -> {
-                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), myUserId);
+                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat(), myUserId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
                     unreadMessageCount, chatWithUser.getLastSeen());
             })
@@ -71,7 +72,7 @@ public class ChatServiceImpl implements ChatService {
         String myUserId = getUserId();
         return findChatsBySenderId(myUserId, null).stream()
             .map(chatWithUser -> {
-                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), myUserId);
+                long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat(), myUserId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
                     unreadMessageCount, chatWithUser.getLastSeen());
             })
@@ -122,34 +123,48 @@ public class ChatServiceImpl implements ChatService {
 
         Optional<User> optionalSender = userRepository.findByPublicId(senderId);
         if (optionalSender.isEmpty()) {
-            throw new UserNotFoundException(String.format("User with id [%s] not found", senderId));
+            throw new UserNotFoundException(String.format("Sender user with id [%s] not found", senderId));
         }
-        Optional<User> optionalReceiver = userRepository.findByPublicId(receiverId);
-        if (optionalReceiver.isEmpty()) {
-            throw new UserNotFoundException(String.format("User with id [%s] not found", receiverId));
+
+        Optional<User> optionalReceiver = optionalSender;
+        if (!senderId.equals(receiverId)) {
+            optionalReceiver = userRepository.findByPublicId(receiverId);
+            if (optionalReceiver.isEmpty()) {
+                throw new UserNotFoundException(String.format("Receiver user with id [%s] not found", receiverId));
+            }
         }
 
         Chat chat = Chat.builder()
             .id(UUID.randomUUID().toString())
-            .name(senderId + '&' + optionalSender.get().getFullName() + '#' + receiverId + '&' +
-                optionalReceiver.get().getFullName()).isGroupChat(false)
+            .name(senderId + '&' + optionalSender.get().getFullName() + '#' + new StringBuilder(receiverId)
+                .reverse() + '&' + optionalReceiver.get().getFullName()).isGroupChat(false)
             .isNew(true)
             .chatImageReference(senderId + '&' + optionalSender.get().getProfilePictureReference() + '#' +
-                receiverId + '&' + optionalReceiver.get().getProfilePictureReference()).build();
+                new StringBuilder(receiverId).reverse() + '&' + optionalReceiver.get()
+                .getProfilePictureReference()).build();
         Message message = Message.builder().id(System.currentTimeMillis()).chatId(chat.getId())
             .messageType(MessageTypeEnum.SYSTEM).senderId("SYSTEM")
             .content(MessageContent.builder().content(SystemMessageEnum.CHAT_CREATED.getContent()).build())
             .build();
         message.setCreatedAt(LocalDateTime.now());
         chat.setLastMessage(message);
+
+        List<ChatUser> chatUserList = new LinkedList<>();
+        List<String> userIdsList = new LinkedList<>();
         ChatUser senderChatUser = ChatUser.builder().chatId(chat.getId())
             .userId(senderId).role(ChatUserRoleEnum.CREATOR).build();
-        ChatUser receiverChatUser = ChatUser.builder().chatId(chat.getId())
-            .userId(receiverId).role(ChatUserRoleEnum.MEMBER).build();
-        chatUserRepository.saveAll(List.of(senderChatUser, receiverChatUser));
+        chatUserList.add(senderChatUser);
+        userIdsList.add(senderId);
+        if (!senderId.equals(receiverId)) {
+            ChatUser receiverChatUser = ChatUser.builder().chatId(chat.getId())
+                .userId(receiverId).role(ChatUserRoleEnum.MEMBER).build();
+            chatUserList.add(receiverChatUser);
+            userIdsList.add(receiverId);
+        }
+        chatUserRepository.saveAll(chatUserList);
         messageRepository.save(message);
 
-        chat.setUserIds(List.of(senderId, receiverId));
+        chat.setUserIds(userIdsList);
         return chatRepository.save(chat).getId();
     }
     
@@ -252,11 +267,12 @@ public class ChatServiceImpl implements ChatService {
         return results.getMappedResults();
     }
 
-    private long getUnreadMessageCount(String chatId, String senderId) {
-        Optional<ChatUser> optionalChatUser = chatUserRepository.findByChatIdAndUserId(chatId, senderId);
+    private long getUnreadMessageCount(Chat chat, String senderId) {
+        if (chat.getUserIds().stream().anyMatch(senderId::equals)) return 0;
+        Optional<ChatUser> optionalChatUser = chatUserRepository.findByChatIdAndUserId(chat.getId(), senderId);
         if (optionalChatUser.isPresent()) {
             ChatUser chatUser = optionalChatUser.get();
-            return messageRepository.findUnreadMessageCount(chatId, chatUser.getLastSeenMessageAt());
+            return messageRepository.findUnreadMessageCount(chat.getId(), chatUser.getLastSeenMessageAt());
         }
         return 0;
     }

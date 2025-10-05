@@ -5,6 +5,7 @@ import com.project.core.rest.outbound.ChatResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
+import java.util.List;
 
 import static com.project.core.constants.Application.LAST_ACTIVE_INTERVAL_IN_MINUTES;
 
@@ -20,13 +21,17 @@ public class ChatMapper {
             .isGroupChat(chat.isGroupChat())
             .chatImageReference(chat.getChatImageReference(senderId))
             .unreadCount(unreadMessageCount)
-            .isRecipientOnline(isOnlineUser(lastSeen))
+            .isRecipientOnline(isSelfChat(chat, senderId) || isOnlineUser(lastSeen))
             .lastMessage(chat.getLastMessage())
             .lastMessageTime(chat.getLastMessageTime())
             .senderId(senderId)
-            .receiversId(chat.getUserIds().stream().filter(userId -> !userId.equals(senderId))
-                .toList())
+            .receiversId(isSelfChat(chat, senderId)? List.of(senderId): chat.getUserIds().stream()
+                .filter(userId -> !userId.equals(senderId)).toList())
             .build();
+    }
+
+    private boolean isSelfChat(Chat chat, String senderId) {
+        return chat.getUserIds().stream().allMatch(userId -> userId.equals(senderId));
     }
 
     private boolean isOnlineUser(LocalDateTime lastSeen) {

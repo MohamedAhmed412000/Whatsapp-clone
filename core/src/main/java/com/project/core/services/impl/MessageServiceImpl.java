@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -211,7 +212,7 @@ public class MessageServiceImpl implements MessageService {
         String userId = getUserId();
         ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(chatId, userId)
             .orElseThrow(() -> new IllegalStateException("User is not member in this chat"));
-        chatUser.setLastSeenMessageAt(LocalDateTime.now());
+        chatUser.setLastSeenMessageAt(LocalDateTime.now(Clock.systemUTC()));
         chatUserRepository.save(chatUser);
 
         Notification notification = Notification.builder()

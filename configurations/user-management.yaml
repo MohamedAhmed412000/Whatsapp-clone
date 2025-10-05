@@ -36,7 +36,7 @@ keycloak:
   server-url: http://localhost:9090
   realm: whatsapp-clone
   client-id: spring-admin-client
-  client-secret: RCwaliDnp2Pyc8I5aA88IoKA7ivrElK4
+  client-secret: 8LEVldosBNuj9CaLQcPNB3VwuJPKjRnZ
 
 media:
   service:
@@ -50,4 +50,15 @@ story:
     grpc:
       host: localhost
       port: 9093
+      enabled: true
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
       enabled: true

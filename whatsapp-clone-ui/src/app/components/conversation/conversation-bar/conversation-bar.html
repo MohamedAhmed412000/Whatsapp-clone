@@ -22,12 +22,16 @@
             {{ chatUsers() }}
           } @else {
             <div class="d-flex gap-1 align-items-center">
-              @if (chat()?.isRecipientOnline) {
-                <small class="online-status"></small>
-                <small class="fs-6">Online</small>
+              @if (isSelfChat()) {
+                <small class="subtitle fs-6">Message yourself</small>
               } @else {
-                <small class="offline-status"></small>
-                <small class="fs-6">Offline</small>
+                @if (chat()?.isRecipientOnline) {
+                  <small class="online-status"></small>
+                  <small class="fs-6">Online</small>
+                } @else {
+                  <small class="offline-status"></small>
+                  <small class="fs-6">Offline</small>
+                }
               }
             </div>
           }

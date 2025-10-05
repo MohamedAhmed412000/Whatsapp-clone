@@ -1,13 +1,12 @@
 import {inject, Injectable} from '@angular/core';
 import Keycloak from 'keycloak-js';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {interval, Observable, switchMap} from 'rxjs';
+import {interval, switchMap} from 'rxjs';
 import {fromPromise} from 'rxjs/internal/observable/innerFrom';
 import {AuthModal} from '../../components/auth-modal/auth-modal';
 import {environment} from '../../../environments/environment';
 import {UserResponse} from '../../services/user/models/user-response';
 import {UsersControllerService} from '../../services/user/services';
-import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +22,7 @@ export class KeycloakService {
 
   constructor(
     private userService: UsersControllerService
-  ) {
-    this.getMe();
-  }
+  ) {}
 
   get keycloak() {
     if (!this._keycloak) {
@@ -79,11 +76,20 @@ export class KeycloakService {
   }
 
   getMe(): void {
-    this.userService.getUser().pipe(
-      map(res => {
+    this.userService.getUser().subscribe({
+      next: res => {
         this.user = res.body;
-      })
-    )
+      },
+      error: () => {
+        this.userService.syncMyUser().subscribe({
+          next: () => {
+            this.user = this.keycloakMe;
+          }
+        })
+      }
+    })
+
+
   }
 
   get me(): UserResponse {
@@ -93,7 +99,7 @@ export class KeycloakService {
   get keycloakMe(): UserResponse {
     let claims = this.keycloak.tokenParsed!;
     return {
-      userId: this.userId,
+      id: this.userId,
       email: claims['email'],
       firstName: claims['given_name'],
       lastName: claims['family_name'],

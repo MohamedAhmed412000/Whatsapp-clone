@@ -5,3 +5,21 @@ spring:
     import: optional:configserver:http://localhost:8071
   profiles:
     active: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: "${spring.application.name}"

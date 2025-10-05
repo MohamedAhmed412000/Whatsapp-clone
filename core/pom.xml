@@ -33,7 +33,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -146,6 +145,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Jib plugin to generate Docker image -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.version}</version>
+                <configuration>
+                    <to>
+                        <image>mohamedahmed412000/whatsapp-clone/core-server:v1.0</image>
+                    </to>
+                </configuration>
             </plugin>
         </plugins>
     </build>

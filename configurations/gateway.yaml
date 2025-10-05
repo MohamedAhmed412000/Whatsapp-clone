@@ -40,3 +40,14 @@ springdoc:
         url: /media/v3/api-docs
       - name: Story
         url: /story/v3/api-docs
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

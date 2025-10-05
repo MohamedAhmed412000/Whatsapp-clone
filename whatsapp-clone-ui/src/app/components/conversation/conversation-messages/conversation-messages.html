@@ -43,15 +43,15 @@
                 <small class="message-date">
                   {{ message.createdAt | date:'hh:mm a': 'local' }}
                   @if (isSelfMessage(message)) {
-                    @if (message.state === 'SENT') {
+                    @if (message.state === 'SEEN' || isSelfChat()) {
                       <span>
-                      <fa-icon icon="check"></fa-icon>
-                    </span>
+                        <fa-icon icon="check" class="seen"></fa-icon>
+                        <fa-icon icon="check" class="seen ml-neg"></fa-icon>
+                      </span>
                     } @else {
                       <span>
-                      <fa-icon icon="check" class="seen"></fa-icon>
-                      <fa-icon icon="check" class="seen ml-neg"></fa-icon>
-                    </span>
+                        <fa-icon icon="check"></fa-icon>
+                      </span>
                     }
                   }
                 </small>

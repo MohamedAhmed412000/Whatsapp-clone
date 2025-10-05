@@ -18,6 +18,8 @@ import { getUser } from '../fn/users-controller/get-user';
 import { GetUser$Params } from '../fn/users-controller/get-user';
 import { getUsers } from '../fn/users-controller/get-users';
 import { GetUsers$Params } from '../fn/users-controller/get-users';
+import { syncMyUser } from '../fn/users-controller/sync-my-user';
+import { SyncMyUser$Params } from '../fn/users-controller/sync-my-user';
 import { updateUser } from '../fn/users-controller/update-user';
 import { UpdateUser$Params } from '../fn/users-controller/update-user';
 import { UserResponse } from '../models/user-response';
@@ -30,6 +32,95 @@ import { UserResponse } from '../models/user-response';
 export class UsersControllerService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `syncMyUser()` */
+  static readonly SyncMyUserPath = '/api/v1/users/sync';
+
+  /**
+   * Sync my user details.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `syncMyUser()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  syncMyUser$Response(params?: SyncMyUser$Params, context?: HttpContext): Observable<StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: BooleanResponse;
+}>> {
+    return syncMyUser(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Sync my user details.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `syncMyUser$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  syncMyUser(params?: SyncMyUser$Params, context?: HttpContext): Observable<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: BooleanResponse;
+}> {
+    return this.syncMyUser$Response(params, context).pipe(
+      map((r: StrictHttpResponse<{
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: BooleanResponse;
+}>): {
+'headers'?: {
+
+/**
+ * Unique request identifier
+ */
+'requestId'?: string;
+
+/**
+ * Status code of the response
+ */
+'statusCode'?: string;
+};
+'body'?: BooleanResponse;
+} => r.body)
+    );
   }
 
   /** Path part for operation `getUser()` */

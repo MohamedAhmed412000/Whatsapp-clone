@@ -25,6 +25,47 @@
     }
   ],
   "paths": {
+    "/api/v1/users/sync": {
+      "post": {
+        "tags": [
+          "Users Controller"
+        ],
+        "summary": "Sync my user details",
+        "operationId": "syncMyUser",
+        "responses": {
+          "200": {
+            "description": "My user details synced successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/user-contacts": {
       "post": {
         "tags": [
@@ -715,6 +756,15 @@
   },
   "components": {
     "schemas": {
+      "BooleanResponse": {
+        "type": "object",
+        "description": "Schema to hold the boolean response",
+        "properties": {
+          "done": {
+            "type": "boolean"
+          }
+        }
+      },
       "StringResponse": {
         "type": "object",
         "description": "Schema to hold the string response",
@@ -748,15 +798,6 @@
         "required": [
           "email"
         ]
-      },
-      "BooleanResponse": {
-        "type": "object",
-        "description": "Schema to hold the boolean response",
-        "properties": {
-          "done": {
-            "type": "boolean"
-          }
-        }
       },
       "ErrorBody": {
         "type": "object",
