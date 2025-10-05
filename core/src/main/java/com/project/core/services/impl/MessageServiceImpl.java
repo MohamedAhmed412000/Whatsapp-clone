@@ -59,6 +59,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageCreationResponse saveMessage(MessageResource request) {
         String senderId = getUserId();
+
+        // Check chat and chat user
+        Chat chat = chatRepository.findById(request.getChatId()).orElseThrow(() ->
+            new ChatNotFoundException(String.format("Chat with id [%s] not found", request.getChatId())));
+        ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(request.getChatId(), senderId)
+            .orElseThrow(() -> new UserNotExistInChatException("The user doesn't exist in the chat"));
+
         Message message = Message.builder()
             .id(System.currentTimeMillis())
             .chatId(request.getChatId())
@@ -93,20 +100,17 @@ public class MessageServiceImpl implements MessageService {
         }
         messageRepository.save(message);
 
-        Chat chat = chatRepository.findById(request.getChatId())
-            .orElseThrow(() -> new ChatNotFoundException(String.format("Chat with id [%s] not found",
-                request.getChatId())));
+        // Update chat and chat user details
         chat.setLastMessage(message);
         chatRepository.save(chat);
-
-        ChatUser chatUser = chatUserRepository.findByChatIdAndUserId(request.getChatId(), senderId)
-            .orElseThrow(() -> new UserNotExistInChatException("The user doesn't exist in the chat"));
         chatUser.setLastSeenMessageAt(LocalDateTime.now());
         chatUserRepository.save(chatUser);
 
+        // Evict the cache
         cacheManagerImpl.evictCachedChatMessages(request.getChatId());
 
         Notification notification = Notification.builder()
+            .id(message.getId().toString())
             .chatId(chat.getId())
             .chatName(chat.getChatName(senderId))
             .senderId(senderId)

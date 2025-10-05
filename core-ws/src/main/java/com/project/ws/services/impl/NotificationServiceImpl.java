@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    private final SimpMessagingTemplate messageTemplate;
+    private final  SimpMessagingTemplate messageTemplate;
 
     @Override
     @RabbitListener(queues = Application.RABBITMQ_NOTIFICATIONS_QUEUE)
@@ -26,6 +26,6 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setReceiverIds(null);
         receiverIds.stream().filter(receiverId -> !receiverId.equals(notification.getSenderId()))
             .forEach(receiverId -> messageTemplate
-                .convertAndSendToUser(receiverId, "/chat", notification));
+                .convertAndSend("/topic/chat." + receiverId, notification));
     }
 }

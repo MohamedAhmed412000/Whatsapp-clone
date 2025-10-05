@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Notification {
+    private String id;
     private String chatId;
     private String content;
     private String senderId;

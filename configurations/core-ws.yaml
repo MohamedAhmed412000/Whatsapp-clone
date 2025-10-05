@@ -31,3 +31,6 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+
+frontend:
+  url: http://localhost:4200

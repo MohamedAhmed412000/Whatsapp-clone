@@ -51,7 +51,7 @@ export class Main implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.initWebSocket();
+    // this.initWebSocket();
     this.getAllChats();
   }
 
@@ -198,7 +198,7 @@ export class Main implements OnInit, OnDestroy {
             senderId: notification.senderId,
             content: notification.content,
             type: notification.messageType,
-            mediaListReferences: notification.media,
+            mediaListReferences: notification.mediaReferencesList,
             createdAt: new Date().toISOString()
           };
           console.log('Received Message:', message);

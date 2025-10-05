@@ -36,8 +36,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     private final WebSocketChannelInterceptor channelInterceptor;
-    public static final String[] BROKER_PREFIXES = new String[]{"/user"};
+    public static final String[] BROKER_PREFIXES = new String[]{"/topic", "/exchange"};
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -51,13 +54,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .setSystemPasscode(password);
 
         registry.setApplicationDestinationPrefixes("/app");
-        registry.setUserDestinationPrefix("/users");
+//        registry.setUserDestinationPrefix("/users");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-            .setAllowedOriginPatterns("*")
+            .setAllowedOriginPatterns(frontendUrl)
             .withSockJS();
     }
 

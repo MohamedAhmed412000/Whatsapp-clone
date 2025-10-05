@@ -1,9 +1,11 @@
 package com.project.ws.filters;
 
+import com.project.commons.filters.dto.CustomAuthentication;
 import com.project.commons.utils.JwtTokenUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -29,19 +31,19 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
         final StompHeaderAccessor accessor = readHeaderAccessor(message);
 
         if (Objects.equals(accessor.getCommand(), StompCommand.CONNECT)) {
-//            String jwtToken = readAuthTokenHeader(accessor);
-//
-//            JSONObject tokenClaims = jwtTokenUtil.extractTokenPayload(jwtToken);
-//            String fullName = jwtTokenUtil.getFullnameFromToken(tokenClaims);
-//            String userId = jwtTokenUtil.getUserIdFromToken(tokenClaims);
-//            CustomAuthentication customAuthentication = new CustomAuthentication(userId, fullName);
-//            accessor.setUser(customAuthentication);
-            String userId = accessor.getFirstNativeHeader("user-id"); // header from JS client
-            if (userId != null) {
-                log.info("Set websocket user id to {}", userId);
-                accessor.setUser(new UsernamePasswordAuthenticationToken(userId, null,
-                    Collections.emptyList()));
-            }
+            String jwtToken = readAuthTokenHeader(accessor);
+
+            JSONObject tokenClaims = jwtTokenUtil.extractTokenPayload(jwtToken);
+            String fullName = jwtTokenUtil.getFullnameFromToken(tokenClaims);
+            String userId = jwtTokenUtil.getUserIdFromToken(tokenClaims);
+            CustomAuthentication customAuthentication = new CustomAuthentication(userId, fullName);
+            accessor.setUser(customAuthentication);
+//            String userId = accessor.getFirstNativeHeader("user-id"); // header from JS client
+//            if (userId != null) {
+//                log.info("Set websocket user id to {}", userId);
+//                accessor.setUser(new UsernamePasswordAuthenticationToken(userId, null,
+//                    Collections.emptyList()));
+//            }
             log.info("WebSocket CONNECT user: {}", Objects.requireNonNull(accessor.getUser()).getName());
             accessor.setHeader("connection-time", LocalDateTime.now().toString());
 
@@ -53,11 +55,11 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     }
 
     private String readAuthTokenHeader(StompHeaderAccessor accessor) {
-        String authzHeader = accessor.getFirstNativeHeader("Authorization");
-        if (authzHeader == null || authzHeader.trim().isEmpty() || !authzHeader.startsWith("Bearer ")) {
+        String authHeader = accessor.getFirstNativeHeader("Authorization");
+        if (authHeader == null || authHeader.trim().isEmpty() || !authHeader.startsWith("Bearer ")) {
             throw new AuthenticationCredentialsNotFoundException("Authorization header not found");
         }
-        return authzHeader.substring(7);
+        return authHeader.substring(7);
     }
 
     private StompHeaderAccessor readHeaderAccessor(Message<?> message) {

@@ -1,4 +1,5 @@
 export interface Notification {
+  id?: string;
   chatId?: string;
   content?: string;
   senderId?: string;
@@ -6,5 +7,5 @@ export interface Notification {
   messageType?: 'TEXT' | 'MEDIA' | 'AUDIO';
   notificationType?: 'SEEN' | 'MESSAGE' | 'MEDIA' | 'AUDIO';
   chatName?: string;
-  media?: string[];
+  mediaReferencesList?: string[];
 }

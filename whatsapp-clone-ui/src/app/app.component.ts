@@ -19,6 +19,10 @@ import {ChatUserResponse} from './services/core/models/chat-user-response';
 import {ChatTrigger} from './components/conversation/conversation-messages/chat-trigger';
 import {UserResponse} from './services/user/models/user-response';
 import {ChatsControllerService} from './services/core/services/chats-controller.service';
+import SockJS from 'sockjs-client';
+import {Message, Stomp} from '@stomp/stompjs';
+import {Notification} from './pages/main/notification';
+import {environment} from '../environments/environment.development';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +38,8 @@ export class AppComponent implements OnInit {
   chatUsersString: string | undefined;
   chatUsers: ChatUserResponse[] | undefined;
   chatMessages: ChatMessageResponse | undefined;
+  socketClient: any = null;
+  notificationSubscription: any;
 
   messageCreated = signal<ChatTrigger | null>(null)
   @ViewChild('conversationsList') conversationsList!: Conversations;
@@ -51,6 +57,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.initFontAwesome();
+    this.initWebSocket();
     this.isChatSelected = false;
   }
 
@@ -179,6 +186,85 @@ export class AppComponent implements OnInit {
         },
         error: err => console.error(err)
       });
+    }
+  }
+
+  private initWebSocket() {
+    if (this.keycloakService.keycloak.tokenParsed?.sub) {
+      let ws = new SockJS(environment.WEB_SOCKET_URL);
+      this.socketClient = Stomp.over(ws);
+      this.socketClient.reconnectDelay = 5000;
+      this.socketClient.debug = () => false;
+      const subUrl = `/topic/chat.${this.keycloakService.keycloak.tokenParsed?.sub}`;
+      this.socketClient.connect({'Authorization': `Bearer ${this.keycloakService.keycloak.token}`},
+        () => {
+          console.log("Connected to WebSocket");
+          this.notificationSubscription = this.socketClient.subscribe(subUrl, (message: Message) => {
+            const notification: Notification = JSON.parse(message.body);
+            this.handleNotification(notification);
+          }, () => console.error('Error while connecting to WebSocket'));
+        }
+      );
+    }
+  }
+
+  private handleNotification(notification: Notification) {
+    if (!notification) return;
+    if (this.selectedChat && this.selectedChat.id === notification.chatId) {
+      switch (notification.notificationType) {
+        case 'MESSAGE':
+        case 'MEDIA':
+          const message: MessageResponse = {
+            id: Number(notification.id),
+            senderId: notification.senderId,
+            content: notification.content,
+            type: notification.messageType,
+            mediaListReferences: notification.mediaReferencesList,
+            createdAt: new Date().toISOString()
+          };
+          if (notification.notificationType === 'MEDIA') {
+            this.selectedChat.lastMessage = 'Attachment';
+          } else {
+            this.selectedChat.lastMessage = message.content;
+          }
+          this.onMessageCreated(message);
+          break;
+        case 'SEEN':
+          if (!this.selectedChat.isGroupChat) {
+            Object.keys(this.chatMessages!).forEach(date => {
+              this.chatMessages![date].forEach(message => {
+                message.state = 'SEEN';
+              })
+            })
+          }
+          break;
+      }
+    } else {
+      const chatIndex = this.conversationsList.conversations!.findIndex(chat =>
+        chat.id === notification.chatId);
+      const destChat = chatIndex !== -1 ? this.conversationsList.conversations!
+        .splice(chatIndex, 1)[0] : undefined;
+      if (destChat && notification.notificationType !== 'SEEN') {
+        if (notification.notificationType === 'MESSAGE') {
+          destChat.lastMessage = notification.content;
+        } else if (notification.notificationType === 'MEDIA') {
+          destChat.lastMessage = 'Attachment';
+        }
+        destChat.lastMessageTime = new Date().toISOString();
+        destChat.unreadCount!++;
+        this.conversationsList.conversations!.unshift(destChat);
+      } else if (notification.notificationType === 'MESSAGE') {
+        const newChat: ChatResponse = {
+          id: notification.chatId,
+          senderId: notification.senderId,
+          receiversId: notification.receiversId,
+          name: notification.chatName,
+          lastMessage: notification.content,
+          lastMessageTime: new Date().toISOString(),
+          unreadCount: 1
+        }
+        this.conversationsList.conversations!.unshift(newChat);
+      }
     }
   }
 }

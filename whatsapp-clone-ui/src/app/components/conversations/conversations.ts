@@ -54,7 +54,7 @@ export class Conversations {
   updateSelectedChat(message: MessageResponse) {
     this.conversations?.filter(c => c.id === this.selectedChatId)
       ?.forEach(chat => {
-        chat.lastMessage = message.content;
+        chat.lastMessage = message.type === 'TEXT'? message.content: 'Attachment';
         chat.lastMessageTime = message.createdAt;
       })
   }
