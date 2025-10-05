@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,5 +14,5 @@ import java.time.ZonedDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChatWithUser {
     private Chat chat;
-    private LocalDate lastSeen;
+    private LocalDateTime lastSeen;
 }

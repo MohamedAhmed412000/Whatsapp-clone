@@ -2,7 +2,7 @@ import {Component, input} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {ChatResponse} from '../../../services/core/models/chat-response';
 import {environment} from '../../../../environments/environment';
-import {MediaUrlPipe} from '../../../utils/media-url.pipe';
+import {MediaUrlPipe} from '../../../utils/media/media-url.pipe';
 
 @Component({
   selector: 'app-conversation-bar',

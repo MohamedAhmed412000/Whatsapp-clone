@@ -21,6 +21,8 @@ public class ChatUserResponse {
     private String fullname;
     @Schema(description = "The user profile image reference", example = "407dd10ad78743e49d0b58e7")
     private String imageFileReference;
+    @Schema(description = "Flag is describing if the user is online", example = "true")
+    private boolean isOnline;
     @Schema(description = "Flag is describing if the user role is admin or creator in the chat")
     private boolean isAdmin;
 }

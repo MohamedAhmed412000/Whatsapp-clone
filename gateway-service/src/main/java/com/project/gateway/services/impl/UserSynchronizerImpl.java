@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 
 @Slf4j
 @Service
@@ -31,7 +33,8 @@ public class UserSynchronizerImpl implements UserSynchronizer {
     private Mono<Void> updateUserLastTimestamp(Jwt token) {
         String userId = token.getSubject();
         Query query = new Query(Criteria.where("_id").is(userId));
-        Update update = new Update().set("last_seen", LocalDateTime.now());
+        Update update = new Update().set("last_seen",
+            LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime());
         return reactiveMongoTemplate.updateFirst(query, update, User.class).then();
     }
 }

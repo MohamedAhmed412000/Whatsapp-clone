@@ -22,6 +22,7 @@ import {MessagesControllerService} from '../../../services/core/services/message
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from '@ng-bootstrap/ng-bootstrap';
 import {ChatUserResponse} from '../../../services/core/models/chat-user-response';
 import {RepliedMessage} from '../../../services/core/models/replied-message';
+import {ColorizePipe} from '../../../utils/colorize.pipe';
 
 @Component({
   selector: 'app-conversation-send-message',
@@ -32,7 +33,8 @@ import {RepliedMessage} from '../../../services/core/models/replied-message';
     NgbDropdown,
     NgbDropdownToggle,
     NgbDropdownItem,
-    NgbDropdownMenu
+    NgbDropdownMenu,
+    ColorizePipe
   ],
   templateUrl: './conversation-send-message.html',
   styleUrl: './conversation-send-message.scss'
@@ -203,6 +205,7 @@ export class ConversationSendMessage implements OnChanges {
   get replyMessage() {
     const repliedMessage = this.repliedMessage();
     return {
+      senderId: repliedMessage?.senderId,
       senderName: repliedMessage?.senderId as string === this.keycloakService.userId as string?
         'You': this.chatUsers()!.filter(user => user.id === repliedMessage?.senderId as string)
           .map(user => user.fullname),

@@ -4,7 +4,7 @@ import com.project.core.domain.models.Chat;
 import com.project.core.rest.outbound.ChatResponse;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.*;
 
 import static com.project.core.constants.Application.LAST_ACTIVE_INTERVAL_IN_MINUTES;
 
@@ -33,7 +33,7 @@ public class ChatMapper {
         // last seen => 10:05
         // now (10:09) => active
         // now (10:12) => offline
-        return lastSeen != null && lastSeen.isAfter(LocalDateTime.now().minusMinutes(
-            LAST_ACTIVE_INTERVAL_IN_MINUTES));
+        return lastSeen != null && lastSeen.isAfter(LocalDateTime.now(Clock.systemUTC())
+            .minusMinutes(LAST_ACTIVE_INTERVAL_IN_MINUTES));
     }
 }

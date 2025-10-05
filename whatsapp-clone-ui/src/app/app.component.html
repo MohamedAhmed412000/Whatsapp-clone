@@ -14,7 +14,9 @@
 <!--<router-outlet />-->
 <div [class]="['m-4', 'main-background', 'main-grid', !this.isChatSelected ? 'no-chat' : '']" id="main">
   <div class="wac-navbar" id="navbar">
-    <app-navbar></app-navbar>
+    <app-navbar
+      (userChatSelected)="onUserChatSelected($event)"
+    ></app-navbar>
   </div>
   <div class="header" id="header">
     <app-conversation-bar
@@ -35,6 +37,7 @@
       [chatMessages]="chatMessages!"
       [chatUsers]="chatUsers!"
       (repliedMessageEvent)="onMessageReplied($event)"
+      (chatUserSelected)="onChatUserClicked($event)"
     ></app-conversation-messages>
   </div>
   <div class="send-message" id="send-message">

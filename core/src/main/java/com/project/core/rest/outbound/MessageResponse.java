@@ -26,7 +26,7 @@ public class MessageResponse {
     @Schema(description = "The message string content", example = "Hello")
     private String content;
     @Schema(description = "The message content type", allowableValues = {
-        "TEXT", "MEDIA", "AUDIO"
+        "TEXT", "MEDIA", "AUDIO", "SYSTEM"
     })
     private MessageTypeEnum type;
     @Schema(description = "The message state", allowableValues = {

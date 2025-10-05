@@ -5,7 +5,7 @@ import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {environment} from '../../../../environments/environment';
 import {ChatResponse} from '../../../services/core/models/chat-response';
 import {RelativeChatDatePipe} from '../../../utils/relative-chat-date.pipe';
-import {MediaUrlPipe} from '../../../utils/media-url.pipe';
+import {MediaUrlPipe} from '../../../utils/media/media-url.pipe';
 
 @Component({
   selector: 'app-conversation-compact-info',

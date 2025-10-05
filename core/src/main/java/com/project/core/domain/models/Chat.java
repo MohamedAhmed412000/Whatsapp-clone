@@ -62,9 +62,11 @@ public class Chat extends BaseModel implements Persistable<String> {
     }
 
     public String getLastMessage() {
-        if (lastMessage == null) return "Chat created";
-        if (lastMessage.getMessageType().equals(MessageTypeEnum.TEXT))
+        if (lastMessage.getMessageType().equals(MessageTypeEnum.TEXT) ||
+            lastMessage.getMessageType().equals(MessageTypeEnum.SYSTEM))
             return lastMessage.getContent().getContent();
+        if (lastMessage.getMessageType().equals(MessageTypeEnum.AUDIO))
+            return "Audio";
         return "Attachment";
     }
 

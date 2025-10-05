@@ -14,7 +14,7 @@ import {
   faUserGroup,
   faVideo,
   faPhone, faPaperclip, faMicrophone, faFile, faPollH, faCalendar, faPaintbrush, faReply, faShare, faThumbTack, faTrash,
-  faShareSquare, faTimes
+  faShareSquare, faTimes, faRightToBracket
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faUser as farUser,
@@ -55,5 +55,6 @@ export const fontAwesomeIcons: IconDefinition[] = [
   faTrash,
   faShareSquare,
   faCheckSquare,
-  faTimesCircle
+  faTimesCircle,
+  faRightToBracket
 ]

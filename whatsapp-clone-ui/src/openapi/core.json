@@ -1487,7 +1487,8 @@
             "enum": [
               "TEXT",
               "MEDIA",
-              "AUDIO"
+              "AUDIO",
+              "SYSTEM"
             ]
           },
           "state": {
@@ -1634,6 +1635,9 @@
             "type": "string",
             "description": "The user profile image reference",
             "example": "407dd10ad78743e49d0b58e7"
+          },
+          "online": {
+            "type": "boolean"
           },
           "admin": {
             "type": "boolean"

@@ -12,12 +12,13 @@ import {ConversationMessages} from './components/conversation/conversation-messa
 import {ConversationSendMessage} from './components/conversation/conversation-send-message/conversation-send-message';
 import {ChatResponse} from './services/core/models/chat-response';
 import {MessageResponse} from './services/core/models/message-response';
-import {ChatsControllerService} from './services/core/services/chats-controller.service';
 import {ChatUsersControllerService} from './services/core/services/chat-users-controller.service';
 import {MessagesControllerService} from './services/core/services/messages-controller.service';
 import {ChatMessageResponse} from './services/core/models/chat-message-response';
 import {ChatUserResponse} from './services/core/models/chat-user-response';
-import {ChatTrigger} from './components/conversation/conversation-messages/ChatTrigger';
+import {ChatTrigger} from './components/conversation/conversation-messages/chat-trigger';
+import {UserResponse} from './services/user/models/user-response';
+import {ChatsControllerService} from './services/core/services/chats-controller.service';
 
 @Component({
   selector: 'app-root',
@@ -42,7 +43,8 @@ export class AppComponent implements OnInit {
     private faIconLibrary: FaIconLibrary,
     private keycloakService: KeycloakService,
     private chatUserService: ChatUsersControllerService,
-    private messageService: MessagesControllerService
+    private messageService: MessagesControllerService,
+    private chatService: ChatsControllerService
   ) {}
 
   ngOnInit() {
@@ -62,15 +64,14 @@ export class AppComponent implements OnInit {
     this.chatUserService.getChatUsers({
       'chat-id': chat.id as string,
     }).subscribe(res => {
+      this.chatUsers = res.body!;
       if (chat.isGroupChat) {
         this.chatUsersString = res.body
           ?.filter(chatUser => chatUser.id != this.keycloakService.userId)
           ?.map(chatUser => chatUser.fullname)
           ?.join(', ');
-        this.chatUsers = res.body!;
       } else {
         this.chatUsersString = undefined;
-        this.chatUsers = undefined;
       }
     })
   }
@@ -105,5 +106,77 @@ export class AppComponent implements OnInit {
 
   onMessageReplied(message: MessageResponse) {
     this.repliedMessage = message;
+  }
+
+  onUserChatSelected(user: UserResponse) {
+    let conversation = this.conversationsList.conversations?.find(c =>
+      c.isGroupChat === false && c.receiversId?.includes(user.id!)
+    );
+    if (conversation) {
+      this.selectedChat = conversation;
+      this.conversationsList.selectedChatId = conversation.id;
+      this.onChatSelected(conversation);
+    } else {
+      this.chatService.createChat({
+        'receiver-id': user.id as string
+      }).subscribe({
+        next: res => {
+          const newConversation: ChatResponse = {
+            id: res?.body?.content,
+            name: `${user.firstName} ${user.lastName}`,
+            senderId: this.keycloakService.userId,
+            description: '',
+            isGroupChat: false,
+            receiversId: [user.id as string],
+            unreadCount: 0,
+            chatImageReference: user.profilePictureReference,
+            isRecipientOnline: user.online,
+            lastMessage: "Chat created",
+            lastMessageTime: new Date().toISOString()
+          };
+          this.conversationsList.conversations?.unshift(newConversation);
+          this.selectedChat = newConversation;
+          this.conversationsList.selectedChatId = newConversation.id;
+          this.onChatSelected(newConversation);
+        },
+        error: err => console.error(err)
+      });
+    }
+  }
+
+  onChatUserClicked(chatUser: ChatUserResponse) {
+    let conversation = this.conversationsList.conversations?.find(c =>
+      c.isGroupChat === false && c.receiversId?.includes(chatUser.id!)
+    );
+    if (conversation) {
+      this.selectedChat = conversation;
+      this.conversationsList.selectedChatId = conversation.id;
+      this.onChatSelected(conversation);
+    } else {
+      this.chatService.createChat({
+        'receiver-id': chatUser.id as string
+      }).subscribe({
+        next: res => {
+          const newConversation: ChatResponse = {
+            id: res?.body?.content,
+            name: chatUser.fullname,
+            senderId: this.keycloakService.userId,
+            description: '',
+            isGroupChat: false,
+            receiversId: [chatUser.id as string],
+            unreadCount: 0,
+            chatImageReference: chatUser.imageFileReference,
+            isRecipientOnline: chatUser.online,
+            lastMessage: "Chat created",
+            lastMessageTime: new Date().toISOString()
+          };
+          this.conversationsList.conversations?.unshift(newConversation);
+          this.selectedChat = newConversation;
+          this.conversationsList.selectedChatId = newConversation.id;
+          this.onChatSelected(newConversation);
+        },
+        error: err => console.error(err)
+      });
+    }
   }
 }

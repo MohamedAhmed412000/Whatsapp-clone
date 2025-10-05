@@ -6,7 +6,7 @@ import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {ConversationCompactInfo} from './conversation-compact-info/conversation-compact-info';
 import {ChatResponse} from '../../services/core/models/chat-response';
 import {MessageResponse} from '../../services/core/models/message-response';
-import {ChatTrigger} from '../conversation/conversation-messages/ChatTrigger';
+import {ChatTrigger} from '../conversation/conversation-messages/chat-trigger';
 
 @Component({
   selector: 'app-conversations',

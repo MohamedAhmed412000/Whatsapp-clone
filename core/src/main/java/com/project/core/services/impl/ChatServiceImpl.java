@@ -1,10 +1,14 @@
 package com.project.core.services.impl;
 
 import com.project.core.domain.dto.ChatWithUser;
+import com.project.core.domain.dto.MessageContent;
 import com.project.core.domain.enums.ChatUserRoleEnum;
 import com.project.core.domain.enums.GroupChatModeEnum;
+import com.project.core.domain.enums.MessageTypeEnum;
+import com.project.core.domain.enums.SystemMessageEnum;
 import com.project.core.domain.models.Chat;
 import com.project.core.domain.models.ChatUser;
+import com.project.core.domain.models.Message;
 import com.project.core.domain.models.User;
 import com.project.core.exceptions.ChatNotFoundException;
 import com.project.core.exceptions.DeleteActionNotAllowedException;
@@ -30,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,7 +60,7 @@ public class ChatServiceImpl implements ChatService {
             .map(chatWithUser -> {
                 long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), myUserId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
-                    unreadMessageCount, chatWithUser.getLastSeen().atStartOfDay());
+                    unreadMessageCount, chatWithUser.getLastSeen());
             })
             .toList().get(0);
     }
@@ -68,7 +73,7 @@ public class ChatServiceImpl implements ChatService {
             .map(chatWithUser -> {
                 long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat().getId(), myUserId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
-                    unreadMessageCount, chatWithUser.getLastSeen().atStartOfDay());
+                    unreadMessageCount, chatWithUser.getLastSeen());
             })
             .toList();
     }
@@ -80,6 +85,12 @@ public class ChatServiceImpl implements ChatService {
         String senderId = getUserId();
         Chat chat = Chat.builder().id(UUID.randomUUID().toString()).name(chatName).isGroupChat(true)
             .isNew(true).groupChatMode(GroupChatModeEnum.NORMAL.getValue()).chatImageReference(null).build();
+        Message message = Message.builder().id(System.currentTimeMillis()).chatId(chat.getId())
+            .messageType(MessageTypeEnum.SYSTEM).senderId("SYSTEM")
+            .content(MessageContent.builder().content(SystemMessageEnum.CHAT_CREATED.getContent()).build())
+            .build();
+        message.setCreatedAt(LocalDateTime.now());
+        chat.setLastMessage(message);
         if (description != null) chat.setDescription(description);
         if (groupChatProfileFile != null) {
             String groupChatProfilePictureReference = mediaServiceImpl.saveGroupChatProfilePicture(
@@ -94,6 +105,7 @@ public class ChatServiceImpl implements ChatService {
                     .userId(receiverId).role(ChatUserRoleEnum.MEMBER).build())
             ).toList()
         );
+        messageRepository.save(message);
 
         chat.setUserIds(chatUserList.stream().map(ChatUser::getUserId).toList());
         return chatRepository.save(chat).getId();
@@ -124,11 +136,18 @@ public class ChatServiceImpl implements ChatService {
             .isNew(true)
             .chatImageReference(senderId + '&' + optionalSender.get().getProfilePictureReference() + '#' +
                 receiverId + '&' + optionalReceiver.get().getProfilePictureReference()).build();
+        Message message = Message.builder().id(System.currentTimeMillis()).chatId(chat.getId())
+            .messageType(MessageTypeEnum.SYSTEM).senderId("SYSTEM")
+            .content(MessageContent.builder().content(SystemMessageEnum.CHAT_CREATED.getContent()).build())
+            .build();
+        message.setCreatedAt(LocalDateTime.now());
+        chat.setLastMessage(message);
         ChatUser senderChatUser = ChatUser.builder().chatId(chat.getId())
             .userId(senderId).role(ChatUserRoleEnum.CREATOR).build();
         ChatUser receiverChatUser = ChatUser.builder().chatId(chat.getId())
             .userId(receiverId).role(ChatUserRoleEnum.MEMBER).build();
         chatUserRepository.saveAll(List.of(senderChatUser, receiverChatUser));
+        messageRepository.save(message);
 
         chat.setUserIds(List.of(senderId, receiverId));
         return chatRepository.save(chat).getId();
@@ -218,9 +237,12 @@ public class ChatServiceImpl implements ChatService {
                 .and(
                     ConditionalOperators
                         .when(ComparisonOperators.Eq.valueOf("chatInfo.is_group_chat").equalToValue(false))
-                        .thenValueOf("otherUserInfo.last_seen")
-                        .otherwise(ConvertOperators.ToDate.toDate(
-                            LiteralOperators.Literal.asLiteral("2000-01-04T12:00:00Z")))
+                        .thenValueOf(
+                            DateOperators.dateOf("otherUserInfo.last_seen")
+                                .toString("%Y-%m-%dT%H:%M:%S.%LZ")
+                                .withTimezone(DateOperators.Timezone.valueOf("+00:00"))
+                        )
+                        .otherwise("2000-01-04T12:00:00Z")
                 ).as("lastSeen")
         );
 

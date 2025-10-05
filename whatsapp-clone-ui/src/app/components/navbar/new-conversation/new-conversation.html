@@ -25,25 +25,25 @@
       </div>
       <div class="d-flex flex-column w-100">
         <app-conversation-selector
-          [title]="meUser?.firstName + ' ' + meUser?.lastName + ' (You)'"
+          [user]="meUser!"
           [subtitle]="'Message yourself'"
           [pictureReference]="meUser?.profilePictureReference!"
-          (select)="handleConversation(meUser?.id)"
+          (userChatSelected)="handleConversation(meUser!)"
         ></app-conversation-selector>
       </div>
     </div>
     <span class="align-self-start ms-4 pt-4 pb-3 subtitle">All contacts</span>
     <div class="d-flex flex-column w-100 overflow-y-auto">
-      @for (user of usersResponse; track user.id) {
+      @for (user of usersResponses; track user.id) {
         <app-conversation-selector
-          [title]="user.firstName + ' ' + user.lastName"
+          [user]="user"
           [subtitle]="'Hi I\'m using Whatsapp clone'"
           [pictureReference]="user.profilePictureReference!"
-          (select)="handleConversation(user.id!)"
+          (userChatSelected)="handleConversation(user)"
         ></app-conversation-selector>
       }
     </div>
-    @if (usersResponse.length === 0 && !loadingSearch) {
+    @if (usersResponses.length === 0 && !loadingSearch) {
       <div class="d-flex flex-column vh-100 align-items-center justify-content-center">
         <div class="fs-3">
             No result found

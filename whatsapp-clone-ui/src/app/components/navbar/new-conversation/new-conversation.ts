@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, inject, OnDestroy, OnInit, Output} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {FormsModule} from '@angular/forms';
 import {ConversationSelector} from './conversation-selector/conversation-selector';
@@ -37,10 +37,12 @@ export class NewConversation implements OnInit, OnDestroy {
   protected query = null;
   protected meUser: UserResponse | undefined;
 
-  public usersResponse: Array<UserResponse> = [];
+  public usersResponses: Array<UserResponse> = [];
+
+  @Output() public userChatSelected = new EventEmitter<UserResponse>();
 
   ngOnDestroy(): void {
-    this.usersResponse = [];
+    this.usersResponses = [];
   }
 
   ngOnInit(): void {
@@ -61,7 +63,7 @@ export class NewConversation implements OnInit, OnDestroy {
       q: query
     }).subscribe({
       next: response => {
-        this.usersResponse = response.body ?? [];
+        this.usersResponses = response.body ?? [];
         this.loadingSearch = false;
       },
       error: error => {
@@ -76,8 +78,9 @@ export class NewConversation implements OnInit, OnDestroy {
     this.activeOffCanvas.close();
   }
 
-  handleConversation(userId: String | undefined): void {
-    if (!userId) {
+  handleConversation(user: UserResponse): void {
+    if (user) {
+      this.userChatSelected.emit(user);
       this.offcanvasTracker.closeAll();
     }
   }

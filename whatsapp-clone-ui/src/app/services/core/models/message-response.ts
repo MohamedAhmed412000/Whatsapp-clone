@@ -44,5 +44,5 @@ export interface MessageResponse {
   /**
    * The message content type
    */
-  type?: 'TEXT' | 'MEDIA' | 'AUDIO';
+  type?: 'TEXT' | 'MEDIA' | 'AUDIO' | 'SYSTEM';
 }

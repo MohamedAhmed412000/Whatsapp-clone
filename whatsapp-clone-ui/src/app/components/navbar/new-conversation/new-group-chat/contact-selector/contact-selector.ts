@@ -1,6 +1,6 @@
 import {Component, EventEmitter, input, Output} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
-import {MediaUrlPipe} from '../../../../../utils/media-url.pipe';
+import {MediaUrlPipe} from '../../../../../utils/media/media-url.pipe';
 
 @Component({
   selector: 'app-contact-selector',

@@ -50,6 +50,7 @@ html, body {
 }
 
 .chat {
+  height: 100%;
   grid-area: chat;
   overflow-y: auto;
   min-height: 0;

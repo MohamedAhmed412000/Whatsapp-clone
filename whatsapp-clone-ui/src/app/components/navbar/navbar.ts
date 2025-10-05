@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {
@@ -10,7 +10,8 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import {NewConversation} from './new-conversation/new-conversation';
 import {OffcanvasTrackerService} from '../../utils/offCanvasStack/offcanvas-tracker.service';
-import {MediaUrlPipe} from '../../utils/media-url.pipe';
+import {MediaUrlPipe} from '../../utils/media/media-url.pipe';
+import {UserResponse} from '../../services/user/models/user-response';
 
 @Component({
   selector: 'app-navbar',
@@ -26,9 +27,10 @@ import {MediaUrlPipe} from '../../utils/media-url.pipe';
   styleUrl: './navbar.scss'
 })
 export class Navbar {
-
   offCanvasService = inject(NgbOffcanvas);
   offcanvasTracker = inject(OffcanvasTrackerService);
+
+  @Output() userChatSelected = new EventEmitter<UserResponse>();
 
   constructor(
     protected keycloakService: KeycloakService
@@ -48,6 +50,10 @@ export class Navbar {
       container: "#main",
       panelClass: "offcanvas",
     });
+    (ref.componentInstance as NewConversation).userChatSelected.subscribe((user: UserResponse) => {
+      this.userChatSelected.emit(user);
+    });
+
     this.offcanvasTracker.register(ref);
   }
 

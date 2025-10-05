@@ -1,9 +1,13 @@
 @if (selectedChat()) {
   <div class="wac-footer d-flex flex-column align-items-center py-1 px-2 border-0">
     @if (isReplyMessage) {
-      <div class="reply-box d-flex align-items-center w-100 p-2 mb-1">
+      <div class="reply-box d-flex align-items-center w-100 p-2 mb-1"
+        [style.border-left-color]="replyMessage?.senderId! | colorize"
+      >
         <div class="flex-grow-1">
-          <div class="reply-title">Replying to {{ replyMessage?.senderName }}</div>
+          <div class="reply-title" [style.color]="replyMessage?.senderId! | colorize">
+            Replying to {{ replyMessage?.senderName }}
+          </div>
           <div class="reply-content text-truncate">
             @if (replyMessage?.type == "TEXT") {
               {{ replyMessage?.content }}

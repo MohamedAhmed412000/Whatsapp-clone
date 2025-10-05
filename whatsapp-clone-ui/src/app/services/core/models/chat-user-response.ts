@@ -23,4 +23,5 @@ export interface ChatUserResponse {
    * The user profile image reference
    */
   imageFileReference?: string;
+  online?: boolean;
 }
