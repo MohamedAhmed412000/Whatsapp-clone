@@ -192,7 +192,7 @@ export class AppComponent implements OnInit {
   private initWebSocket() {
     if (this.keycloakService.keycloak.tokenParsed?.sub) {
       let ws = new SockJS(environment.WEB_SOCKET_URL);
-      this.socketClient = Stomp.over(ws);
+      this.socketClient = Stomp.over(() => ws);
       this.socketClient.reconnectDelay = 5000;
       this.socketClient.debug = () => false;
       const subUrl = `/topic/chat.${this.keycloakService.keycloak.tokenParsed?.sub}`;

@@ -16,7 +16,10 @@ public class ChatUserMapper {
     public ChatUserResponse toChatUserResponse(UserWithRole userWithRole) {
         return ChatUserResponse.builder()
             .id(userWithRole.getUser().getId())
+            .firstname(userWithRole.getFirstName())
+            .lastname(userWithRole.getLastName())
             .fullname(userWithRole.getUser().getFullName())
+            .email(userWithRole.getUser().getEmail())
             .imageFileReference(userWithRole.getUser().getProfilePictureReference())
             .isOnline(isOnlineUser(userWithRole.getUser().getLastSeen()))
             .isAdmin(userWithRole.getRole().equals(ChatUserRoleEnum.CREATOR) ||

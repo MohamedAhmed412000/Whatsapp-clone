@@ -144,14 +144,21 @@ public class ChatUserServiceImpl implements ChatUserService {
     }
 
     private List<UserWithRole> findUsersByChatId(String chatId) {
+        String myUserId = getUserId();
         Aggregation aggregation = Aggregation.newAggregation(
             Aggregation.match(Criteria.where("chat_id").is(chatId)),
 
             Aggregation.lookup("user", "user_id", "_id", "userInfo"),
             Aggregation.unwind("userInfo"),
 
+            Aggregation.lookup("contact", "user_id", "user_id", "userContact"),
+            Aggregation.unwind("userContact"),
+            Aggregation.match(Criteria.where("userContact.owner_id").is(myUserId)),
+
             Aggregation.project()
                 .and("userInfo").as("user")
+                .and("userContact.first_name").as("firstName")
+                .and("userContact.last_name").as("lastName")
                 .and("role").as("role")
         );
 

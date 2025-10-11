@@ -27,7 +27,7 @@ public class MediaServiceImpl {
             MediaUploadResource.builder()
                 .files(files)
                 .entityId(generateMediaId(Application.MSG_MEDIA_PREFIX, messageId.toString()))
-                .filePath(chatId + File.separator + messageId)
+                .filePath(chatId + "," + messageId)
                 .build()
         );
 
@@ -42,7 +42,7 @@ public class MediaServiceImpl {
             MediaUploadResource.builder()
                 .files(List.of(file))
                 .entityId(generateMediaId(Application.CHAT_MEDIA_PREFIX, chatId))
-                .filePath(chatId +  File.separator + "PROFILE")
+                .filePath(chatId +  "," + "PROFILE")
                 .build()
         );
 

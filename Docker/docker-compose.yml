@@ -66,6 +66,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    volumes:
+      - ../uploads:/uploads
     environment:
       SPRING_APPLICATION_NAME: "media-management"
       EUREKA_INSTANCE_HOSTNAME: "media-ms"

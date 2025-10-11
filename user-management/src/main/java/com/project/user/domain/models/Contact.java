@@ -20,12 +20,18 @@ public class Contact extends BaseModel {
     private String ownerId;
     @Field(value = "user_id")
     private String userId;
-    @Field(value = "full_name")
-    private String fullName;
+    @Field(value = "first_name")
+    private String firstname;
+    @Field(value = "last_name")
+    private String lastname;
     @Builder.Default
     @Field(value = "is_blocked", targetType = FieldType.BOOLEAN)
     private boolean isBlocked = false;
     @Builder.Default
     @Field(value = "is_favourite", targetType = FieldType.BOOLEAN)
     private boolean isFavourite = false;
+
+    public String getFullName() {
+        return firstname + " " + lastname;
+    }
 }

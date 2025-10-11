@@ -1,6 +1,7 @@
 package com.project.gateway.config;
 
 import com.project.gateway.constants.Headers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,9 @@ import java.util.Objects;
 @Configuration
 @EnableWebFluxSecurity
 public class WebSecurityConfig {
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -45,13 +49,14 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // Frontend
+        config.setAllowedOrigins(List.of(frontendUrl));
         config.setAllowedMethods(Arrays.asList(
             HttpMethod.GET.name(),
             HttpMethod.POST.name(),
             HttpMethod.PUT.name(),
             HttpMethod.DELETE.name(),
-            HttpMethod.PATCH.name()
+            HttpMethod.PATCH.name(),
+            HttpMethod.HEAD.name()
         ));
         config.setAllowedHeaders(Arrays.asList(
             HttpHeaders.ORIGIN,

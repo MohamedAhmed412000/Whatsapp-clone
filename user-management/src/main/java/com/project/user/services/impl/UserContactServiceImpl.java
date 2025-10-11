@@ -1,12 +1,12 @@
 package com.project.user.services.impl;
 
+import com.project.user.domain.dto.UserWithFullName;
+import com.project.user.domain.models.Chat;
 import com.project.user.domain.models.Contact;
 import com.project.user.domain.models.User;
-import com.project.user.exceptions.ContactAlreadyExistsException;
-import com.project.user.exceptions.ContactNotFoundException;
-import com.project.user.exceptions.UpdateActionNotAllowedException;
-import com.project.user.exceptions.UserNotFoundException;
+import com.project.user.exceptions.*;
 import com.project.user.mappers.UserMapper;
+import com.project.user.repositories.ChatRepository;
 import com.project.user.repositories.UserContactRepository;
 import com.project.user.repositories.UserRepository;
 import com.project.user.rest.inbound.UserContactCreationResource;
@@ -19,10 +19,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class UserContactServiceImpl implements UserContactService {
     private final MongoTemplate mongoTemplate;
     private final UserContactRepository userContactRepository;
     private final UserRepository userRepository;
+    private final ChatRepository chatRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -47,7 +51,8 @@ public class UserContactServiceImpl implements UserContactService {
             .id(System.currentTimeMillis())
             .ownerId(ownerId)
             .userId(user.getId())
-            .fullName(resource.getFullName() != null ? resource.getFullName() : user.getFullName())
+            .firstname(resource.getFirstname() != null ? resource.getFirstname() : user.getFirstName())
+            .lastname(resource.getLastname() != null ? resource.getLastname() : user.getLastName())
             .isFavourite(Boolean.TRUE.equals(resource.getIsFavourite()))
             .build();
 
@@ -57,14 +62,14 @@ public class UserContactServiceImpl implements UserContactService {
     @Override
     public List<UserResponse> getUserContacts(String query) {
         return getContactUsers(getUserId(), query, false).stream()
-            .map(user -> userMapper.toUserResponse(user, false, null))
+            .map(user -> userMapper.toUserContactResponse(user, false, null))
             .toList();
     }
 
     @Override
     public List<UserResponse> getUserBlockedContacts() {
         return getContactUsers(getUserId(), null, true).stream()
-            .map(user -> userMapper.toUserResponse(user, false, null))
+            .map(user -> userMapper.toUserContactResponse(user, false, null))
             .toList();
     }
 
@@ -72,12 +77,25 @@ public class UserContactServiceImpl implements UserContactService {
     public boolean updateContact(String userId, UserContactUpdateResource resource) {
         try {
             Contact contact = getContact(userId);
-            contact.setFullName(resource.getFullName());
+            contact.setFirstname(resource.getFirstname());
+            contact.setLastname(resource.getLastname());
             userContactRepository.save(contact);
+            updateChat(userId, contact.getFullName());
             return true;
         } catch (ContactNotFoundException e) {
             return false;
         }
+    }
+
+    private void updateChat(String userId, String newChatUserFullName) {
+        String myUserId = getUserId();
+        Chat chat = chatRepository.findChatsBySenderIdAndReceiverId(userId, myUserId)
+            .orElseThrow(() -> new ChatNotFoundException("Chat not found for ids: [" + userId + ", " + myUserId + "]"));
+        String newName = chat.updateChatName(userId, newChatUserFullName);
+        mongoTemplate.update(Chat.class)
+            .matching(where("_id").is(chat.getId()))
+            .apply(new Update().set("name", newName))
+            .first();
     }
 
     @Override
@@ -124,7 +142,8 @@ public class UserContactServiceImpl implements UserContactService {
                 .id(System.currentTimeMillis())
                 .ownerId(getUserId())
                 .userId(userId)
-                .fullName(user.getFullName())
+                .firstname(user.getFirstName())
+                .lastname(user.getLastName())
                 .isBlocked(Boolean.TRUE)
                 .build();
 
@@ -159,26 +178,32 @@ public class UserContactServiceImpl implements UserContactService {
             .orElseThrow(ContactNotFoundException::new);
     }
 
-    private List<User> getContactUsers(String userId, String query, boolean isBlocked) {
-        Criteria criteria = Criteria.where("owner_id").is(userId)
+    private List<UserWithFullName> getContactUsers(String userId, String query, boolean isBlocked) {
+        Criteria criteria = where("owner_id").is(userId)
             .and("is_blocked").is(isBlocked);
         if (query != null && !query.isEmpty()) {
-            criteria = criteria.and("full_name").regex(query, "i");
+            criteria = criteria.and("first_name").regex(query, "i");
         }
 
         Aggregation aggregation = Aggregation.newAggregation(
             Aggregation.match(criteria),
             Aggregation.sort(Sort.by(Sort.Direction.DESC, "is_favourite").and(
-                Sort.by(Sort.Direction.ASC, "full_name")
+                Sort.by(Sort.Direction.ASC, "first_name")
+            ).and(
+                Sort.by(Sort.Direction.ASC, "last_name")
             )),
 
             Aggregation.lookup("user", "user_id", "_id", "userInfo"),
             Aggregation.unwind("userInfo"),
-            Aggregation.replaceRoot("userInfo")
+
+            Aggregation.project()
+                .and("userInfo").as("user")
+                .and("first_name").as("firstname")
+                .and("last_name").as("lastname")
         );
 
-        AggregationResults<User> results = mongoTemplate.aggregate(
-            aggregation, "contact", User.class
+        AggregationResults<UserWithFullName> results = mongoTemplate.aggregate(
+            aggregation, "contact", UserWithFullName.class
         );
 
         return results.getMappedResults();

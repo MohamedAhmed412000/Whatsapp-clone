@@ -17,6 +17,11 @@ export interface UserResponse {
   firstName?: string;
 
   /**
+   * The user fullname
+   */
+  fullName?: string;
+
+  /**
    * The user Id
    */
   id?: string;

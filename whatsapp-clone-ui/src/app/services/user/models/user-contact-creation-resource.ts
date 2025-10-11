@@ -14,12 +14,17 @@ export interface UserContactCreationResource {
   email: string;
 
   /**
-   * The contact fullName
+   * The contact firstname
    */
-  fullName?: string;
+  firstname?: string;
 
   /**
    * Flag for favourite contacts
    */
   isFavourite?: boolean;
+
+  /**
+   * The contact lastname
+   */
+  lastname?: string;
 }

@@ -1,9 +1,11 @@
 @if (chat() != null) {
-  <div class="wac-navbar d-flex flex-row justify-content-between w-100 px-4">
+  <div class="wac-navbar d-flex flex-row justify-content-between w-100 px-4"
+    (click)="openProfile($event)"
+  >
     <div class="d-flex align-items-center">
       <div class="avatar">
         @if (chat()?.chatImageReference != null) {
-          <img [src]="chat()?.chatImageReference! | mediaUrl" alt="chat-avatar"
+          <img [src]="chat()?.chatImageReference! | mediaUrl:true" alt="chat-avatar"
                class="avatar-unknown" width="60px" height="60px" style="object-fit: cover">
         } @else {
           @if (chat()?.isGroupChat) {
@@ -19,7 +21,7 @@
         </div>
         <div class="subtitle text-truncate ms-3 fs-6">
           @if (chat()?.isGroupChat) {
-            {{ chatUsers() }}
+            {{ chatUsersString }}
           } @else {
             <div class="d-flex gap-1 align-items-center">
               @if (isSelfChat()) {
@@ -39,7 +41,7 @@
       </div>
     </div>
 
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center" (click)="stopMainEffect($event)">
       <div class="btn-group me-2" role="group" aria-label="Second group">
         <button type="button" class="btn btn-secondary rounded-start-1 px-3">
           <fa-icon icon="video" class="fs-3"></fa-icon>
@@ -54,4 +56,124 @@
       </button>
     </div>
   </div>
+
+  @if (showProfile) {
+    <div class="profile-sidebar" (click)="stopMainEffect($event)">
+      <div class="profile-container d-flex h-100">
+
+        <div class="profile-menu p-1 rounded-1">
+          <ul class="list-unstyled m-0">
+            @for (item of profileTabs; track item.id) {
+              <li
+                [class.active]="selectedTab === item.id"
+                (click)="selectTab(item.id)">
+                <fa-icon [icon]="item.icon" class="me-3"></fa-icon>
+                {{ item.label }}
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="flex-grow-1">
+          <div class="profile-content p-4 pb-1">
+
+            <button class="edit-profile btn btn-transparent rounded-1 py-2 px-3"
+              (click)="openEditContactModal()"
+            >
+              <fa-icon icon="pen" class="fs-5"></fa-icon>
+            </button>
+
+            @switch (selectedTab) {
+              @case ('overview') {
+                <div class="d-flex flex-column align-items-center">
+                  @if (chat()?.chatImageReference != null) {
+                    <img
+                      [src]="chat()?.chatImageReference | mediaUrl:true"
+                      alt="profile-photo"
+                      class="profile-photo mb-3"
+                    />
+                  } @else {
+                    @if (chat()?.isGroupChat) {
+                      <fa-icon icon="user-group" class="profile-photo avatar-unknown mb-3"></fa-icon>
+                    } @else {
+                      <fa-icon icon="user" class="profile-photo avatar-unknown mb-3"></fa-icon>
+                    }
+                  }
+                  <h3 class="fw-bold">{{ chat()?.name }}</h3>
+                  @if (!chat()?.isGroupChat) {
+                    <h5 class="subtitle">~{{ singleChatUser.fullname }}</h5>
+                  }
+                </div>
+
+                <div class="d-flex flex-row justify-content-center py-3">
+                  <button type="button" class="btn btn-secondary rounded-1 mx-1 w-50">
+                    <fa-icon icon="video" class="fs-3"></fa-icon><br>
+                    <span class="fw-light">Video</span>
+                  </button>
+                  <button type="button" class="btn btn-secondary rounded-1 mx-1 w-50">
+                    <fa-icon icon="phone" class="fs-3"></fa-icon><br>
+                    <span class="fw-light">Voice</span>
+                  </button>
+                </div>
+
+                <div class="mt-3 text-start">
+                  <h6 class="subtitle mb-1">
+                    @if (chat()?.isGroupChat) {
+                      Description
+                    } @else {
+                      About
+                    }
+                  </h6>
+                  <p>{{ chat()?.description || 'No status set' }}</p>
+
+                  @if (!chat()?.isGroupChat) {
+                    <h6 class="subtitle mb-1 mt-3">Email</h6>
+                    <p>{{ singleChatUser.email }}</p>
+                  }
+
+                  <h6 class="subtitle mt-3">Disappearing messages</h6>
+                  <p>Off</p>
+
+                  <hr/>
+
+                  <button class="btn btn-md btn-secondary rounded-1 ms-1 py-1 px-3 fw-light">Add to favourites</button>
+                  <div class="d-flex flex-row justify-content-center py-3">
+                    <button type="button" class="btn btn-md btn-secondary rounded-1 mx-1 py-1 px-3 w-50 fw-light">
+                      Block
+                    </button>
+                    <button type="button"
+                      class="btn btn-md btn-secondary color-red rounded-1 mx-1 py-1 px-3 w-50 fw-light">
+                      Report contact
+                    </button>
+                  </div>
+                </div>
+              }
+
+              @case ('media') {
+                <p>Media files shown here...</p>
+              }
+
+              @case ('files') {
+                <p>Uploaded documents shown here...</p>
+              }
+
+              @case ('links') {
+                <p>Shared links shown here...</p>
+              }
+
+              @case ('events') {
+                <p>Upcoming events shown here...</p>
+              }
+
+              @case ('encryption') {
+                <p>Your messages are end-to-end encrypted.</p>
+              }
+            }
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
 }

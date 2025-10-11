@@ -18,6 +18,7 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +39,7 @@ public class LocalMediaServiceImpl implements MediaService {
         @NonNull String relativePath,
         @NonNull String entityId
     ) {
-        return FileUtils.saveLocalFile(filePart, mediaBasePath, relativePath)
+        return FileUtils.saveLocalFile(filePart, mediaBasePath, generateMediaReferencePath(relativePath))
             .flatMap(fileName -> {
                 Media media = Media.builder()
                     .id(generateId())
@@ -74,7 +75,7 @@ public class LocalMediaServiceImpl implements MediaService {
         return mediaRepository.findMediaById(reference)
             .mapNotNull(media -> {
                 Resource resource = FileUtils.getLocalFileResource(
-                    mediaBasePath, media.getReference(), media.getName()
+                    mediaBasePath, generateMediaReferencePath(media.getReference()), media.getName()
                 );
                 return new MediaResourceDto(resource, resolveMediaType(media.getName()));
             }).onErrorResume(e -> {
@@ -105,6 +106,10 @@ public class LocalMediaServiceImpl implements MediaService {
             case "txt" -> MediaType.TEXT_PLAIN;
             default -> MediaType.APPLICATION_OCTET_STREAM;
         };
+    }
+
+    private String generateMediaReferencePath(String dbReference) {
+        return dbReference.replace(",", File.separator);
     }
 
     private String generateId() {

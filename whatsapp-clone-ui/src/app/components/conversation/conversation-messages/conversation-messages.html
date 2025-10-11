@@ -7,6 +7,7 @@
           <div class="chat-date">{{ message.content }}</div>
         } @else {
           <div
+            [attr.id]="'message-' + message.id"
             [class]="['message-box', isSelfMessage(message)? 'self': 'other']"
             (contextmenu)="onRightClick($event, message)"
           >
@@ -20,9 +21,10 @@
             }
             @if (message.repliedMessage !== undefined) {
               <div class="reply-box d-flex align-items-center p-2 mb-1"
-                [style.border-left-color]="message?.repliedMessage?.senderId! | colorize">
+                (click)="scrollToRepliedMessage(message.repliedMessage?.id)"
+                [style.border-left-color]="message?.repliedMessage?.senderId! | colorize:!chat()!.isGroupChat:isSelfRepliedMessage(message)">
                 <div class="flex-grow-1">
-                  <div class="reply-title" [style.color]="message?.repliedMessage?.senderId! | colorize">
+                  <div class="reply-title" [style.color]="message?.repliedMessage?.senderId! | colorize:!chat()!.isGroupChat:isSelfRepliedMessage(message)">
                     {{ getChatUserFullName(message?.repliedMessage?.senderId!) }}
                   </div>
                   <div class="reply-content text-truncate">
@@ -59,7 +61,7 @@
             } @else {
               @for (mediaRef of message.mediaListReferences; track mediaRef) {
                 <div class="message-media">
-                  <img width="200" class="cursor-pointer" [src]="mediaRef | mediaUrl" alt="">
+                  <img width="200" class="cursor-pointer" [src]="mediaRef | mediaUrl | async" alt="">
                   <div class="shadow-overlay cursor-pointer"></div>
                   <small class="message-date cursor-pointer">
                     {{ message.createdAt | date:'hh:mm a': 'local' }}

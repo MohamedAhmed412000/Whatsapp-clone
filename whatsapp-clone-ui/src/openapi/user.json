@@ -785,10 +785,15 @@
             "example": "mohamed.ahmed@gmail.com",
             "minLength": 1
           },
-          "fullName": {
+          "firstname": {
             "type": "string",
-            "description": "The contact fullName",
-            "example": "Mohamed Ahmed"
+            "description": "The contact firstname",
+            "example": "Mohamed"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The contact lastname",
+            "example": "Ahmed"
           },
           "isFavourite": {
             "type": "boolean",
@@ -859,16 +864,17 @@
         "type": "object",
         "description": "Schema to hold the user contact update data",
         "properties": {
-          "fullName": {
+          "firstname": {
             "type": "string",
-            "description": "The contact fullName",
-            "example": "Mohamed Ahmed",
-            "minLength": 1
+            "description": "The contact firstname",
+            "example": "Mohamed"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The contact lastname",
+            "example": "Ahmed"
           }
-        },
-        "required": [
-          "fullName"
-        ]
+        }
       },
       "StoryDetailsResponse": {
         "type": "object",
@@ -922,6 +928,11 @@
             "type": "string",
             "description": "The user lastname",
             "example": "Ahmed"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "The user fullname",
+            "example": "Mohamed Ahmed"
           },
           "email": {
             "type": "string",

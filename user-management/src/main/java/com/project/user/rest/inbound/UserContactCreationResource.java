@@ -19,8 +19,10 @@ public class UserContactCreationResource {
     @Email
     @Schema(description = "The user email", example = "mohamed.ahmed@gmail.com")
     private String email;
-    @Schema(description = "The contact fullName", example = "Mohamed Ahmed")
-    private String fullName;
+    @Schema(description = "The contact firstname", example = "Mohamed")
+    private String firstname;
+    @Schema(description = "The contact lastname", example = "Ahmed")
+    private String lastname;
     @Schema(description = "Flag for favourite contacts")
     private Boolean isFavourite;
 }

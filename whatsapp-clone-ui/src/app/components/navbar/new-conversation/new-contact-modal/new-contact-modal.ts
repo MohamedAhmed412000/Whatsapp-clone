@@ -25,7 +25,8 @@ export class NewContactModal {
       this.userContactService.addNewContact({
         body: {
           email: email,
-          fullName: `${firstName} ${lastName}}`
+          firstname: firstName,
+          lastname: lastName
         }
       }).subscribe({
         next: res => {

@@ -1626,10 +1626,25 @@
             "description": "The user Id",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
+          "firstname": {
+            "type": "string",
+            "description": "The user firstname",
+            "example": "Mohamed"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The user lastname",
+            "example": "Ahmed"
+          },
           "fullname": {
             "type": "string",
             "description": "The user fullname",
             "example": "Mohamed Ahmed"
+          },
+          "email": {
+            "type": "string",
+            "description": "The user email",
+            "example": "mohamed.ahmed@example.com"
           },
           "imageFileReference": {
             "type": "string",

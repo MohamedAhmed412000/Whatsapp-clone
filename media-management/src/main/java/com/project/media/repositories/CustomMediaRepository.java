@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.File;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class CustomMediaRepository {
             return mediaRepository.findMediaById(reference)
                 .flatMap(media ->
                     Mono.fromCallable(() -> FileUtils.deleteLocalFile(
-                        mediaBasePath, media.getReference(), media.getName()))
+                        mediaBasePath, generateMediaReferencePath(media.getReference()), media.getName()))
                         .subscribeOn(Schedulers.boundedElastic())
                         .flatMap(isDeleted -> {
                             if (isDeleted) {
@@ -51,5 +53,9 @@ public class CustomMediaRepository {
                     return Mono.just(false);
                 });
         }
+    }
+
+    private String generateMediaReferencePath(String dbReference) {
+        return dbReference.replace(",", File.separator);
     }
 }

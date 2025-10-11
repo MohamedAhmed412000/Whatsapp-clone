@@ -8,7 +8,7 @@ import {
   signal,
   ViewChild
 } from '@angular/core';
-import {DatePipe, NgStyle} from '@angular/common';
+import {AsyncPipe, DatePipe, NgStyle} from '@angular/common';
 import {KeycloakService} from '../../../utils/keycloak/keycloak.service';
 import {ChatMessageResponse} from '../../../services/core/models/chat-message-response';
 import {MessageResponse} from '../../../services/core/models/message-response';
@@ -28,7 +28,8 @@ import {ColorizePipe} from '../../../utils/colorize.pipe';
     MediaUrlPipe,
     FaIconComponent,
     NgStyle,
-    ColorizePipe
+    ColorizePipe,
+    AsyncPipe
   ],
   templateUrl: './conversation-messages.html',
   styleUrl: './conversation-messages.scss'
@@ -85,9 +86,9 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
   }
 
   private scrollToBottom(): void {
-    if (!this.scrollableDiv) return;
-    const el = this.scrollableDiv.nativeElement;
-    el.scrollTop = el.scrollHeight;
+    if (!this.scrollableDiv?.nativeElement) return;
+    const scrollContainer = this.scrollableDiv.nativeElement;
+    scrollContainer.scrollTop = 0;
   }
 
   onRightClick(event: MouseEvent, message: MessageResponse) {
@@ -138,6 +139,10 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
     return message.senderId === this.keycloakService.userId;
   }
 
+  isSelfRepliedMessage(message: MessageResponse) {
+    return message.repliedMessage!.senderId === this.keycloakService.userId;
+  }
+
   isSelfChat() {
     return this.chat()?.receiversId!.every(userId => userId === this.keycloakService.userId);
   }
@@ -151,7 +156,7 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
       await navigator.clipboard.writeText(this.repliedMessage!.content ?? '');
     } else if (this.repliedMessage!.type === 'MEDIA' && this.repliedMessage!.mediaListReferences?.length) {
       const url = this.mediaService.generateUrl(this.repliedMessage!.mediaListReferences[0]);
-      const response = await fetch(url);
+      const response = await fetch(url, { mode: 'cors' });
       const blob = await response.blob();
 
       const bitmap = await createImageBitmap(blob);
@@ -173,5 +178,22 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
 
   onChatUserSelected(userId: String): void {
     this.chatUserSelected.emit(this.chatUsersMap().get(userId));
+  }
+
+  scrollToRepliedMessage(repliedMessageId?: number | string) {
+    if (!repliedMessageId) return;
+
+    setTimeout(() => {
+      const targetElement = document.getElementById(`message-${repliedMessageId}`);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+
+        targetElement.classList.add('highlight-message');
+        setTimeout(() => targetElement.classList.remove('highlight-message'), 800);
+      }
+    }, 0);
   }
 }

@@ -9,5 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserWithRole {
     private User user;
+    private String firstName;
+    private String lastName;
     private ChatUserRoleEnum role;
 }

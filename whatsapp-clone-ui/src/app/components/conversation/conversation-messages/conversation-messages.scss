@@ -53,6 +53,7 @@
     border-radius: 5px;
 
     .reply-box {
+      cursor: pointer;
       padding: 0;
       margin: 8px 8px 0 8px;
       background: $reply-message-bg-color;
@@ -147,6 +148,7 @@
     .reply-box {
       padding: 0;
       margin: 4px 8px 0 8px;
+      cursor: pointer;
       background: $subtitle-color;
       border-top: 2px solid $send-color;
       border-left: 4px solid $primary;
@@ -188,7 +190,7 @@
       position: relative;
       text-align: left;
       align-self: start;
-      padding: 2px 8px 6px 8px;
+      padding: 5px 8px 6px 8px;
 
       .shadow-overlay {
         position: absolute;
@@ -217,6 +219,16 @@
       background: linear-gradient(225deg, $menu-bg-color 0%, $menu-bg-color 50%, transparent 50%, transparent);
     }
   }
+}
+
+.highlight-message {
+  animation: highlightFade 2s ease-in-out;
+  background-color: rgba(3, 169, 244, 0.15);
+}
+
+@keyframes highlightFade {
+  from { background-color: rgba(3, 169, 244, 0.5); }
+  to { background-color: transparent; }
 }
 
 fa-icon {

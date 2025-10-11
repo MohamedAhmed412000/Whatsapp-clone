@@ -1,5 +1,6 @@
 package com.project.user.rest.inbound;
 
+import com.project.commons.validators.AtLeastOneFieldNotEmpty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -13,8 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@AtLeastOneFieldNotEmpty
 public class UserContactUpdateResource {
-    @NotEmpty
-    @Schema(description = "The contact fullName", example = "Mohamed Ahmed")
-    private String fullName;
+    @Schema(description = "The contact firstname", example = "Mohamed")
+    private String firstname;
+    @Schema(description = "The contact lastname", example = "Ahmed")
+    private String lastname;
 }

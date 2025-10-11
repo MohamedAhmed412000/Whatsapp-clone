@@ -24,6 +24,8 @@ public class UserResponse {
     private String firstName;
     @Schema(description = "The user lastname", example = "Ahmed")
     private String lastName;
+    @Schema(description = "The user fullname", example = "Mohamed Ahmed")
+    private String fullName;
     @Schema(description = "The user email", example = "mohamed.ahmed@example.com")
     private String email;
     private MobileNumber mobileNumber;

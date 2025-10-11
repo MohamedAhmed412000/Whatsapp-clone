@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ChatList} from '../../components/chat-list/chat-list';
 import {ChatResponse} from '../../services/core/models/chat-response';
 import {KeycloakService} from '../../utils/keycloak/keycloak.service';
 import {DatePipe} from '@angular/common';

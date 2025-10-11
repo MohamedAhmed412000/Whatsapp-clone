@@ -24,6 +24,6 @@ export class ConversationSelector {
   }
 
   get fullName() {
-    return this.user().firstName + ' ' + this.user().lastName;
+    return `${this.user().firstName} ${this.user().lastName}`;
   }
 }

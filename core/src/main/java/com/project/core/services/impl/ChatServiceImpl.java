@@ -126,8 +126,10 @@ public class ChatServiceImpl implements ChatService {
             throw new UserNotFoundException(String.format("Sender user with id [%s] not found", senderId));
         }
 
+        boolean isSelfChat = true;
         Optional<User> optionalReceiver = optionalSender;
         if (!senderId.equals(receiverId)) {
+            isSelfChat = false;
             optionalReceiver = userRepository.findByPublicId(receiverId);
             if (optionalReceiver.isEmpty()) {
                 throw new UserNotFoundException(String.format("Receiver user with id [%s] not found", receiverId));
@@ -136,12 +138,13 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = Chat.builder()
             .id(UUID.randomUUID().toString())
-            .name(senderId + '&' + optionalSender.get().getFullName() + '#' + new StringBuilder(receiverId)
-                .reverse() + '&' + optionalReceiver.get().getFullName()).isGroupChat(false)
+            .name(senderId + '&' + optionalSender.get().getFullName() + '#' +
+                (isSelfChat? new StringBuilder(receiverId).reverse(): receiverId) + '&' +
+                optionalReceiver.get().getFullName()).isGroupChat(false)
             .isNew(true)
             .chatImageReference(senderId + '&' + optionalSender.get().getProfilePictureReference() + '#' +
-                new StringBuilder(receiverId).reverse() + '&' + optionalReceiver.get()
-                .getProfilePictureReference()).build();
+                (isSelfChat? new StringBuilder(receiverId).reverse(): receiverId) + '&' +
+                optionalReceiver.get().getProfilePictureReference()).build();
         Message message = Message.builder().id(System.currentTimeMillis()).chatId(chat.getId())
             .messageType(MessageTypeEnum.SYSTEM).senderId("SYSTEM")
             .content(MessageContent.builder().content(SystemMessageEnum.CHAT_CREATED.getContent()).build())

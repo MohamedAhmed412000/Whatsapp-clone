@@ -14,6 +14,7 @@ public enum UserErrorsEnum implements IContentException {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "E400004", "User not found"),
     CONTACT_NOT_FOUND(HttpStatus.NOT_FOUND, "E400005", "Contact not found"),
     CONTACT_ALREADY_EXISTS(HttpStatus.CONFLICT, "E400006", "Contact already exists"),
+    CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "E400007", "Chat not found"),
     ;
 
     private final HttpStatus httpStatus;

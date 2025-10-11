@@ -9,7 +9,12 @@
 export interface UserContactUpdateResource {
 
   /**
-   * The contact fullName
+   * The contact firstname
    */
-  fullName: string;
+  firstname?: string;
+
+  /**
+   * The contact lastname
+   */
+  lastname?: string;
 }

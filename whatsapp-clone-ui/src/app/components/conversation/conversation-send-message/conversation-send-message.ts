@@ -119,19 +119,21 @@ export class ConversationSendMessage implements OnChanges {
 
   sendMediaMessage(files: FileList) {
     const fileArray = Array.from(files);
+
+    const repliedMessageSnapshot = this.repliedMessage();
+    const isReplyMessageSnapshot = this.isReplyMessage;
+
     for (let i = 0; i < fileArray.length; i++) {
       const messageRequest: MessageCreationResource = {
         chatId: this.selectedChat().id as string,
         messageType: "MEDIA",
-        mediaFiles: [fileArray.at(i) as Blob],
-        repliedMessageId: this.isReplyMessage && i == 0? this.repliedMessage()?.id : undefined,
+        mediaFiles: [fileArray[i] as Blob],
+        repliedMessageId: isReplyMessageSnapshot && i === 0 ? repliedMessageSnapshot?.id : undefined,
       };
 
-      this.messageService.saveMessage({
-        body: messageRequest
-      }).subscribe(res => {
+      this.messageService.saveMessage({ body: messageRequest }).subscribe(res => {
         const response = res!.body!;
-        const repliedMessage = this.repliedMessage();
+
         const message: MessageResponse = {
           id: response.id,
           senderId: this.keycloakService.userId as string,
@@ -139,18 +141,25 @@ export class ConversationSendMessage implements OnChanges {
           mediaListReferences: response.mediaListReferences,
           state: "SENT",
           createdAt: new Date().toISOString(),
-          repliedMessage: this.isReplyMessage? {
-            id: repliedMessage?.id,
-            senderId: repliedMessage?.senderId,
-            messageType: repliedMessage?.type,
-            content: repliedMessage?.type === "TEXT"? {content: repliedMessage?.content}
-              : {mediaReferences: repliedMessage?.mediaListReferences},
-          } as RepliedMessage : undefined,
+          repliedMessage: isReplyMessageSnapshot && i === 0
+            ? {
+              id: repliedMessageSnapshot?.id,
+              senderId: repliedMessageSnapshot?.senderId,
+              messageType: repliedMessageSnapshot?.type,
+              content: repliedMessageSnapshot?.type === "TEXT"
+                ? { content: repliedMessageSnapshot?.content }
+                : { mediaReferences: repliedMessageSnapshot?.mediaListReferences },
+            } as RepliedMessage
+            : undefined,
         };
 
         this.messageCreated.emit(message);
         this.messageContent = '';
         this.showEmojis = false;
+
+        if (i === fileArray.length-1) {
+          this.repliedMessage.set(undefined);
+        }
       });
     }
   }

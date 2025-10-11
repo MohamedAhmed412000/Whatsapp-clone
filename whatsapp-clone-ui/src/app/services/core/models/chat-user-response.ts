@@ -10,6 +10,16 @@ export interface ChatUserResponse {
   admin?: boolean;
 
   /**
+   * The user email
+   */
+  email?: string;
+
+  /**
+   * The user firstname
+   */
+  firstname?: string;
+
+  /**
    * The user fullname
    */
   fullname?: string;
@@ -23,5 +33,10 @@ export interface ChatUserResponse {
    * The user profile image reference
    */
   imageFileReference?: string;
+
+  /**
+   * The user lastname
+   */
+  lastname?: string;
   online?: boolean;
 }
