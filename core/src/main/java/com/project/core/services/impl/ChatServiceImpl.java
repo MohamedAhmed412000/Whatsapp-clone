@@ -24,6 +24,7 @@ import com.project.core.repositories.ChatUserRepository;
 import com.project.core.services.ChatService;
 import lombok.RequiredArgsConstructor;
 
+import org.bson.Document;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -77,6 +78,12 @@ public class ChatServiceImpl implements ChatService {
                     unreadMessageCount, chatWithUser.getLastSeen());
             })
             .toList();
+    }
+
+    @Override
+    public List<String> getSingleChatsUsers() {
+        String myUserId = getUserId();
+        return getSingleChatsUserIds(myUserId);
     }
 
     @Transactional
@@ -217,6 +224,26 @@ public class ChatServiceImpl implements ChatService {
         return SecurityContextHolder.getContext()
             .getAuthentication()
             .getPrincipal().toString();
+    }
+
+    private List<String> getSingleChatsUserIds(String senderId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("is_group_chat").is(false)
+                .and("user_ids").is(senderId)),
+            Aggregation.unwind("user_ids"),
+            Aggregation.match(Criteria.where("user_ids").ne(senderId)),
+            Aggregation.group().addToSet("user_ids").as("unique_user_ids"),
+            Aggregation.project().and("unique_user_ids").as("user_ids")
+                .andExclude("_id")
+        );
+
+        AggregationResults<Document> results =
+            mongoTemplate.aggregate(aggregation, "chat", Document.class);
+        if (!results.getMappedResults().isEmpty()) {
+            Document resultDoc = results.getMappedResults().get(0);
+            return (List<String>) resultDoc.get("user_ids");
+        }
+        return List.of();
     }
 
     private List<ChatWithUser> findChatsBySenderId(String senderId, String chatId) {

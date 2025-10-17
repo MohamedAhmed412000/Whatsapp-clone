@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.project.core.grpc";
+option java_outer_classname = "CoreManageProto";
+
+package core;
+
+service CoreManage {
+  rpc getChatsUserIds(ChatsUserIdsResource) returns (ChatsUserIdsResponse) {}
+}
+
+// Get Chats User Ids File
+message ChatsUserIdsResource {
+  string userId = 1;
+}
+message ChatsUserIdsResponse {
+  repeated string userId = 1;
+}

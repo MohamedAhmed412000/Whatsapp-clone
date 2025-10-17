@@ -40,6 +40,7 @@ services:
     image: mohamedahmed412000/whatsapp-clone/core-server:v1.0
     ports:
       - "8091:8080"   # REST PORT
+      - "9091:9091"   # GRPC PORT
     extends:
       file: common-services.yml
       service: cache-deploy-base
@@ -118,12 +119,15 @@ services:
       file: common-services.yml
       service: mongo-db-deploy-base
     depends_on:
+      core-ms:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "core-ws"
       SPRING_RABBITMQ_HOST: "rabbitmq"
       EUREKA_INSTANCE_HOSTNAME: "web-socket-ms"
+      CORE_SERVICE_GRPC_HOST: "core-ms"
 
   gateway-ms:
     container_name: gateway-ms

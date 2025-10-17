@@ -190,54 +190,95 @@ export class AppComponent implements OnInit {
   }
 
   private initWebSocket() {
-    if (this.keycloakService.keycloak.tokenParsed?.sub) {
-      let ws = new SockJS(environment.WEB_SOCKET_URL);
+    const userId = this.keycloakService.keycloak.tokenParsed?.sub;
+    const token = this.keycloakService.keycloak.token;
+
+    if (userId) {
+      const ws = new SockJS(environment.WEB_SOCKET_URL);
+      const subUrl = `/topic/chat.${userId}`;
+      const userStatusUrl = `/app/user-status`;
+
       this.socketClient = Stomp.over(() => ws);
       this.socketClient.reconnectDelay = 5000;
       this.socketClient.debug = () => false;
-      const subUrl = `/topic/chat.${this.keycloakService.keycloak.tokenParsed?.sub}`;
-      this.socketClient.connect({'Authorization': `Bearer ${this.keycloakService.keycloak.token}`},
+      this.socketClient.connect(
+        { Authorization: `Bearer ${token}` },
         () => {
           console.log("Connected to WebSocket");
+
+          // Notify backend that user is online
+          this.socketClient.send(userStatusUrl, {}, JSON.stringify({
+            userId: userId,
+            status: 'CONNECTED'
+          }));
+
           this.notificationSubscription = this.socketClient.subscribe(subUrl, (message: Message) => {
             const notification: Notification = JSON.parse(message.body);
             this.handleNotification(notification);
-          }, () => console.error('Error while connecting to WebSocket'));
+          });
+
+          window.addEventListener('beforeunload', () =>
+            this.disconnectWebSocket(userStatusUrl, userId));
+        },
+        () => {
+          console.error("WebSocket connection failed");
         }
       );
     }
   }
 
+  private disconnectWebSocket(userStatusUrl: string, userId: string) {
+    if (this.socketClient && this.socketClient.connected) {
+      this.socketClient.send(userStatusUrl, {}, JSON.stringify({
+        userId: userId,
+        status: 'DISCONNECTED'
+      }));
+
+      this.socketClient.disconnect(() => {
+        console.log("Disconnected from WebSocket");
+      });
+    }
+  }
+
   private handleNotification(notification: Notification) {
     if (!notification) return;
-    if (this.selectedChat && this.selectedChat.id === notification.chatId) {
-      switch (notification.notificationType) {
-        case 'MESSAGE':
-        case 'MEDIA':
-          const message: MessageResponse = {
-            id: Number(notification.id),
-            senderId: notification.senderId,
-            content: notification.content,
-            type: notification.messageType,
-            mediaListReferences: notification.mediaReferencesList,
-            createdAt: new Date().toISOString()
-          };
-          if (notification.notificationType === 'MEDIA') {
-            this.selectedChat.lastMessage = 'Attachment';
-          } else {
-            this.selectedChat.lastMessage = message.content;
-          }
-          this.onMessageCreated(message);
-          break;
-        case 'SEEN':
-          if (!this.selectedChat.isGroupChat) {
-            Object.keys(this.chatMessages!).forEach(date => {
-              this.chatMessages![date].forEach(message => {
-                message.state = 'SEEN';
+    if (this.selectedChat) {
+      if (notification.chatId !== null && this.selectedChat.id === notification.chatId) {
+        switch (notification.notificationType) {
+          case 'MESSAGE':
+          case 'MEDIA':
+            const message: MessageResponse = {
+              id: Number(notification.id),
+              senderId: notification.senderId,
+              content: notification.content,
+              type: notification.messageType,
+              mediaListReferences: notification.mediaReferencesList,
+              createdAt: new Date().toISOString()
+            };
+            if (notification.notificationType === 'MEDIA') {
+              this.selectedChat.lastMessage = 'Attachment';
+            } else {
+              this.selectedChat.lastMessage = message.content;
+            }
+            this.onMessageCreated(message);
+            break;
+          case 'SEEN':
+            if (!this.selectedChat.isGroupChat) {
+              Object.keys(this.chatMessages!).forEach(date => {
+                this.chatMessages![date].forEach(message => {
+                  message.state = 'SEEN';
+                })
               })
-            })
-          }
-          break;
+            }
+            break;
+        }
+      }
+      if (this.selectedChat.receiversId!.includes(notification.senderId!) && !this.selectedChat.isGroupChat) {
+        if (notification.notificationType === 'USER_CONNECTED') {
+          this.selectedChat.isRecipientOnline = true;
+        } else if (notification.notificationType === 'USER_DISCONNECTED') {
+          this.selectedChat.isRecipientOnline = false;
+        }
       }
     } else {
       const chatIndex = this.conversationsList.conversations!.findIndex(chat =>

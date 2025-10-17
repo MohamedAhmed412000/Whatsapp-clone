@@ -1,7 +1,7 @@
 package com.project.ws.services;
 
-import com.project.ws.domain.dto.Notification;
+import java.util.Map;
 
 public interface NotificationService {
-    void handleNotification(Notification notification);
+    void handleUserStatus(Map<String,Object> messageBody);
 }

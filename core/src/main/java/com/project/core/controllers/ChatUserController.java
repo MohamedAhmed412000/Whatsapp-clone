@@ -4,6 +4,7 @@ import com.project.commons.rest.outbound.dto.ErrorBody;
 import com.project.core.rest.inbound.ChatUserUpdateResource;
 import com.project.commons.rest.outbound.BooleanResponse;
 import com.project.core.rest.outbound.ChatUserResponse;
+import com.project.core.services.ChatService;
 import com.project.core.services.ChatUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ChatUserController {
 
     private final ChatUserService chatUserService;
+    private final ChatService chatService;
 
     @Operation(
         summary = "Retrieve all chat users",
@@ -47,6 +49,21 @@ public class ChatUserController {
         @NotEmpty @PathVariable("chat-id") String chatId
     ) {
         return ResponseEntity.ok(chatUserService.getChatUsers(chatId));
+    }
+
+    @Operation(
+        summary = "Retrieve my single chats users",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Get my single chats users",
+                content = @Content(array = @ArraySchema(schema = @Schema(implementation = String.class)))
+            )
+        }
+    )
+    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getChatUsers() {
+        return ResponseEntity.ok(chatService.getSingleChatsUsers());
     }
 
     @Operation(

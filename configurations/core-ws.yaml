@@ -21,6 +21,13 @@ eureka:
     service-url:
       defaultZone: "http://localhost:8090/eureka/"
 
+core:
+  service:
+    grpc:
+      host: localhost
+      port: 9091
+      enabled: true
+
 management:
   endpoint:
     health:
