@@ -21,7 +21,7 @@ import {UserResponse} from './services/user/models/user-response';
 import {ChatsControllerService} from './services/core/services/chats-controller.service';
 import SockJS from 'sockjs-client';
 import {Message, Stomp} from '@stomp/stompjs';
-import {Notification} from './pages/main/notification';
+import {Notification} from './notification';
 import {environment} from '../environments/environment.development';
 
 @Component({
@@ -307,5 +307,12 @@ export class AppComponent implements OnInit {
         this.conversationsList.conversations!.unshift(newChat);
       }
     }
+  }
+
+  onGroupChatCreated(chat: ChatResponse) {
+    this.conversationsList.conversations?.unshift(chat);
+    this.selectedChat = chat;
+    this.conversationsList.selectedChatId = chat.id;
+    this.onChatSelected(chat);
   }
 }

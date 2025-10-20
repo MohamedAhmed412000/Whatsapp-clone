@@ -8,14 +8,11 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { ChatCreationResponse } from '../../models/chat-creation-response';
-import { GroupChatCreationResource } from '../../models/group-chat-creation-resource';
 
-export interface CreateGroupChat$Params {
-      body?: GroupChatCreationResource
+export interface GetChatUsers1$Params {
 }
 
-export function createGroupChat(http: HttpClient, rootUrl: string, params?: CreateGroupChat$Params, context?: HttpContext): Observable<StrictHttpResponse<{
+export function getChatUsers1(http: HttpClient, rootUrl: string, params?: GetChatUsers1$Params, context?: HttpContext): Observable<StrictHttpResponse<{
 'headers'?: {
 
 /**
@@ -28,11 +25,10 @@ export function createGroupChat(http: HttpClient, rootUrl: string, params?: Crea
  */
 'statusCode'?: string;
 };
-'body'?: ChatCreationResponse;
+'body'?: Array<string>;
 }>> {
-  const rb = new RequestBuilder(rootUrl, createGroupChat.PATH, 'post');
+  const rb = new RequestBuilder(rootUrl, getChatUsers1.PATH, 'get');
   if (params) {
-    rb.body(params.body, 'multipart/form-data');
   }
 
   return http.request(
@@ -53,10 +49,10 @@ export function createGroupChat(http: HttpClient, rootUrl: string, params?: Crea
        */
       'statusCode'?: string;
       };
-      'body'?: ChatCreationResponse;
+      'body'?: Array<string>;
       }>;
     })
   );
 }
 
-createGroupChat.PATH = '/api/v1/chats/group';
+getChatUsers1.PATH = '/api/v1/chats/users';

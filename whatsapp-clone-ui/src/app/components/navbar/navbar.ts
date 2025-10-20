@@ -12,6 +12,9 @@ import {NewConversation} from './new-conversation/new-conversation';
 import {OffcanvasTrackerService} from '../../utils/offCanvasStack/offcanvas-tracker.service';
 import {MediaUrlPipe} from '../../utils/media/media-url.pipe';
 import {UserResponse} from '../../services/user/models/user-response';
+import {AsyncPipe} from '@angular/common';
+import {ChatResponse} from '../../services/core/models/chat-response';
+import {NewGroupChat} from './new-conversation/new-group-chat/new-group-chat';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +24,8 @@ import {UserResponse} from '../../services/user/models/user-response';
     NgbDropdownToggle,
     NgbDropdownMenu,
     NgbDropdownItem,
-    MediaUrlPipe
+    MediaUrlPipe,
+    AsyncPipe
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
@@ -31,6 +35,7 @@ export class Navbar {
   offcanvasTracker = inject(OffcanvasTrackerService);
 
   @Output() userChatSelected = new EventEmitter<UserResponse>();
+  @Output() groupChatCreated = new EventEmitter<ChatResponse>();
 
   constructor(
     protected keycloakService: KeycloakService
@@ -52,6 +57,9 @@ export class Navbar {
     });
     (ref.componentInstance as NewConversation).userChatSelected.subscribe((user: UserResponse) => {
       this.userChatSelected.emit(user);
+    });
+    (ref.componentInstance as NewConversation).groupChatCreated.subscribe((chat: ChatResponse) => {
+      this.groupChatCreated.emit(chat);
     });
 
     this.offcanvasTracker.register(ref);

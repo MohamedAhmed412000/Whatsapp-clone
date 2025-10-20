@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, inject, OnDestroy, OnInit, Output} from '@angular/core';
 import {NgbActiveOffcanvas, NgbOffcanvas} from '@ng-bootstrap/ng-bootstrap';
 import {Toast} from '../../../../shared/toast/toast';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
@@ -8,6 +8,7 @@ import {UserResponse} from '../../../../services/user/models/user-response';
 import {ContactSelector} from './contact-selector/contact-selector';
 import {GroupChatCreator} from './group-chat-creator/group-chat-creator';
 import {OffcanvasTrackerService} from '../../../../utils/offCanvasStack/offcanvas-tracker.service';
+import {ChatResponse} from '../../../../services/core/models/chat-response';
 
 @Component({
   selector: 'app-new-group-chat',
@@ -33,6 +34,8 @@ export class NewGroupChat implements OnInit, OnDestroy {
   protected selectedUserIds: Array<string> = [];
 
   public usersResponse: Array<UserResponse> = [];
+
+  @Output() public groupChatCreated = new EventEmitter<ChatResponse>();
 
   ngOnDestroy(): void {
     this.usersResponse = [];
@@ -79,6 +82,9 @@ export class NewGroupChat implements OnInit, OnDestroy {
       position: "start",
       container: "#main",
       panelClass: "offcanvas",
+    });
+    (ref.componentInstance as GroupChatCreator).groupChatCreated.subscribe((chat: ChatResponse) => {
+      this.groupChatCreated.emit(chat);
     });
 
     ref.componentInstance.userIds = this.selectedUserIds;

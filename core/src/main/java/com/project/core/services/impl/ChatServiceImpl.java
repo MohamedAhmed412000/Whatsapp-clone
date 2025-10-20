@@ -9,7 +9,6 @@ import com.project.core.domain.enums.SystemMessageEnum;
 import com.project.core.domain.models.Chat;
 import com.project.core.domain.models.ChatUser;
 import com.project.core.domain.models.Message;
-import com.project.core.domain.models.User;
 import com.project.core.exceptions.ChatNotFoundException;
 import com.project.core.exceptions.DeleteActionNotAllowedException;
 import com.project.core.exceptions.UpdateActionNotAllowedException;
@@ -17,6 +16,7 @@ import com.project.core.exceptions.UserNotFoundException;
 import com.project.core.repositories.MessageRepository;
 import com.project.core.repositories.UserRepository;
 import com.project.core.rest.inbound.GroupChatUpdateResource;
+import com.project.core.rest.outbound.ChatCreationResponse;
 import com.project.core.rest.outbound.ChatResponse;
 import com.project.core.mappers.ChatMapper;
 import com.project.core.repositories.ChatRepository;
@@ -62,7 +62,7 @@ public class ChatServiceImpl implements ChatService {
             .map(chatWithUser -> {
                 long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat(), myUserId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
-                    unreadMessageCount, chatWithUser.getLastSeen());
+                    unreadMessageCount, chatWithUser.getUser(), chatWithUser.getLastSeen());
             })
             .toList().get(0);
     }
@@ -75,7 +75,7 @@ public class ChatServiceImpl implements ChatService {
             .map(chatWithUser -> {
                 long unreadMessageCount = getUnreadMessageCount(chatWithUser.getChat(), myUserId);
                 return chatMapper.toChatResponse(chatWithUser.getChat(), myUserId,
-                    unreadMessageCount, chatWithUser.getLastSeen());
+                    unreadMessageCount,  chatWithUser.getUser(), chatWithUser.getLastSeen());
             })
             .toList();
     }
@@ -88,8 +88,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public String createGroupChat(String chatName, String description, MultipartFile groupChatProfileFile,
-                                   List<String> receiversIds) {
+    public ChatCreationResponse createGroupChat(String chatName, String description, MultipartFile groupChatProfileFile,
+                                                List<String> receiversIds) {
         String senderId = getUserId();
         Chat chat = Chat.builder().id(UUID.randomUUID().toString()).name(chatName).isGroupChat(true)
             .isNew(true).groupChatMode(GroupChatModeEnum.NORMAL.getValue()).chatImageReference(null).build();
@@ -116,7 +116,11 @@ public class ChatServiceImpl implements ChatService {
         messageRepository.save(message);
 
         chat.setUserIds(chatUserList.stream().map(ChatUser::getUserId).toList());
-        return chatRepository.save(chat).getId();
+        chatRepository.save(chat);
+        return ChatCreationResponse.builder()
+            .id(chat.getId())
+            .chatImageReference(chat.getChatImageReference())
+            .build();
     }
 
     @Transactional
@@ -128,30 +132,19 @@ public class ChatServiceImpl implements ChatService {
             return existingChat.get().getId();
         }
 
-        Optional<User> optionalSender = userRepository.findByPublicId(senderId);
-        if (optionalSender.isEmpty()) {
-            throw new UserNotFoundException(String.format("Sender user with id [%s] not found", senderId));
-        }
+        userRepository.findByPublicId(senderId).orElseThrow(() -> new UserNotFoundException(
+            String.format("Sender user with id [%s] not found", senderId)));
 
-        boolean isSelfChat = true;
-        Optional<User> optionalReceiver = optionalSender;
         if (!senderId.equals(receiverId)) {
-            isSelfChat = false;
-            optionalReceiver = userRepository.findByPublicId(receiverId);
-            if (optionalReceiver.isEmpty()) {
-                throw new UserNotFoundException(String.format("Receiver user with id [%s] not found", receiverId));
-            }
+            userRepository.findByPublicId(receiverId).orElseThrow(() -> new UserNotFoundException(
+                String.format("Receiver user with id [%s] not found", receiverId)));
         }
 
         Chat chat = Chat.builder()
             .id(UUID.randomUUID().toString())
-            .name(senderId + '&' + optionalSender.get().getFullName() + '#' +
-                (isSelfChat? new StringBuilder(receiverId).reverse(): receiverId) + '&' +
-                optionalReceiver.get().getFullName()).isGroupChat(false)
+            .isGroupChat(false)
             .isNew(true)
-            .chatImageReference(senderId + '&' + optionalSender.get().getProfilePictureReference() + '#' +
-                (isSelfChat? new StringBuilder(receiverId).reverse(): receiverId) + '&' +
-                optionalReceiver.get().getProfilePictureReference()).build();
+            .build();
         Message message = Message.builder().id(System.currentTimeMillis()).chatId(chat.getId())
             .messageType(MessageTypeEnum.SYSTEM).senderId("SYSTEM")
             .content(MessageContent.builder().content(SystemMessageEnum.CHAT_CREATED.getContent()).build())
@@ -259,26 +252,60 @@ public class ChatServiceImpl implements ChatService {
             Aggregation.addFields()
                 .addField("otherUserId")
                 .withValue(
-                    ConditionalOperators.when(ComparisonOperators.Eq.valueOf("chatInfo.is_group_chat").equalToValue(false))
-                        .thenValueOf(
-                            ArrayOperators.ArrayElemAt.arrayOf(
-                                ArrayOperators.Filter
-                                    .filter("chatInfo.user_ids")
-                                    .as("id")
-                                    .by(
-                                        ComparisonOperators.Ne.valueOf("$$id").notEqualToValue(senderId)
-                                    )
-                            ).elementAt(0)
+                    ConditionalOperators.when(
+                        BooleanOperators.And.and(
+                            ComparisonOperators.valueOf("chatInfo.is_group_chat").equalToValue(false),
+                            ComparisonOperators.Gt.valueOf(ArrayOperators.Size
+                                .lengthOfArray("chatInfo.user_ids")).greaterThanValue(1)
                         )
-                        .otherwise(ConvertOperators.ToDate.toDate(
-                            LiteralOperators.Literal.asLiteral("2000-01-04T12:00:00Z")))
+                    ).thenValueOf(
+                        ArrayOperators.ArrayElemAt.arrayOf(
+                            ArrayOperators.Filter
+                                .filter("chatInfo.user_ids")
+                                .as("id")
+                                .by(
+                                    ComparisonOperators.Ne.valueOf("$$id").notEqualToValue(senderId)
+                                )
+                        ).elementAt(0)
+                    ).otherwise(senderId)
                 ).build(),
 
             Aggregation.lookup("user", "otherUserId", "_id", "otherUserInfo"),
             Aggregation.unwind("otherUserInfo", true),
 
+            Aggregation.lookup()
+                .from("contact")
+                .let(VariableOperators.Let.ExpressionVariable.newVariable("otherUserId")
+                    .forField("$otherUserId"))
+                .pipeline(
+                    Aggregation.match(
+                        Criteria.expr(
+                            BooleanOperators.And.and(
+                                ComparisonOperators.Eq.valueOf("$owner_id").equalToValue(senderId),
+                                ComparisonOperators.Eq.valueOf("$user_id")
+                                    .equalTo("$$otherUserId")
+                            )
+                        )
+                    )
+                )
+                .as("contactInfo"),
+            Aggregation.unwind("contactInfo", true),
+
+            Aggregation.addFields()
+                .addField("otherUserInfo.first_name").withValue(
+                    ConditionalOperators.ifNull("$contactInfo.first_name")
+                        .then("$otherUserInfo.first_name")
+                )
+                .addField("otherUserInfo.last_name")
+                .withValue(
+                    ConditionalOperators.ifNull("$contactInfo.last_name")
+                        .then("$otherUserInfo.last_name")
+                )
+                .build(),
+
             Aggregation.project()
                 .and("chatInfo").as("chat")
+                .and("otherUserInfo").as("user")
                 .and(
                     ConditionalOperators
                         .when(ComparisonOperators.Eq.valueOf("chatInfo.is_group_chat").equalToValue(false))

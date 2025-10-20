@@ -5,6 +5,7 @@ import com.project.commons.rest.outbound.BooleanResponse;
 import com.project.commons.rest.outbound.StringResponse;
 import com.project.core.rest.inbound.GroupChatCreationResource;
 import com.project.core.rest.inbound.GroupChatUpdateResource;
+import com.project.core.rest.outbound.ChatCreationResponse;
 import com.project.core.rest.outbound.ChatResponse;
 import com.project.core.services.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,7 +64,7 @@ public class ChatController {
             @ApiResponse(
                 responseCode = "200",
                 description = "Chat created successfully",
-                content = @Content(schema = @Schema(implementation = StringResponse.class))
+                content = @Content(schema = @Schema(implementation = ChatCreationResponse.class))
             ),
             @ApiResponse(
                 responseCode = "500",
@@ -74,12 +75,12 @@ public class ChatController {
     )
     @PostMapping(value = "/group", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StringResponse> createGroupChat(
+    public ResponseEntity<ChatCreationResponse> createGroupChat(
         @Valid @ModelAttribute GroupChatCreationResource resource
     ) {
-        final String chatId = chatService.createGroupChat(resource.getName(), resource.getDescription(),
-            resource.getFile(), resource.getReceiversIds());
-        return ResponseEntity.ok(new StringResponse(chatId));
+        final ChatCreationResponse response = chatService.createGroupChat(resource.getName(),
+            resource.getDescription(), resource.getFile(), resource.getReceiversIds());
+        return ResponseEntity.ok(response);
     }
 
     @Operation(

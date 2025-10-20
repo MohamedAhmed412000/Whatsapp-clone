@@ -2,12 +2,14 @@ import {Component, EventEmitter, input, Output} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {MediaUrlPipe} from '../../../../utils/media/media-url.pipe';
 import {UserResponse} from '../../../../services/user/models/user-response';
+import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-conversation-selector',
   imports: [
     FaIconComponent,
-    MediaUrlPipe
+    MediaUrlPipe,
+    AsyncPipe
   ],
   templateUrl: './conversation-selector.html',
   styleUrl: './conversation-selector.scss'

@@ -12,6 +12,7 @@ import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
 import { BooleanResponse } from '../models/boolean-response';
+import { ChatCreationResponse } from '../models/chat-creation-response';
 import { ChatResponse } from '../models/chat-response';
 import { createChat } from '../fn/chats-controller/create-chat';
 import { CreateChat$Params } from '../fn/chats-controller/create-chat';
@@ -241,7 +242,7 @@ export class ChatsControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: StringResponse;
+'body'?: ChatCreationResponse;
 }>> {
     return createGroupChat(this.http, this.rootUrl, params, context);
   }
@@ -269,7 +270,7 @@ export class ChatsControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: StringResponse;
+'body'?: ChatCreationResponse;
 }> {
     return this.createGroupChat$Response(params, context).pipe(
       map((r: StrictHttpResponse<{
@@ -285,7 +286,7 @@ export class ChatsControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: StringResponse;
+'body'?: ChatCreationResponse;
 }>): {
 'headers'?: {
 
@@ -299,7 +300,7 @@ export class ChatsControllerService extends BaseService {
  */
 'statusCode'?: string;
 };
-'body'?: StringResponse;
+'body'?: ChatCreationResponse;
 } => r.body)
     );
   }

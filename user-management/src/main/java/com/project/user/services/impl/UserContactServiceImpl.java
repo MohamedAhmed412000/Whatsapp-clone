@@ -1,12 +1,10 @@
 package com.project.user.services.impl;
 
 import com.project.user.domain.dto.UserWithFullName;
-import com.project.user.domain.models.Chat;
 import com.project.user.domain.models.Contact;
 import com.project.user.domain.models.User;
 import com.project.user.exceptions.*;
 import com.project.user.mappers.UserMapper;
-import com.project.user.repositories.ChatRepository;
 import com.project.user.repositories.UserContactRepository;
 import com.project.user.repositories.UserRepository;
 import com.project.user.rest.inbound.UserContactCreationResource;
@@ -19,7 +17,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +31,6 @@ public class UserContactServiceImpl implements UserContactService {
     private final MongoTemplate mongoTemplate;
     private final UserContactRepository userContactRepository;
     private final UserRepository userRepository;
-    private final ChatRepository chatRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -80,22 +76,10 @@ public class UserContactServiceImpl implements UserContactService {
             contact.setFirstname(resource.getFirstname());
             contact.setLastname(resource.getLastname());
             userContactRepository.save(contact);
-            updateChat(userId, contact.getFullName());
             return true;
         } catch (ContactNotFoundException e) {
             return false;
         }
-    }
-
-    private void updateChat(String userId, String newChatUserFullName) {
-        String myUserId = getUserId();
-        Chat chat = chatRepository.findChatsBySenderIdAndReceiverId(userId, myUserId)
-            .orElseThrow(() -> new ChatNotFoundException("Chat not found for ids: [" + userId + ", " + myUserId + "]"));
-        String newName = chat.updateChatName(userId, newChatUserFullName);
-        mongoTemplate.update(Chat.class)
-            .matching(where("_id").is(chat.getId()))
-            .apply(new Update().set("name", newName))
-            .first();
     }
 
     @Override

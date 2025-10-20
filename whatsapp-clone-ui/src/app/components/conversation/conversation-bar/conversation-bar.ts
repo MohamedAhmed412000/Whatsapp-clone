@@ -6,12 +6,14 @@ import {KeycloakService} from '../../../utils/keycloak/keycloak.service';
 import {ChatUserResponse} from '../../../services/core/models/chat-user-response';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {EditContactModal} from './edit-contact-modal/edit-contact-modal';
+import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-conversation-bar',
   imports: [
     FaIconComponent,
-    MediaUrlPipe
+    MediaUrlPipe,
+    AsyncPipe
   ],
   templateUrl: './conversation-bar.html',
   styleUrl: './conversation-bar.scss'
@@ -77,6 +79,10 @@ export class ConversationBar {
       ?.join(', ');
   }
 
+  get me() {
+    return this.keycloakService.me;
+  }
+
   stopMainEffect(event: MouseEvent) {
     event.stopPropagation();
   }
@@ -86,6 +92,20 @@ export class ConversationBar {
       centered: true
     });
 
-    modalRef.componentInstance.chatUser = this.singleChatUser;
+    if (this.isSelfChat()) {
+      modalRef.componentInstance.chatUser = {
+        id: this.keycloakService.userId,
+        firstname: this.keycloakService.me.firstName,
+        lastname: this.keycloakService.me.lastName,
+        fullname: this.keycloakService.me.fullName,
+        email: this.keycloakService.me.email,
+        online: true,
+        imageFileReference: this.keycloakService.me.profilePictureReference,
+        admin: true
+      } as ChatUserResponse;
+    } else {
+      modalRef.componentInstance.chatUser = this.singleChatUser;
+    }
+    modalRef.componentInstance.chat = structuredClone(this.chat());
   }
 }

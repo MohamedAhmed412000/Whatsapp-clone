@@ -8,14 +8,18 @@
       <div class="text-center mb-4">
         <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center mx-auto"
              style="width: 100px; height: 100px;">
-          @if (chatUser.imageFileReference) {
-            <img
-              [src]="chatUser.imageFileReference | mediaUrl:true"
-              alt="profile-photo" class="profile-photo mb-3"
-            />
-          } @else {
-            <fa-icon [icon]="'user'" size="3x"></fa-icon>
-          }
+          <input type="file" id="groupIconInput" accept="image/*" hidden (change)="onFileSelected($event)">
+          <label for="groupIconInput"
+                 class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-0 overflow-hidden"
+                 style="width: 100px; height: 100px; cursor: pointer;">
+            @if (previewUrl) {
+              <img [src]="previewUrl" alt="profile-photo" class="w-100 h-100 object-fit-cover" />
+            } @else if (!chatUser.imageFileReference) {
+              <fa-icon [icon]="'user'" size="3x"></fa-icon>
+            } @else {
+              <img [src]="chatUser.imageFileReference | mediaUrl: true | async" alt="profile-photo" class="w-100 h-100 object-fit-cover" />
+            }
+          </label>
         </div>
       </div>
 

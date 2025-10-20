@@ -1,9 +1,11 @@
-import {Component, inject, Input} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbActiveOffcanvas} from '@ng-bootstrap/ng-bootstrap';
 import {ChatsControllerService} from '../../../../../services/core/services';
 import {OffcanvasTrackerService} from '../../../../../utils/offCanvasStack/offcanvas-tracker.service';
+import {ChatResponse} from '../../../../../services/core/models/chat-response';
+import {KeycloakService} from '../../../../../utils/keycloak/keycloak.service';
 
 @Component({
   selector: 'app-group-chat-creator',
@@ -19,13 +21,19 @@ export class GroupChatCreator {
   @Input() userIds!: string[];
   @Input() totalContacts!: number;
 
+  @Output() public groupChatCreated = new EventEmitter<ChatResponse>();
+
   protected groupName: string = '';
   protected previewUrl: string | ArrayBuffer | null = null;
   protected selectedFile: File | null = null;
 
   private offCanvasTracker = inject(OffcanvasTrackerService);
   private activeOffCanvas = inject(NgbActiveOffcanvas);
-  private chatService = inject(ChatsControllerService);
+
+  constructor(
+    private keycloakService: KeycloakService,
+    private chatService: ChatsControllerService
+  ) {}
 
   onCloseNav(): void {
     this.activeOffCanvas.close();
@@ -58,7 +66,18 @@ export class GroupChatCreator {
       }
     }).subscribe({
       next: res => {
-        console.log(res!.body!.content);
+        const groupChatResponse = {
+          id: res.body?.id,
+          name: this.groupName,
+          isGroupChat: true,
+          senderId: this.keycloakService.userId,
+          receiversId: this.userIds,
+          lastMessage: 'Chat created',
+          lastMessageTime: new Date().toISOString(),
+          chatImageReference: res.body?.chatImageReference,
+          unreadCount: 0,
+        } as ChatResponse;
+        this.groupChatCreated.emit(groupChatResponse);
       },
       error: err => {
         console.log(err);

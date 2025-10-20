@@ -2,7 +2,7 @@
 <div [class]="['conversation-item', 'd-flex', 'align-items-center', 'px-3', 'py-2', isSelected()? 'selected': '']">
   <div class="avatar">
     @if (conversation().chatImageReference != null) {
-      <img [src]="conversation().chatImageReference! | mediaUrl" alt="user-avatar"
+      <img [src]="conversation().chatImageReference! | mediaUrl: true | async" alt="user-avatar"
         class="rounded-circle" style="width: 50px; height: 50px"/>
     } @else {
       <div>
@@ -15,7 +15,7 @@
   <div class="flex-grow-1 ms-3 overflow-hidden">
     <div class="d-flex justify-content-between align-items-center">
       <div class="conversation-title text-truncate fs-4">
-        {{ conversation().name }}
+        {{ conversation().name }} @if (isSelfChat()) {(You)}
       </div>
       <div class="conversation-time ms-2 fs-6">
         {{ conversation().lastMessageTime | relativeDate }}

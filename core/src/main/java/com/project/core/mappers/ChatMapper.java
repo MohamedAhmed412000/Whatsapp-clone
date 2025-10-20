@@ -1,6 +1,7 @@
 package com.project.core.mappers;
 
 import com.project.core.domain.models.Chat;
+import com.project.core.domain.models.User;
 import com.project.core.rest.outbound.ChatResponse;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,14 @@ import static com.project.core.constants.Application.LAST_ACTIVE_INTERVAL_IN_MIN
 public class ChatMapper {
 
     public ChatResponse toChatResponse(Chat chat, String senderId, long unreadMessageCount,
-                                       LocalDateTime lastSeen) {
+                                       User user, LocalDateTime lastSeen) {
         return ChatResponse.builder()
             .id(chat.getId())
-            .name(chat.getChatName(senderId))
-            .description(chat.getDescription())
+            .name(chat.isGroupChat()? chat.getChatName(senderId): user.getFullName())
+            .description(chat.isGroupChat()? chat.getDescription(): user.getDescription())
             .isGroupChat(chat.isGroupChat())
-            .chatImageReference(chat.getChatImageReference(senderId))
+            .chatImageReference(chat.isGroupChat()? chat.getChatImageReference(senderId):
+                user.getProfilePictureReference())
             .unreadCount(unreadMessageCount)
             .isRecipientOnline(isSelfChat(chat, senderId) || isOnlineUser(lastSeen))
             .lastMessage(chat.getLastMessage())

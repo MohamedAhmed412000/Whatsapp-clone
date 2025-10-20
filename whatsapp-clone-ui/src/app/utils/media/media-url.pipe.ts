@@ -1,7 +1,7 @@
 import {environment} from '../../../environments/environment';
 import {Pipe, PipeTransform} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {catchError, from, Observable, of, startWith, switchMap} from 'rxjs';
+import {catchError, from, of, startWith, switchMap} from 'rxjs';
 
 @Pipe({
   name: 'mediaUrl',

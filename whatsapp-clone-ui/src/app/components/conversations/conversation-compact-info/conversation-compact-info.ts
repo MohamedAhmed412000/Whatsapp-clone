@@ -6,6 +6,7 @@ import {environment} from '../../../../environments/environment';
 import {ChatResponse} from '../../../services/core/models/chat-response';
 import {RelativeChatDatePipe} from '../../../utils/relative-chat-date.pipe';
 import {MediaUrlPipe} from '../../../utils/media/media-url.pipe';
+import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-conversation-compact-info',
@@ -13,6 +14,7 @@ import {MediaUrlPipe} from '../../../utils/media/media-url.pipe';
     FaIconComponent,
     RelativeChatDatePipe,
     MediaUrlPipe,
+    AsyncPipe,
   ],
   templateUrl: './conversation-compact-info.html',
   styleUrl: './conversation-compact-info.scss'
@@ -29,5 +31,9 @@ export class ConversationCompactInfo {
     effect(() => {
         this.contact = this.keycloakService.me;
     });
+  }
+
+  isSelfChat(): boolean {
+    return this.conversation()?.receiversId!.every(userId => userId === this.keycloakService.userId);
   }
 }

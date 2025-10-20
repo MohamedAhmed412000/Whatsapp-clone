@@ -80,7 +80,10 @@ public class KeycloakUtil {
         if (firstName != null && !firstName.isEmpty()) user.setFirstName(firstName);
         if (lastName != null && !lastName.isEmpty()) user.setLastName(lastName);
         if (pictureUrlReference != null) {
-            Map<String, List<String>> attributes = new HashMap<>();
+            Map<String, List<String>> attributes = user.getAttributes();
+            if (attributes == null) {
+                attributes = new HashMap<>();
+            }
             attributes.put("imageUrl", Collections.singletonList(pictureUrlReference));
             user.setAttributes(attributes);
         }

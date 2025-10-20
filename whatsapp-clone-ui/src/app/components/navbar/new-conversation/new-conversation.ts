@@ -11,6 +11,7 @@ import {NewContactModal} from './new-contact-modal/new-contact-modal';
 import {NgbActiveOffcanvas, NgbModal, NgbOffcanvas} from '@ng-bootstrap/ng-bootstrap';
 import {OffcanvasTrackerService} from '../../../utils/offCanvasStack/offcanvas-tracker.service';
 import {Toast} from '../../../shared/toast/toast';
+import {ChatResponse} from '../../../services/core/models/chat-response';
 
 @Component({
   selector: 'app-new-conversation',
@@ -40,6 +41,7 @@ export class NewConversation implements OnInit, OnDestroy {
   public usersResponses: Array<UserResponse> = [];
 
   @Output() public userChatSelected = new EventEmitter<UserResponse>();
+  @Output() public groupChatCreated = new EventEmitter<ChatResponse>();
 
   ngOnDestroy(): void {
     this.usersResponses = [];
@@ -86,6 +88,9 @@ export class NewConversation implements OnInit, OnDestroy {
       position: "start",
       container: "#main",
       panelClass: "offcanvas",
+    });
+    (ref.componentInstance as NewGroupChat).groupChatCreated.subscribe((chat: ChatResponse) => {
+      this.groupChatCreated.emit(chat);
     });
 
     this.offcanvasTracker.register(ref);

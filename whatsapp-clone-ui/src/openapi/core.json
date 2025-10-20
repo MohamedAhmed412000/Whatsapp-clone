@@ -392,7 +392,7 @@
                       }
                     },
                     "body": {
-                      "$ref": "#/components/schemas/StringResponse"
+                      "$ref": "#/components/schemas/ChatCreationResponse"
                     }
                   }
                 }
@@ -1185,6 +1185,50 @@
           }
         }
       }
+    },
+    "/api/v1/chats/users": {
+      "get": {
+        "tags": [
+          "Chat Users Controller"
+        ],
+        "summary": "Retrieve my single chats users",
+        "operationId": "getChatUsers_1",
+        "responses": {
+          "200": {
+            "description": "Get my single chats users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1287,6 +1331,21 @@
           "content": {
             "type": "string",
             "description": "Response string content"
+          }
+        }
+      },
+      "ChatCreationResponse": {
+        "type": "object",
+        "description": "Schema to hold the chat creation response",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The chat id",
+            "example": "c88438c5-260b-4e70-811a-0ceaead085e5"
+          },
+          "chatImageReference": {
+            "type": "string",
+            "description": "The chat profile image reference"
           }
         }
       },
