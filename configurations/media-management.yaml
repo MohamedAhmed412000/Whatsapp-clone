@@ -37,6 +37,9 @@ eureka:
     service-url:
       defaultZone: "http://localhost:8090/eureka/"
 
+keycloak:
+  server-url: http://localhost:9090
+
 management:
   endpoint:
     health:

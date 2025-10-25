@@ -206,7 +206,7 @@ export class AppComponent implements OnInit {
         () => {
           console.log("Connected to WebSocket");
 
-          // Notify backend that user is online
+          // Notify backend that the user is online
           this.socketClient.send(userStatusUrl, {}, JSON.stringify({
             userId: userId,
             status: 'CONNECTED'

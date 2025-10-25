@@ -1,0 +1,231 @@
+body {
+    background: #272b2b;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.background {
+    height: 35vh;
+    background: #00A884;
+}
+
+.logo {
+    position: absolute;
+    top: 3.5%;
+    left: 12vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    position: relative;
+    height: 7.5vh;
+}
+
+.logo-text {
+    position: relative;
+    margin-left: 1vw;
+    font-weight: bold;
+    font-size: 1.3em;
+    color: #f6f6f6;
+}
+
+.whatsapp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    height: 65vh;
+    width: 70vw;
+    background: #202C33;
+    padding: 3rem;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+h3 {
+    color: #AEBAC1;
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-size: 1.3em;
+    font-weight: calc(540);
+}
+
+h2 {
+    color: #AEBAC1;
+    margin-bottom: 0;
+    font-weight: calc(540);
+}
+
+p {
+    color: #657580;
+    margin-bottom: 50px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.password-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-group input {
+    margin-left: 20px;
+}
+
+.toggle-password {
+    position: relative;
+    top: 50%;
+    right: 30px;
+    transform: translateY(2px);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 30vw;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.hidden { display: none; }
+
+.profile-image {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    margin: -15px auto 25px auto;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.back-btn {
+    background: #ddd;
+    color: #333;
+    margin-top: 10px;
+}
+
+.back-btn:hover {
+    background: #8696A0;
+}
+
+.remember-me {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px 27.5% 0;
+    font-size: 0.95rem;
+    color: #AEBAC1;
+}
+
+.remember-me input[type="checkbox"] {
+    transform: scale(1.25);
+    margin: 8px;
+    accent-color: #00A884;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.4s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.message.success {
+    background-color: #e7f8ed;
+    border: 1px solid #1fa855;
+    color: #1b8f4a;
+}
+
+.message.warning {
+    background-color: #fff8e1;
+    border: 1px solid #ffcc80;
+    color: #a66b00;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.message.error {
+    background-color: #fdeaea;
+    border: 1px solid #e64a19;
+    color: #c62828;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+button {
+    margin-top: 40px;
+    background: #00A884;
+    color: #D9DEE0;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: fit-content;
+}
+
+button:hover {
+    background: #015C4B;
+}
+
+.separator {
+    margin-top: 30px;
+    border: none;
+    border-top: 2px solid #657580;
+    width: 50vw;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.links a {
+    margin: 0 10px;
+    color: #128c7e;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}

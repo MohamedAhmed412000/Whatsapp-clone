@@ -46,10 +46,11 @@ export class KeycloakService {
         this.authModalRef.close();
       }
     } else {
-      this.authModalRef = this.modalService.open(AuthModal, {
-        centered: true,
-        backdrop: 'static',
-      });
+      // this.authModalRef = this.modalService.open(AuthModal, {
+      //   centered: true,
+      //   backdrop: 'static',
+      // });
+      this.keycloak.login();
     }
   }
 
