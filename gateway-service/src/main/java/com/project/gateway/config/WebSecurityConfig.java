@@ -30,11 +30,12 @@ public class WebSecurityConfig {
         http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchange -> exchange
+                .pathMatchers(HttpMethod.HEAD, "/media/api/v1/media/**").permitAll()
+                .pathMatchers(HttpMethod.GET, "/media/api/v1/media/**").permitAll()
                 .pathMatchers(getSwaggerPaths()).permitAll()
-                .pathMatchers("/core/actuator/**", "/media/actuator/**").permitAll()
+                .pathMatchers("/*/actuator/**").permitAll()
                 .pathMatchers("/ws/**", "/ws").permitAll()
-                .pathMatchers("/configuration/ui", "/configuration/security").permitAll()
-                .anyExchange().permitAll()
+                .anyExchange().authenticated()
             )
             .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                 oAuth2ResourceServerSpec.jwt(jwt -> jwt.jwtAuthenticationConverter(
@@ -78,7 +79,30 @@ public class WebSecurityConfig {
     }
 
     private String[] getSwaggerPaths() {
-        return List.of("/v3/api-docs", "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**",
-            "/swagger-ui/**", "/webjars/**", "/swagger-ui.html").toArray(String[]::new);
+        return List.of(
+            "/",
+
+            // Docs endpoints
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/*/v3/api-docs",
+            "/*/v3/api-docs/**",
+
+            // Swagger resources
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/*/swagger-resources",
+            "/*/swagger-resources/**",
+
+            // Swagger UI
+            "/swagger-ui/**",
+            "/*/swagger-ui/**",
+            "/swagger-ui.html",
+            "/*/swagger-ui.html",
+
+            // WebJars (JS/CSS assets)
+            "/webjars/**",
+            "/*/webjars/**"
+        ).toArray(String[]::new);
     }
 }

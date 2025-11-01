@@ -100,8 +100,8 @@ public class RequestAuthHeadersFilter implements GlobalFilter {
     }
 
     private boolean checkMediaViewUrl(HttpMethod method, String path) {
-        return (HttpMethod.GET.equals(method) || HttpMethod.HEAD.equals(method)) &&
-            path.startsWith("/api/v1/media/");
+        return (HttpMethod.GET.equals(method) || HttpMethod.HEAD.equals(method) ||
+            HttpMethod.OPTIONS.equals(method)) && path.startsWith("/api/v1/media/");
     }
 
 }

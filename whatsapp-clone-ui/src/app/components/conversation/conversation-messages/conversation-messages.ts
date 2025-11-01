@@ -50,6 +50,10 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
   @ViewChild('scrollableDiv', { static: false }) private scrollableDiv?: ElementRef<HTMLDivElement>;
 
   protected repliedMessage: MessageResponse | undefined;
+  protected playingMessageId: number | undefined;
+  protected audioProgressMap = new Map<number, number>();
+  protected durationMap = new Map<number, number>();
+  private animationFrame?: number;
 
   @Output() chatUserSelected = new EventEmitter<ChatUserResponse>();
   @Output() repliedMessageEvent = new EventEmitter<MessageResponse>();
@@ -82,6 +86,13 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
     if (this.scrollableDiv) {
       // console.log("Scroll to bottom");
       this.scrollToBottom();
+    }
+
+    const messages = Object.values(this.chatMessages() ?? {}).flat();
+    for (const msg of messages) {
+      if (msg.type === 'AUDIO') {
+        this.registerAudioMetadataListener(msg);
+      }
     }
   }
 
@@ -132,7 +143,8 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
 
   getChatUserFullName(userId: string): string {
     if (userId === this.keycloakService.userId) return "You";
-    return this.chatUsersMap().get(userId)?.fullname!;
+    const chatUser = this.chatUsersMap().get(userId);
+    return `${chatUser?.firstname} ${chatUser?.lastname}`;
   }
 
   isSelfMessage(message: MessageResponse) {
@@ -195,5 +207,95 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
         setTimeout(() => targetElement.classList.remove('highlight-message'), 800);
       }
     }, 0);
+  }
+
+  togglePlay(message: MessageResponse) {
+    const audio = document.querySelector(`#audio-${message.id}`) as HTMLAudioElement;
+    if (!audio) return;
+
+    if (this.playingMessageId === message.id) {
+      audio.pause();
+      this.playingMessageId = undefined;
+      cancelAnimationFrame(this.animationFrame!);
+      return;
+    }
+
+    if (this.playingMessageId && this.playingMessageId !== message.id) {
+      const prev = document.querySelector(`#audio-${this.playingMessageId}`) as HTMLAudioElement;
+      if (prev) prev.pause();
+    }
+    this.playingMessageId = message.id;
+    this.updateDuration(message, audio);
+
+    audio.play();
+    const update = () => {
+      if (!this.playingMessageId || audio.paused) return;
+      const progress = audio.currentTime / audio.duration;
+      this.audioProgressMap.set(message.id!, progress);
+      const remaining = Math.max(0, Math.floor(audio.duration - audio.currentTime));
+      this.durationMap.set(message.id!, remaining);
+      this.animationFrame = requestAnimationFrame(update);
+    };
+    update();
+
+    audio.onended = () => {
+      this.playingMessageId = undefined;
+      this.audioProgressMap.set(message.id!, 0);
+      const totalDuration = Math.floor(audio.duration);
+      this.durationMap.set(message.id!, totalDuration);
+      cancelAnimationFrame(this.animationFrame!);
+    };
+  }
+
+  registerAudioMetadataListener(message: MessageResponse) {
+    if (message.type === 'AUDIO') {
+      const audio = document.querySelector(`#audio-${message.id}`) as HTMLAudioElement;
+      if (!audio) return;
+      if ((audio as any)._durationBound) return;
+      (audio as any)._durationBound = true;
+
+      audio.addEventListener('loadedmetadata', () => {
+        const totalDuration = Math.floor(audio.duration);
+        this.durationMap.set(message.id!, totalDuration);
+      });
+    }
+  }
+
+  isPlaying(message: any) {
+    return this.playingMessageId === message.id;
+  }
+
+  getRemainingDuration(message: MessageResponse): string {
+    const sec = this.durationMap.get(message.id!) ?? 0;
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${s < 10 ? '0' + s : s}`;
+  }
+
+  getProgress(message: MessageResponse): number {
+    return this.audioProgressMap.get(message.id!) ?? 0;
+  }
+
+  updateDuration(message: MessageResponse, audio: HTMLAudioElement) {
+    if (isNaN(audio.duration)) {
+      audio.onloadedmetadata = () => {
+        this.durationMap.set(message.id!, Math.floor(audio.duration));
+      };
+    } else {
+      this.durationMap.set(message.id!, Math.floor(audio.duration));
+    }
+  }
+
+  onSeek(event: MouseEvent, message: MessageResponse) {
+    const audio = document.querySelector(`#audio-${message.id}`) as HTMLAudioElement;
+    if (!audio || isNaN(audio.duration)) return;
+
+    const waveform = event.currentTarget as HTMLElement;
+    const rect = waveform.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const progress = Math.min(Math.max(x / rect.width, 0), 1);
+
+    audio.currentTime = progress * audio.duration;
+    this.audioProgressMap.set(message.id!, progress);
   }
 }

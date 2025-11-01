@@ -112,7 +112,8 @@ public class MessageServiceImpl implements MessageService {
         Notification notification = Notification.builder()
             .id(message.getId().toString())
             .chatId(chat.getId())
-            .chatName(chat.getChatName(senderId))
+            .chatName(chat.isGroupChat()? chat.getChatName(senderId):
+                SecurityContextHolder.getContext().getAuthentication().getDetails().toString())
             .senderId(senderId)
             .messageType(message.getMessageType())
             .build();

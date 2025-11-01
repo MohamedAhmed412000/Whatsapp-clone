@@ -15,8 +15,7 @@ import com.project.core.services.ChatUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -151,14 +150,27 @@ public class ChatUserServiceImpl implements ChatUserService {
             Aggregation.lookup("user", "user_id", "_id", "userInfo"),
             Aggregation.unwind("userInfo"),
 
-            Aggregation.lookup("contact", "user_id", "user_id", "userContact"),
-            Aggregation.unwind("userContact"),
-            Aggregation.match(Criteria.where("userContact.owner_id").is(myUserId)),
+            Aggregation.lookup()
+                .from("contact")
+                .let(VariableOperators.Let.ExpressionVariable.newVariable("userId")
+                    .forField("$user_id"))
+                .pipeline(Aggregation.match(Criteria.expr(
+                    BooleanOperators.And.and(
+                        ComparisonOperators.Eq.valueOf("$user_id").equalTo("$$userId"),
+                        ComparisonOperators.Eq.valueOf("$owner_id").equalToValue(myUserId)
+                    )
+                )))
+                .as("userContact"),
+            Aggregation.unwind("userContact", true),
 
             Aggregation.project()
                 .and("userInfo").as("user")
-                .and("userContact.first_name").as("firstName")
-                .and("userContact.last_name").as("lastName")
+                .and(ConditionalOperators.ifNull("userContact.first_name")
+                    .thenValueOf(ConditionalOperators.ifNull("userInfo.first_name").then("")))
+                    .as("firstName")
+                .and(ConditionalOperators.ifNull("userContact.last_name")
+                    .thenValueOf(ConditionalOperators.ifNull("userInfo.last_name").then("")))
+                    .as("lastName")
                 .and("role").as("role")
         );
 

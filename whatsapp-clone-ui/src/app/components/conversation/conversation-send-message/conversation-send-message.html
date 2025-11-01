@@ -22,83 +22,152 @@
       </div>
     }
     <div class="d-flex w-100 p-0 align-items-center">
-      <button class="btn btn-transparent rounded-1 px-3"
-              (click)="toggleEmojiPanel($event)">
-        <fa-icon icon="face-laugh" class="fs-3"></fa-icon>
-      </button>
-      @if (showEmojis) {
-        <div class="emojis-panel" #emojiPanel>
-          <emoji-mart [set]="'google'"
-                      title="Pick your emoji..."
-                      emoji="smile"
-                      (emojiClick)="onSelectEmojis($event)"
-          ></emoji-mart>
+      @if (!isRecording && !audioPreviewUrl) {
+        <button class="btn btn-transparent rounded-1 px-3"
+                (click)="toggleEmojiPanel($event)">
+          <fa-icon icon="face-laugh" class="fs-3"></fa-icon>
+        </button>
+        @if (showEmojis) {
+          <div class="emojis-panel" #emojiPanel>
+            <emoji-mart [set]="'google'"
+                        title="Pick your emoji..."
+                        emoji="smile"
+                        (emojiClick)="onSelectEmojis($event)"
+            ></emoji-mart>
+          </div>
+        }
+
+        <div ngbDropdown #attachment="ngbDropdown"
+             [class.btn-menu-active]="attachment._open">
+          <button class="btn btn-transparent rounded-1 px-3" ngbDropdownToggle>
+            <fa-icon icon="paperclip" class="fs-3"></fa-icon>
+          </button>
+
+          <div ngbDropdownMenu class="align-items-center py-0">
+            <button ngbDropdownItem class="p-1 px-3" (click)="mediaFile.click()">
+              <fa-icon icon="image" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Photos & videos
+            </button>
+            <input #mediaFile
+                   type="file"
+                   [hidden]="true"
+                   accept=".jpg, .jpeg, .png, .pdf, .svg, .mp4, .mov, .mp3"
+                   multiple="multiple"
+                   (change)="uploadMedia($event)"
+            >
+
+            <button ngbDropdownItem class="p-1 px-3">
+              <fa-icon icon="camera" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Camera
+            </button>
+            <button ngbDropdownItem class="p-1 px-3" (click)="documentFile.click()">
+              <fa-icon icon="file" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Document
+            </button>
+            <input #documentFile
+                   type="file"
+                   [hidden]="true"
+                   accept="*"
+                   multiple="multiple"
+                   (change)="uploadMedia($event)"
+            >
+
+            <button ngbDropdownItem class="p-1 px-3">
+              <fa-icon icon="user" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Contact
+            </button>
+            <button ngbDropdownItem class="p-1 px-3">
+              <fa-icon icon="poll-h" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Poll
+            </button>
+            <button ngbDropdownItem class="p-1 px-3">
+              <fa-icon icon="calendar" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Event
+            </button>
+            <button ngbDropdownItem class="p-1 px-3">
+              <fa-icon icon="paint-brush" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Drawing
+            </button>
+          </div>
+        </div>
+
+        <textarea #messageTextBox
+                  rows="1"
+                  class="chat-textarea flex-grow-1 mx-2 fs-5"
+                  placeholder="Type a message"
+                  [(ngModel)]="messageContent"
+                  (keydown)="keyDown($event)"
+                  (click)="onClick()"
+                  (input)="autoResize($event)"></textarea>
+
+        <button class="btn btn-transparent rounded-1 px-3">
+          @if (messageContent) {
+            <fa-icon icon="paper-plane" class="fs-3" (click)="sendMessage()"></fa-icon>
+          } @else {
+            <fa-icon [icon]="'microphone'" class="fs-3" [ngClass]="{'text-danger': isRecording}"
+                     (click)="onMicClick()"></fa-icon>
+          }
+        </button>
+      } @else {
+        <div class="w-100"></div>
+      }
+
+      @if (isRecording && !audioPreviewUrl) {
+        <div class="recording-ui d-flex align-items-center justify-content-between py-0">
+          <button class="btn btn-transparent text-danger fs-3 rounded-1 px-3 me-3"
+                  (click)="cancelRecording()">
+            <fa-icon icon="trash"></fa-icon>
+          </button>
+
+          <div class="recording-status d-flex align-items-center mx-0">
+            <div class="recording-dot"></div>
+            <span class="recording-timer">{{ recordingDisplayTime }}</span>
+            <div class="recording-wave">
+              @for (_ of dots; track $index) {
+                <span class="dot" [style.animation-delay]="($index * 0.05) + 's'"></span>
+              }
+            </div>
+          </div>
+
+          <div class="recording-actions d-flex align-items-center mx-0">
+            <button class="btn btn-transparent text-danger fs-3 rounded-1 px-3"
+                    (click)="stopRecording()">
+              <fa-icon icon="pause"></fa-icon>
+            </button>
+            <button class="btn send-btn text-success fs-3 rounded-1 px-3 mx-1"
+                    (click)="sendRecording()">
+              <fa-icon icon="paper-plane"></fa-icon>
+            </button>
+          </div>
         </div>
       }
 
-      <div ngbDropdown #attachment="ngbDropdown"
-           [class.btn-menu-active]="attachment._open">
-        <button class="btn btn-transparent rounded-1 px-3" ngbDropdownToggle>
-          <fa-icon icon="paperclip" class="fs-3"></fa-icon>
-        </button>
+      @if (audioPreviewUrl && !isRecording) {
+        <div class="recording-preview d-flex align-items-center justify-content-between w-100 py-1 px-0">
+          <button class="btn btn-transparent text-danger fs-3 rounded-1 px-3 mx-0"
+                  (click)="cancelRecording()">
+            <fa-icon icon="trash"></fa-icon>
+          </button>
 
-        <div ngbDropdownMenu class="align-items-center py-0">
-          <button ngbDropdownItem class="p-1 px-3" (click)="mediaFile.click()">
-            <fa-icon icon="image" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Photos & videos
-          </button>
-          <input #mediaFile
-                 type="file"
-                 [hidden]="true"
-                 accept=".jpg, .jpeg, .png, .pdf, .svg, .mp4, .mov, .mp3"
-                 multiple="multiple"
-                 (change)="uploadMedia($event)"
-          >
+          <div class="audio-player flex-grow-1 d-flex align-items-center px-3 mx-0">
+            <button class="btn btn-transparent text-success fs-4 px-1" (click)="togglePlay()">
+              <fa-icon [icon]="isAudioPlaying ? 'pause' : 'play'"></fa-icon>
+            </button>
 
-          <button ngbDropdownItem class="p-1 px-3">
-            <fa-icon icon="camera" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Camera
-          </button>
-          <button ngbDropdownItem class="p-1 px-3" (click)="documentFile.click()">
-            <fa-icon icon="file" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Document
-          </button>
-          <input #documentFile
-                 type="file"
-                 [hidden]="true"
-                 accept="*"
-                 multiple="multiple"
-                 (change)="uploadMedia($event)"
-          >
+            <div class="progress-container flex-grow-1 mx-2 position-relative">
+              <div class="progress-bar-bg"></div>
+              <div class="progress-bar-fill" [style.width.%]="audioProgress"></div>
+              <div class="progress-dot" [style.left.%]="audioProgress"></div>
+              <div class="dotted-line"></div>
+            </div>
 
-          <button ngbDropdownItem class="p-1 px-3">
-            <fa-icon icon="user" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Contact
+            <span class="recording-timer text-white">{{ audioDurationDisplay }}</span>
+          </div>
+
+          <button class="btn btn-transparent text-warning fs-3 rounded-1 px-3 mx-0"
+                  (click)="resumeRecording()">
+            <fa-icon icon="microphone"></fa-icon>
           </button>
-          <button ngbDropdownItem class="p-1 px-3">
-            <fa-icon icon="poll-h" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Poll
-          </button>
-          <button ngbDropdownItem class="p-1 px-3">
-            <fa-icon icon="calendar" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Event
-          </button>
-          <button ngbDropdownItem class="p-1 px-3">
-            <fa-icon icon="paint-brush" class="fs-4"></fa-icon>&nbsp;&nbsp;&nbsp;Drawing
+
+          <button class="btn send-btn text-success fs-3 rounded-1 px-3 mx-0"
+                  (click)="sendRecording()">
+            <fa-icon icon="paper-plane"></fa-icon>
           </button>
         </div>
-      </div>
-
-      <textarea #messageTextBox
-                rows="1"
-                class="chat-textarea flex-grow-1 mx-2 fs-5"
-                placeholder="Type a message"
-                [(ngModel)]="messageContent"
-                (keydown)="keyDown($event)"
-                (click)="onClick()"
-                (input)="autoResize($event)"></textarea>
-
-      <button class="btn btn-transparent rounded-1 px-3">
-        @if (messageContent) {
-          <fa-icon icon="paper-plane" class="fs-3" (click)="sendMessage()"></fa-icon>
-        } @else {
-          <fa-icon icon="microphone" class="fs-3"></fa-icon>
-        }
-      </button>
+      }
     </div>
   </div>
 }

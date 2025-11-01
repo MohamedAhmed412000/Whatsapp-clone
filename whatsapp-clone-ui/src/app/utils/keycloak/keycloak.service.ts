@@ -1,9 +1,8 @@
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import Keycloak from 'keycloak-js';
-import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {interval, switchMap} from 'rxjs';
 import {fromPromise} from 'rxjs/internal/observable/innerFrom';
-import {AuthModal} from '../../components/auth-modal/auth-modal';
 import {environment} from '../../../environments/environment';
 import {UserResponse} from '../../services/user/models/user-response';
 import {UsersControllerService} from '../../services/user/services';
@@ -12,9 +11,6 @@ import {UsersControllerService} from '../../services/user/services';
   providedIn: 'root'
 })
 export class KeycloakService {
-
-  modalService = inject(NgbModal);
-
   private _keycloak: Keycloak | undefined;
   private authModalRef: NgbModalRef | undefined;
   private user: UserResponse | undefined;
@@ -74,6 +70,10 @@ export class KeycloakService {
 
   get isAuthenticated(): boolean {
     return this.keycloak?.authenticated === true;
+  }
+
+  get token(): string {
+    return this.keycloak?.token!;
   }
 
   getMe(): void {

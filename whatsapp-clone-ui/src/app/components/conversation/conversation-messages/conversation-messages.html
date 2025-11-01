@@ -8,7 +8,8 @@
         } @else {
           <div
             [attr.id]="'message-' + message.id"
-            [class]="['message-box', isSelfMessage(message)? 'self': 'other']"
+            [class]="['message-box', isSelfMessage(message)? 'self': 'other',
+                      chat()!.isGroupChat? 'group': 'single']"
             (contextmenu)="onRightClick($event, message)"
           >
             @if (chat()!.isGroupChat && !isSelfMessage(message)) {
@@ -30,6 +31,8 @@
                   <div class="reply-content text-truncate">
                     @if (message?.repliedMessage?.messageType == "TEXT") {
                       {{ message?.repliedMessage?.content?.content }}
+                    } @else if (message?.repliedMessage?.messageType == "AUDIO") {
+                      Audio
                     } @else {
                       Attachment
                     }
@@ -58,7 +61,7 @@
                   }
                 </small>
               </div>
-            } @else {
+            } @else if (message.type === 'MEDIA') {
               @for (mediaRef of message.mediaListReferences; track mediaRef) {
                 <div class="message-media">
                   <img width="200" class="cursor-pointer" [src]="mediaRef | mediaUrl | async" alt="">
@@ -80,6 +83,40 @@
                   </small>
                 </div>
               }
+            } @else {
+              <div class="voice-message d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2 w-100">
+                  <button class="play-btn" (click)="togglePlay(message)">
+                    <fa-icon [icon]="isPlaying(message) ? 'pause' : 'play'"></fa-icon>
+                  </button>
+
+                  <div class="waveform" (click)="onSeek($event, message)">
+                    <div class="progress-dot" [style.left.%]="getProgress(message) * 100"></div>
+                  </div>
+
+                  <small class="duration">{{ getRemainingDuration(message) }}</small>
+
+                  <small class="message-date">
+                    {{ message.createdAt | date:'hh:mm a': 'local' }}
+                    @if (isSelfMessage(message)) {
+                      @if (message.state === 'SEEN' || isSelfChat()) {
+                        <span>
+                          <fa-icon icon="check" class="seen"></fa-icon>
+                          <fa-icon icon="check" class="seen ml-neg"></fa-icon>
+                        </span>
+                      } @else {
+                        <span>
+                          <fa-icon icon="check"></fa-icon>
+                        </span>
+                      }
+                    }
+                  </small>
+
+                  <audio [id]="'audio-' + message.id"
+                         [src]="message.mediaListReferences![0] | mediaUrl:true | async"
+                          preload="metadata"></audio>
+                </div>
+              </div>
             }
           </div>
         }

@@ -102,6 +102,7 @@ public class LocalMediaServiceImpl implements MediaService {
             case "jpg", "jpeg" -> MediaType.IMAGE_JPEG;
             case "gif" -> MediaType.IMAGE_GIF;
             case "mp4" -> MediaType.valueOf("video/mp4");
+            case "webm" -> MediaType.valueOf("audio/webm");
             case "pdf" -> MediaType.APPLICATION_PDF;
             case "txt" -> MediaType.TEXT_PLAIN;
             default -> MediaType.APPLICATION_OCTET_STREAM;

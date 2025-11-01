@@ -75,7 +75,7 @@ export class ConversationBar {
   get chatUsersString() {
     return this.chatUsers()
       ?.filter(chatUser => chatUser.id != this.keycloakService.userId)
-      ?.map(chatUser => chatUser.fullname)
+      ?.map(chatUser => chatUser.firstname)
       ?.join(', ');
   }
 

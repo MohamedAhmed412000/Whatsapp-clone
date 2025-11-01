@@ -23,6 +23,7 @@ import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from '
 import {ChatUserResponse} from '../../../services/core/models/chat-user-response';
 import {RepliedMessage} from '../../../services/core/models/replied-message';
 import {ColorizePipe} from '../../../utils/colorize.pipe';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-conversation-send-message',
@@ -34,7 +35,8 @@ import {ColorizePipe} from '../../../utils/colorize.pipe';
     NgbDropdownToggle,
     NgbDropdownItem,
     NgbDropdownMenu,
-    ColorizePipe
+    ColorizePipe,
+    NgClass,
   ],
   templateUrl: './conversation-send-message.html',
   styleUrl: './conversation-send-message.scss'
@@ -47,6 +49,23 @@ export class ConversationSendMessage implements OnChanges {
 
   messageContent: any = '';
   showEmojis: any = false;
+  isRecording = false;
+  mediaRecorder!: MediaRecorder;
+  recordedChunks: BlobPart[] = [];
+  recordingStartTime!: number;
+  audioBlob!: Blob;
+  audioPreviewUrl: string | null = null;
+  dots = Array(30).fill(0);
+  recordingDisplayTime = '0:00';
+  audioContext?: AudioContext;
+  isInitializingRecording = false;
+  isCancellingRecording = false;
+  timerInterval?: any;
+  audioElement?: HTMLAudioElement;
+  isAudioPlaying = false;
+  audioProgress = 0;
+  audioDurationDisplay = '0:00';
+  progressInterval?: any;
 
   @ViewChild('emojiPanel') emojiPanel!: ElementRef;
   @ViewChild('messageTextBox') messagesPanel!: ElementRef;
@@ -225,5 +244,194 @@ export class ConversationSendMessage implements OnChanges {
 
   cancelReply() {
     this.repliedMessage.set(undefined);
+  }
+
+  onMicClick() {
+    if (!this.isRecording) {
+      this.audioPreviewUrl = null;
+      this.startRecording();
+    } else {
+      this.stopRecording();
+    }
+  }
+
+  private startRecording() {
+    if (this.isRecording || this.isInitializingRecording) return;
+
+    this.isInitializingRecording = true;
+    this.isCancellingRecording = false;
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        this.audioContext = new AudioContext();
+        this.mediaRecorder = new MediaRecorder(stream);
+        this.recordedChunks = [];
+
+        this.isRecording = true;
+        this.audioPreviewUrl = null;
+        this.recordingStartTime = Date.now();
+        this.recordingDisplayTime = '0:00';
+        this.mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) this.recordedChunks.push(event.data);
+        };
+
+        this.mediaRecorder.onstop = () => {
+          clearInterval(this.timerInterval);
+          this.isRecording = false;
+          this.isInitializingRecording = false;
+
+          if (this.audioContext) this.audioContext.close().then();
+
+          if (this.audioPreviewUrl) {
+            URL.revokeObjectURL(this.audioPreviewUrl);
+            this.audioPreviewUrl = null;
+          }
+
+          if (this.isCancellingRecording) {
+            this.isCancellingRecording = false;
+            this.recordedChunks = [];
+            this.audioBlob = new Blob();
+            this.resetAudioPlayer();
+            return;
+          }
+
+          const audioBlob = new Blob(this.recordedChunks, { type: 'audio/webm' });
+          this.audioBlob = audioBlob;
+          this.audioPreviewUrl = URL.createObjectURL(audioBlob);
+        };
+
+        this.resetAudioPlayer();
+
+        this.timerInterval = setInterval(() => {
+          const elapsed = Date.now() - this.recordingStartTime;
+          this.recordingDisplayTime = this.formatTime(elapsed);
+        }, 200);
+
+        this.mediaRecorder.start();
+        this.isInitializingRecording = false;
+      })
+      .catch((err) => {
+        console.error('Error accessing microphone:', err);
+        this.isInitializingRecording = false;
+        alert('Microphone access denied.');
+      });
+  }
+
+  cancelRecording() {
+    if (this.mediaRecorder && this.isRecording) {
+      this.isCancellingRecording = true;
+      this.mediaRecorder.stop();
+    }
+    clearInterval(this.timerInterval);
+
+    if (this.audioPreviewUrl) {
+      URL.revokeObjectURL(this.audioPreviewUrl);
+      this.audioPreviewUrl = null;
+    }
+    this.resetAudioPlayer();
+
+    this.isRecording = false;
+    this.recordingDisplayTime = '0:00';
+    this.recordedChunks = [];
+    this.audioBlob = new Blob();
+  }
+
+  private resetAudioPlayer() {
+    if (this.audioElement) {
+      this.audioElement.pause();
+      this.audioElement.src = '';
+      this.audioElement.load();
+    }
+
+    this.audioElement = undefined;
+    this.isAudioPlaying = false;
+    this.audioProgress = 0;
+    this.audioDurationDisplay = '0:00';
+    clearInterval(this.progressInterval);
+  }
+
+  private formatTime(ms: number): string {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  stopRecording() {
+    if (this.mediaRecorder && this.isRecording) {
+      this.mediaRecorder.stop();
+    }
+  }
+
+  togglePlay() {
+    if (!this.audioElement) {
+      this.audioElement = new Audio(this.audioPreviewUrl!);
+      this.audioElement.addEventListener('loadedmetadata', () => {
+        this.audioDurationDisplay = this.formatTime(this.audioElement!.duration * 1000);
+      });
+
+      this.audioElement.addEventListener('ended', () => {
+        this.isAudioPlaying = false;
+        this.audioProgress = 100;
+        clearInterval(this.progressInterval);
+      });
+    }
+
+    if (this.isAudioPlaying) {
+      this.audioElement?.pause();
+      this.isAudioPlaying = false;
+      clearInterval(this.progressInterval);
+    } else {
+      this.audioElement?.play();
+      this.isAudioPlaying = true;
+      this.startProgressTracking();
+    }
+  }
+
+  startProgressTracking() {
+    clearInterval(this.progressInterval);
+    this.progressInterval = setInterval(() => {
+      if (this.audioElement && this.audioElement.duration > 0) {
+        this.audioProgress = (this.audioElement.currentTime / this.audioElement.duration) * 100;
+      }
+    }, 200);
+  }
+
+  resumeRecording() {
+    this.cancelRecording();
+    this.startRecording();
+  }
+
+  sendRecording() {
+    if (!this.audioBlob) return;
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const audioFileName = `audio_${timestamp}.webm`;
+    const audioFile = new File([this.audioBlob], audioFileName, { type: 'audio/webm' });
+
+    const messageRequest: MessageCreationResource = {
+      chatId: this.selectedChat().id as string,
+      messageType: 'AUDIO',
+      mediaFiles: [audioFile],
+      repliedMessageId: this.isReplyMessage? this.repliedMessage()?.id : undefined,
+    };
+
+    this.messageService.saveMessage({ body: messageRequest }).subscribe({
+      next: res => {
+        const response = res!.body!;
+        const message: MessageResponse = {
+          id: response.id,
+          senderId: this.keycloakService.userId as string,
+          type: "AUDIO",
+          mediaListReferences: response.mediaListReferences,
+          state: "SENT",
+          createdAt: new Date().toISOString(),
+        };
+        this.messageCreated.emit(message);
+        this.cancelRecording();
+      },
+      error: err => {
+        console.error('Audio upload failed:', err);
+      }
+    });
   }
 }

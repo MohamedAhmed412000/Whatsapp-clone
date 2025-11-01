@@ -16,7 +16,7 @@ export class MediaUrlPipe implements PipeTransform {
     }
 
     const url = `${environment.MEDIA_URL}${reference}`;
-    if (getDirect) return of(url);
+    if (getDirect) return of(this.sanitizer.bypassSecurityTrustUrl(url));
 
     return from(fetch(url, { method: 'HEAD' })).pipe(
       switchMap((response) => {
