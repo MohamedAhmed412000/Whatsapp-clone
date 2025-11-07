@@ -37,13 +37,14 @@ export class EditContactModal {
 
   updateUserContact(form: NgForm) {
     if (form.valid) {
-      const { firstName, lastName } = form.value;
+      const { firstName, lastName, description } = form.value;
 
       if (this.isSelfChat()) {
         this.userService.updateUser({
           body: {
             firstName: firstName,
             lastName: lastName,
+            description: description,
             profilePicture: this.selectedFile!
           }
         }).subscribe({

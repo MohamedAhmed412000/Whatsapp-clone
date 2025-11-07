@@ -62,9 +62,12 @@
                 </small>
               </div>
             } @else if (message.type === 'MEDIA') {
-              @for (mediaRef of message.mediaListReferences; track mediaRef) {
+              @for (mediaRef of message.mediaListReferences; track mediaRef; let i = $index) {
                 <div class="message-media">
-                  <img width="200" class="cursor-pointer" [src]="mediaRef | mediaUrl | async" alt="">
+                  <img width="200" class="cursor-pointer"
+                       [src]="mediaRef | mediaUrl | async" alt=""
+                       (click)="onImageClick(message, i)"
+                  >
                   <div class="shadow-overlay cursor-pointer"></div>
                   <small class="message-date cursor-pointer">
                     {{ message.createdAt | date:'hh:mm a': 'local' }}

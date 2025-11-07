@@ -23,6 +23,8 @@ public class ChatUserResponse {
     private String lastname;
     @Schema(description = "The user fullname", example = "Mohamed Ahmed")
     private String fullname;
+    @Schema(description = "The user about section", example = "My Description")
+    private String description;
     @Schema(description = "The user email", example = "mohamed.ahmed@example.com")
     private String email;
     @Schema(description = "The user profile image reference", example = "407dd10ad78743e49d0b58e7")

@@ -74,6 +74,8 @@ public class UserServiceImpl implements UserService {
                 user.setFirstName(resource.getFirstName());
             if (resource.getLastName() != null && !resource.getLastName().isEmpty())
                 user.setLastName(resource.getLastName());
+            if (resource.getDescription() != null && !resource.getDescription().isEmpty())
+                user.setDescription(resource.getDescription());
             if (resource.getMobileNumber() != null) {
                 user.setCountryCode(resource.getMobileNumber().getCountryCode());
                 user.setPhoneNumber(resource.getMobileNumber().getPhoneNumber());

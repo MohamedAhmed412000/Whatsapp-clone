@@ -23,10 +23,11 @@ import SockJS from 'sockjs-client';
 import {Message, Stomp} from '@stomp/stompjs';
 import {Notification} from './notification';
 import {environment} from '../environments/environment.development';
+import {GalleryComponent} from './shared/gallery/gallery';
 
 @Component({
   selector: 'app-root',
-  imports: [Navbar, NgbToast, Conversations, ConversationBar, ConversationMessages, ConversationSendMessage],
+  imports: [Navbar, NgbToast, Conversations, ConversationBar, ConversationMessages, ConversationSendMessage, GalleryComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

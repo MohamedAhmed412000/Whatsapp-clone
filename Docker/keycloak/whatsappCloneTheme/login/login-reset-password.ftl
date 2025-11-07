@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WhatsApp/title>
+    <title>WhatsApp</title>
     <link rel="icon" type="image/png" href="${url.resourcesPath}/img/favicon.ico">
     <link rel="stylesheet" href="${url.resourcesPath}/css/style.css">
 </head>

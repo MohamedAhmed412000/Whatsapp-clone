@@ -22,6 +22,8 @@ public class UserUpdateResource {
     private String firstName;
     @Schema(description = "The user lastname", example = "Ahmed")
     private String lastName;
+    @Schema(description = "The user about section", example = "My Description")
+    private String description;
     private MobileNumber mobileNumber;
     @ValidImageExtension
     @Schema(description = "The user profile image (only image files allowed)", format = "binary")

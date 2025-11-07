@@ -10,6 +10,11 @@ import { MobileNumber } from '../models/mobile-number';
 export interface UserUpdateResource {
 
   /**
+   * The user about section
+   */
+  description?: string;
+
+  /**
    * The user firstname
    */
   firstName?: string;

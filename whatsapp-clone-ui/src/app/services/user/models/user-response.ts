@@ -7,6 +7,11 @@ import { StoryDetailsResponse } from '../models/story-details-response';
 export interface UserResponse {
 
   /**
+   * The user about section
+   */
+  description?: string;
+
+  /**
    * The user email
    */
   email?: string;
