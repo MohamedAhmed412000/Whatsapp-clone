@@ -1,4 +1,4 @@
-@import "../../../../assets/scss/bootstrap-variables";
+@use "../../../../assets/scss/bootstrap-variables" as *;
 
 .bg-chat {
   width: 100%;
@@ -142,7 +142,7 @@
     .message-sender{
       font-weight: 600;
       position: relative;
-      padding: 4px 10px 0px 10px;
+      padding: 4px 10px 0 10px;
 
       &:hover {
         text-decoration: underline;
@@ -167,7 +167,7 @@
     }
 
     .reply-content {
-      color: $white;
+      color: white;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -242,7 +242,7 @@
     max-width: 100%;
     height: 60px;
     width: 300px;
-    color: $white;
+    color: white;
     position: relative;
     display: flex;
     align-items: center;

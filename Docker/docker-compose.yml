@@ -1,4 +1,16 @@
 services:
+  whatsapp-clone-ui:
+    build:
+      context: ../whatsapp-clone-ui/
+      dockerfile: Dockerfile
+    container_name: whatsapp-clone-ui
+    image: mohamedahmed412000/whatsapp-clone/whatsapp-clone-ui:v1.0
+    ports:
+      - "4200:80"
+    extends:
+      file: common-services.yml
+      service: microservice-base
+
   config-server:
     container_name: config-server
     image: mohamedahmed412000/whatsapp-clone/config-server:v1.0

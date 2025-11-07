@@ -27,7 +27,7 @@
         <app-conversation-selector
           [user]="meUser!"
           [subtitle]="'Message yourself'"
-          [pictureReference]="meUser?.profilePictureReference!"
+          [pictureReference]="meUser.profilePictureReference!"
           (userChatSelected)="handleConversation(meUser)"
         ></app-conversation-selector>
       </div>

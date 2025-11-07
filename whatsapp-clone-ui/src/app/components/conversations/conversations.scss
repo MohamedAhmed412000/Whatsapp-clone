@@ -1,4 +1,4 @@
-@import "../../../assets/scss/bootstrap-variables";
+@use "../../../assets/scss/bootstrap-variables" as *;
 
 .search-input {
   .search-box,

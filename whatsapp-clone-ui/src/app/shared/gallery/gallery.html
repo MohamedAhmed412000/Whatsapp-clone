@@ -5,11 +5,11 @@
 
       <img
         class="gallery-image"
-        [src]="images[currentIndex]?.src | mediaUrl:true | async"
-        [alt]="images[currentIndex]?.caption || 'image'"
+        [src]="images[currentIndex].src | mediaUrl:true | async"
+        [alt]="images[currentIndex].caption || 'image'"
       />
 
-      <div class="caption">{{ images[currentIndex]?.caption }}</div>
+      <div class="caption">{{ images[currentIndex].caption }}</div>
 
       <button class="nav-btn left" (click)="prev()" [disabled]="currentIndex === 0">‹</button>
       <button class="nav-btn right" (click)="next()" [disabled]="currentIndex === images.length - 1">›</button>

@@ -1,4 +1,4 @@
-@import "../../../assets/scss/bootstrap-variables";
+@use "../../../assets/scss/bootstrap-variables" as *;
 
 .dropdown-toggle::after {
   content: none;

@@ -1,4 +1,4 @@
-@import "../../../../assets/scss/bootstrap-variables";
+@use "../../../../assets/scss/bootstrap-variables" as *;
 
 .wac-footer {
   background-color: $menu-bg-color;
@@ -55,7 +55,7 @@
 .recording-ui {
   background: $menu-bg-color;
   border-radius: 10px;
-  color: $white;
+  color: white;
   width: 380px;
 }
 
@@ -105,7 +105,7 @@
 }
 
 .recording-timer {
-  color: $white;
+  color: white;
   margin: 0 10px 0 0;
   font-size: 1rem;
   width: 45px;

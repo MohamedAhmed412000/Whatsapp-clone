@@ -22,7 +22,7 @@
             }
             @if (message.repliedMessage !== undefined) {
               <div class="reply-box d-flex align-items-center p-2 mb-1"
-                (click)="scrollToRepliedMessage(message.repliedMessage?.id)"
+                (click)="scrollToRepliedMessage(message.repliedMessage.id)"
                 [style.border-left-color]="message?.repliedMessage?.senderId! | colorize:!chat()!.isGroupChat:isSelfRepliedMessage(message)">
                 <div class="flex-grow-1">
                   <div class="reply-title" [style.color]="message?.repliedMessage?.senderId! | colorize:!chat()!.isGroupChat:isSelfRepliedMessage(message)">
