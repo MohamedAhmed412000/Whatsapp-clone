@@ -850,6 +850,11 @@
             "description": "The user lastname",
             "example": "Ahmed"
           },
+          "description": {
+            "type": "string",
+            "description": "The user about section",
+            "example": "My Description"
+          },
           "mobileNumber": {
             "$ref": "#/components/schemas/MobileNumber"
           },
@@ -933,6 +938,11 @@
             "type": "string",
             "description": "The user fullname",
             "example": "Mohamed Ahmed"
+          },
+          "description": {
+            "type": "string",
+            "description": "The user about section",
+            "example": "My description"
           },
           "email": {
             "type": "string",

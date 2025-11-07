@@ -19,6 +19,7 @@ import {MediaUrlPipe} from '../../../utils/media/media-url.pipe';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {MediaService} from '../../../utils/media/media.service.';
 import {ColorizePipe} from '../../../utils/colorize.pipe';
+import {GalleryService} from '../../../shared/gallery.service';
 
 @Component({
   selector: 'app-conversation-messages',
@@ -61,6 +62,7 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
   constructor(
     private keycloakService: KeycloakService,
     private mediaService: MediaService,
+    private galleryService: GalleryService,
   ) {
     document.addEventListener('click', () => this.closeContextMenu());
     effect(() => {
@@ -297,5 +299,14 @@ export class ConversationMessages implements AfterViewInit, AfterViewChecked {
 
     audio.currentTime = progress * audio.duration;
     this.audioProgressMap.set(message.id!, progress);
+  }
+
+  onImageClick(message: MessageResponse, index: number) {
+    const images = message.mediaListReferences!.map((ref: string) => ({
+      src: ref,
+      caption: this.getChatUserFullName(message.senderId!)
+    }));
+
+    this.galleryService.open(images, index);
   }
 }

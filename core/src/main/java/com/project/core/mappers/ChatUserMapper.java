@@ -19,6 +19,7 @@ public class ChatUserMapper {
             .firstname(userWithRole.getFirstName())
             .lastname(userWithRole.getLastName())
             .fullname(userWithRole.getUser().getFullName())
+            .description(userWithRole.getUser().getDescription())
             .email(userWithRole.getUser().getEmail())
             .imageFileReference(userWithRole.getUser().getProfilePictureReference())
             .isOnline(isOnlineUser(userWithRole.getUser().getLastSeen()))

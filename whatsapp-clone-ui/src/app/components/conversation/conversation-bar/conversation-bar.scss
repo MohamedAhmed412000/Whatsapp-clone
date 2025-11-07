@@ -161,3 +161,63 @@
 .color-red {
   color: $danger;
 }
+
+.members-list {
+  background-color: #111b21;
+  color: #fff;
+}
+
+.search-input {
+  .search-box,
+  .input-group-text {
+    border: none;
+    border-bottom: 2px solid $secondary;
+    color: white;
+  }
+
+  .input-group-text {
+    color: $subtitle-color;
+  }
+
+  &:focus-within {
+    .search-box,
+    .input-group-text {
+      box-shadow: none;
+      border-bottom-color: $primary;
+    }
+  }
+}
+
+.add-member-item {
+  cursor: pointer;
+}
+
+.hover-bg:hover {
+  background-color: #202c33;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.member-item {
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.member-item:hover {
+  background-color: #2a3942;
+}
+
+.text-muted {
+  color: #aebac1 !important;
+}

@@ -10,6 +10,11 @@ export interface ChatUserResponse {
   admin?: boolean;
 
   /**
+   * The user about section
+   */
+  description?: string;
+
+  /**
    * The user email
    */
   email?: string;

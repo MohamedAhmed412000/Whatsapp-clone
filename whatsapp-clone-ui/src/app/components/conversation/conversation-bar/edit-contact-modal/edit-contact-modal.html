@@ -2,7 +2,13 @@
   <form #contactForm="ngForm" (ngSubmit)="updateUserContact(contactForm)">
     <div class="p-4">
       <div class="d-flex flex-column align-items-start">
-        <h5 class="fw-bold fs-3 mb-4">Edit contact</h5>
+        <h5 class="fw-bold fs-3 mb-4">
+          @if (isSelfChat()) {
+            Edit My Details
+          } @else {
+            Edit contact
+          }
+        </h5>
       </div>
 
       <div class="text-center mb-4">
@@ -39,6 +45,14 @@
         <input type="text" class="form-control bg-dark text-white border-secondary" id="lastName"
                name="lastName" [(ngModel)]="chatUser.lastname">
       </div>
+
+      @if (isSelfChat()) {
+        <div class="mb-4">
+          <label for="description" class="form-label subtitle mb-0">Description</label>
+          <input type="text" class="form-control bg-dark text-white border-secondary" id="description"
+                 name="description" [(ngModel)]="chatUser.description">
+        </div>
+      }
 
       <div class="d-flex align-items-center justify-content-between mb-4">
         <div>

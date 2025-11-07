@@ -7,6 +7,8 @@ import {ChatUserResponse} from '../../../services/core/models/chat-user-response
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {EditContactModal} from './edit-contact-modal/edit-contact-modal';
 import {AsyncPipe} from '@angular/common';
+import {UserResponse} from '../../../services/user/models/user-response';
+import {UsersControllerService} from '../../../services/user/services/users-controller.service';
 
 @Component({
   selector: 'app-conversation-bar',
@@ -26,24 +28,30 @@ export class ConversationBar {
   protected selectedTab = 'overview';
   protected profileTabs = [
     { id: 'overview', label: 'Overview', icon: 'user' },
+    { id: 'members', label: 'Members', icon: 'user-group' },
     { id: 'media', label: 'Media', icon: 'image' },
     { id: 'files', label: 'Files', icon: 'file' },
     { id: 'links', label: 'Links', icon: 'link' },
     { id: 'events', label: 'Events', icon: 'calendar' },
     { id: 'encryption', label: 'Encryption', icon: 'lock' }
   ];
+  protected isAddingChatMembers: boolean = false;
+  protected chatUserContacts: UserResponse[] = [];
 
   constructor(
+    private userService: UsersControllerService,
     private keycloakService: KeycloakService,
     private modalService: NgbModal
-  ) {}
+  ) {
+    this.isAddingChatMembers = false;
+  }
 
   isSelfChat(): boolean {
     return this.chat()?.receiversId!.every(userId => userId === this.keycloakService.userId);
   }
 
-  get currentTabTitle() {
-    return this.profileTabs.find(t => t.id === this.selectedTab)?.label ?? '';
+  isSelfChatUser(userId: string): boolean {
+    return userId === this.keycloakService.userId;
   }
 
   @HostListener('document:click')
@@ -56,10 +64,6 @@ export class ConversationBar {
   openProfile(event: MouseEvent) {
     event.stopPropagation();
     this.showProfile = !this.showProfile;
-  }
-
-  closeProfile() {
-    this.showProfile = false;
   }
 
   selectTab(tab: string) {
@@ -80,7 +84,9 @@ export class ConversationBar {
   }
 
   get me() {
-    return this.keycloakService.me;
+    return this.chatUsers()
+      ?.filter(chatUser => chatUser.id === this.keycloakService.userId)
+      ?.at(0)!;
   }
 
   stopMainEffect(event: MouseEvent) {
@@ -98,6 +104,7 @@ export class ConversationBar {
         firstname: this.keycloakService.me.firstName,
         lastname: this.keycloakService.me.lastName,
         fullname: this.keycloakService.me.fullName,
+        description: this.keycloakService.me.description,
         email: this.keycloakService.me.email,
         online: true,
         imageFileReference: this.keycloakService.me.profilePictureReference,
@@ -107,5 +114,22 @@ export class ConversationBar {
       modalRef.componentInstance.chatUser = this.singleChatUser;
     }
     modalRef.componentInstance.chat = structuredClone(this.chat());
+  }
+
+  addChatMember() {
+    this.isAddingChatMembers = true;
+    this.userService.getUsers().subscribe({
+      next: (res) => {
+        const chatUserIds = new Set(this.chatUsers().map(user => user.id));
+        this.chatUserContacts = res.body?.filter(user => !chatUserIds.has(user.id)) ?? [];
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  returnToMembersView() {
+    this.isAddingChatMembers = false;
   }
 }
