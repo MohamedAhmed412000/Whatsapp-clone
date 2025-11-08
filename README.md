@@ -71,9 +71,9 @@ After running the project using Docker Compose, you can access the following ser
 
 ## Swagger URLs
 
-| Service | Swagger Link                                                                                                                                       |
-|---------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Core    | [View API Docs](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/MohamedAhmed412000/whatsapp-clone/main/docs/swagger/core.json)  |
-| Media   | [View API Docs](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/MohamedAhmed412000/whatsapp-clone/main/docs/swagger/media.json) |
-| Story   | [View API Docs](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/MohamedAhmed412000/whatsapp-clone/main/docs/swagger/story.json) |
-| User    | [View API Docs](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/MohamedAhmed412000/whatsapp-clone/main/docs/swagger/user.json)  |
+| Service | Swagger Link                                                                                         |
+|---------|------------------------------------------------------------------------------------------------------|
+| Core    | [View API Docs](https://mohamedahmed412000.github.io/Whatsapp-clone/?urls.primaryName=Core+Service)  |
+| Media   | [View API Docs](https://mohamedahmed412000.github.io/Whatsapp-clone/?urls.primaryName=Media+Service) |
+| Story   | [View API Docs](https://mohamedahmed412000.github.io/Whatsapp-clone/?urls.primaryName=Story+Service) |
+| User    | [View API Docs](https://mohamedahmed412000.github.io/Whatsapp-clone/?urls.primaryName=User+Service)  |
