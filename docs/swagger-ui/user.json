@@ -1,0 +1,994 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Documentation"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/user",
+      "description": "Users API via Gateway"
+    }
+  ],
+  "security": [
+    {
+      "keycloak": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Contacts Controller",
+      "description": "CRUD Rest APIs for managing user contacts"
+    },
+    {
+      "name": "Users Controller",
+      "description": "CRUD Rest APIs for managing users"
+    }
+  ],
+  "paths": {
+    "/api/v1/users/sync": {
+      "post": {
+        "tags": [
+          "Users Controller"
+        ],
+        "summary": "Sync my user details",
+        "operationId": "syncMyUser",
+        "responses": {
+          "200": {
+            "description": "My user details synced successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-contacts": {
+      "post": {
+        "tags": [
+          "User Contacts Controller"
+        ],
+        "summary": "Create a new user contact",
+        "operationId": "addNewContact",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserContactCreationResource"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/StringResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": [
+          "Users Controller"
+        ],
+        "summary": "Retrieve my user details",
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "My user details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/UserResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users Controller"
+        ],
+        "summary": "Update my user details",
+        "operationId": "updateUser",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateResource"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "My user details updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-contacts/{user-id}/update-contact": {
+      "patch": {
+        "tags": [
+          "User Contacts Controller"
+        ],
+        "summary": "Update contact details",
+        "operationId": "updateContact",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserContactUpdateResource"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Contact details updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-contacts/{user-id}/unpin-contact": {
+      "patch": {
+        "tags": [
+          "User Contacts Controller"
+        ],
+        "summary": "Unpin an existing contact",
+        "operationId": "unpinContact",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact unpinned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-contacts/{user-id}/unblock-contact": {
+      "patch": {
+        "tags": [
+          "User Contacts Controller"
+        ],
+        "summary": "Unblock an existing contact",
+        "operationId": "unblockContact",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact unblocked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-contacts/{user-id}/pin-contact": {
+      "patch": {
+        "tags": [
+          "User Contacts Controller"
+        ],
+        "summary": "Pin an existing contact",
+        "operationId": "pinContact",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact pinned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-contacts/{user-id}/block-contact": {
+      "patch": {
+        "tags": [
+          "User Contacts Controller"
+        ],
+        "summary": "Block an existing contact",
+        "operationId": "blockContact",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact blocked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/BooleanResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Users Controller"
+        ],
+        "summary": "Retrieve searched users except me",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The users search query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The users search query",
+              "example": "ha"
+            },
+            "example": "ha"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get searched users successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UserResponse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/blocked": {
+      "get": {
+        "tags": [
+          "Users Controller"
+        ],
+        "summary": "Retrieve blocked users",
+        "operationId": "getBlockedUsers",
+        "responses": {
+          "200": {
+            "description": "Get blocked users successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "description": "Unique request identifier",
+                          "example": "string"
+                        },
+                        "statusCode": {
+                          "type": "string",
+                          "description": "Status code of the response",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UserResponse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BooleanResponse": {
+        "type": "object",
+        "description": "Schema to hold the boolean response",
+        "properties": {
+          "done": {
+            "type": "boolean"
+          }
+        }
+      },
+      "StringResponse": {
+        "type": "object",
+        "description": "Schema to hold the string response",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Response string content"
+          }
+        }
+      },
+      "UserContactCreationResource": {
+        "type": "object",
+        "description": "Schema to hold the user contact creation data",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user email",
+            "example": "mohamed.ahmed@gmail.com",
+            "minLength": 1
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The contact firstname",
+            "example": "Mohamed"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The contact lastname",
+            "example": "Ahmed"
+          },
+          "isFavourite": {
+            "type": "boolean",
+            "description": "Flag for favourite contacts"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ErrorBody": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "MobileNumber": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "description": "The phone country code",
+            "example": "+20",
+            "pattern": "^\\+?\\d{1,3}$"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "The phone number",
+            "example": "01234567890",
+            "maxLength": 11,
+            "minLength": 10
+          }
+        }
+      },
+      "UserUpdateResource": {
+        "type": "object",
+        "description": "Schema to hold the user details update data",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "The user firstname",
+            "example": "Mohamed"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The user lastname",
+            "example": "Ahmed"
+          },
+          "description": {
+            "type": "string",
+            "description": "The user about section",
+            "example": "My Description"
+          },
+          "mobileNumber": {
+            "$ref": "#/components/schemas/MobileNumber"
+          },
+          "profilePicture": {
+            "type": "string",
+            "format": "binary",
+            "description": "The user profile image (only image files allowed)"
+          }
+        }
+      },
+      "UserContactUpdateResource": {
+        "type": "object",
+        "description": "Schema to hold the user contact update data",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "description": "The contact firstname",
+            "example": "Mohamed"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The contact lastname",
+            "example": "Ahmed"
+          }
+        }
+      },
+      "StoryDetailsResponse": {
+        "type": "object",
+        "description": "Schema to hold the story details response",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The story id",
+            "example": 1755250373935
+          },
+          "content": {
+            "type": "string",
+            "description": "The story string content",
+            "example": "Hello"
+          },
+          "mediaReference": {
+            "type": "string",
+            "description": "The story media reference",
+            "example": "407dd10ad78743e49d0b58e7"
+          },
+          "storyType": {
+            "type": "string",
+            "description": "The story type",
+            "enum": [
+              "TEXT",
+              "MEDIA"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The story creation date"
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The user Id",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The user firstname",
+            "example": "Mohamed"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The user lastname",
+            "example": "Ahmed"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "The user fullname",
+            "example": "Mohamed Ahmed"
+          },
+          "description": {
+            "type": "string",
+            "description": "The user about section",
+            "example": "My description"
+          },
+          "email": {
+            "type": "string",
+            "description": "The user email",
+            "example": "mohamed.ahmed@example.com"
+          },
+          "mobileNumber": {
+            "$ref": "#/components/schemas/MobileNumber"
+          },
+          "lastSeen": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The last time when the user was online"
+          },
+          "profilePictureReference": {
+            "type": "string",
+            "description": "The user profile image reference",
+            "example": "407dd10ad78743e49d0b58e7"
+          },
+          "stories": {
+            "type": "array",
+            "description": "The stories list",
+            "items": {
+              "$ref": "#/components/schemas/StoryDetailsResponse"
+            }
+          },
+          "online": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "keycloak": {
+        "type": "oauth2",
+        "in": "header",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "flows": {
+          "password": {
+            "authorizationUrl": "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/auth",
+            "tokenUrl": "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/token",
+            "scopes": {}
+          }
+        }
+      }
+    }
+  }
+}
