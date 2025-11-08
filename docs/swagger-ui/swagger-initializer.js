@@ -4,10 +4,10 @@ window.onload = function() {
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
     urls: [
-        { url: "./core.json", name: "Core Service" },
-        { url: "./media.json", name: "Media Service" },
-        { url: "./story.json", name: "Story Service" },
-        { url: "./user.json", name: "User Service" }
+        { url: "../whatsapp-clone-ui/src/openapi/core.json", name: "Core Service" },
+        { url: "../whatsapp-clone-ui/src/openapi/media.json", name: "Media Service" },
+        { url: "../whatsapp-clone-ui/src/openapi/story.json", name: "Story Service" },
+        { url: "../whatsapp-clone-ui/src/openapi/user.json", name: "User Service" }
     ],
     dom_id: '#swagger-ui',
     deepLinking: true,
